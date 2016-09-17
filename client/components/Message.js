@@ -23,6 +23,12 @@ class Message extends Component {
         this.emoji.img_sets.apple.sheet = sheet;
 
     }
+    componentDidMount(){
+        this.props.onMount({id:this.props.id, elem:this.refs.message});
+    }
+    componentWillUnmount(){
+        this.props.onUnmount({id:this.props.id, elem:this.refs.message});
+    }
     shouldComponentUpdate(nextProps, nextState){
         return !shallowEqual(this.props.text, nextProps.text);
     }
@@ -36,8 +42,9 @@ class Message extends Component {
         moment.locale('ru');
         // console.log('Message render');
         return (
-            <div className={"message-block "+ (minimaized?'-minimaized':'')}>
+            <div ref="message" className={"message-block "+ (minimaized?'-minimaized':'')}>
                 {!minimaized  &&  <div className="message-block__avatar">
+                    {this.props.id}
                     avatar
                     {
                         // <img src={"data:image/png;base64," + new Identicon(user.name+''+user.createdAt+user.email,  {

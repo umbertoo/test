@@ -24,6 +24,7 @@ class MessageList extends Component {
         return view.getScrollTop()+view.getClientHeight()==view.getScrollHeight();
     }
     onScrollStop(){
+        this.props.onScrollStop();
         let view = this.scrollView;
         if(view.getScrollTop()==0){
             this.props.onScrollTop(view.getScrollHeight());
@@ -77,6 +78,9 @@ class MessageList extends Component {
             }
             list.push (
                 <Message
+                  onMount={this.props.onMountMessage}
+                  onUnmount={this.props.onUnmountMessage}
+                  id={msg.id}
                   minimaized={minimaized}
                   user={this.props.users[msg.userId]}
                   text={msg.text}
