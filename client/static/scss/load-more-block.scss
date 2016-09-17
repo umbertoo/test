@@ -1,0 +1,29 @@
+.load-more-block{
+    height: 60px;
+    width: 100%;
+    text-align: center;
+    // border: 1px solid #eee;
+    &__button{
+        // line-height: 60px;
+        //vertical-align: middle;
+        // height: 20px;\
+        border: 10px solid #36393E;
+        font-size: 13px;
+        color:#0096cf;
+        width: 100%;
+        padding: 9px 0px;
+        border-radius: 13px;
+        background-color: #2E3136;
+        display: inline-block;
+    }
+    &__loader{
+        border: 10px solid #36393E;
+        font-size: 13px;
+        color:#0096cf;
+        width: 100%;
+        padding: 9px 0px;
+        border-radius: 13px;
+        // background-color: #2E3136;
+        display: inline-block;
+    }
+}

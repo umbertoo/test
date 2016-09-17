@@ -1,0 +1,24 @@
+.drop-down {
+    position: relative;
+    display: inline-block;
+
+    &__button {
+        display: inline-block;
+    }
+
+}
+.tether_drop {
+    z-index: 999;
+}
+.drop-menu {
+    padding: 5px 0;
+    display: none;
+    background-color: #fff;
+
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    &.-open {
+        display: block;
+        z-index: 999;
+    }
+}

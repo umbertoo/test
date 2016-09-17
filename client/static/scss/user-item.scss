@@ -1,0 +1,26 @@
+.user-item{
+
+    &__name{
+        display: inline-block;
+        color:rgba(255, 255, 255, 0.7);
+    }
+    &__avatar{
+        vertical-align: middle;
+        height: 36px;
+        width: 36px;
+        border-radius: 4px;
+        display: inline-block;
+        background-size: cover;
+        margin:  15px;
+    }
+
+
+    &__indicator{
+        display: inline-block;
+        height: 12px;
+        width: 12px;
+        background-color: green;
+        border-radius: 12px;
+margin-left: 20px;
+    }
+}

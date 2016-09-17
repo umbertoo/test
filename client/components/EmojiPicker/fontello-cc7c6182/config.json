@@ -1,0 +1,70 @@
+{
+  "name": "",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "d862a10e1448589215be19702f98f2c1",
+      "css": "smile",
+      "code": 61720,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "19e7b342a5e6bd0cd86de6d6208486a4",
+      "css": "leaf-1",
+      "code": 59395,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "cf62866c0cfe3dd14455b381c724f8e1",
+      "css": "soccer-ball",
+      "code": 61923,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "3a26448b711645ba1abfc86c1a6e2f30",
+      "css": "coffee",
+      "code": 61684,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "297fe6c2ef08198b03d706ba52f51b7f",
+      "css": "flight",
+      "code": 59397,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "d73eceadda1f594cec0536087539afbf",
+      "css": "heart",
+      "code": 59398,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "f3dc2d6d8fe9cf9ebff84dc260888cdf",
+      "css": "heart-empty",
+      "code": 59399,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "598a5f2bcf3521d1615de8e1881ccd17",
+      "css": "clock",
+      "code": 59394,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "25acee28eb78eaa800b32bb6f20ebc62",
+      "css": "flag-1",
+      "code": 59392,
+      "src": "elusive"
+    },
+    {
+      "uid": "4b20e1deee87faf4c3fab735fbd4bc1a",
+      "css": "lamp",
+      "code": 59393,
+      "src": "entypo"
+    }
+  ]
+}
