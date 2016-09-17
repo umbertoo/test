@@ -7,7 +7,7 @@ import {withRouter} from 'react-router';
 import { socket } from '../actions/common/socketEvents';
 import LoadMoreBlock from '../components/LoadMoreBlock';
 import shallowEqual from 'shallowequal';
-
+//edits new branch new new_loading_logic
 import slice from 'lodash/slice';
 class MessageListContainer extends Component {
     constructor(props){
