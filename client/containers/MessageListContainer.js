@@ -31,12 +31,6 @@ class MessageListContainer extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-
-        // const {allMessagesIds:nextIds} = nextProps;
-        // const {allMessagesIds:prevIds} = this.props;
-        //
-
-
         const {channel_id:prevId} = this.props.params,
         {channel_id:nextId} = nextProps.params;
         const {allMessagesIds:prevMsgIds} = this.props,
@@ -55,14 +49,9 @@ class MessageListContainer extends Component {
                 );
             }
         }
-
-
-
         if(prevId !== nextId) {
             this.handleSwitchChannel(prevId,nextId);
             this.props.switchChannel(nextId);
-
-
         }
         if(!shallowEqual(prevMsgIds,nextMsgIds)/* && prevId !== nextId */){
             // console.log('>>>>',nextProps.allMessagesIds.slice(0,90));
@@ -137,10 +126,7 @@ class MessageListContainer extends Component {
             });
         }
     }
-    getStartPoint(){
-        const lastId = this.state.currentIds[0];
-        return  this.props.allMessagesIds.indexOf(lastId);
-    }
+
     checkAfter(){
         console.log('checkAfter!!');
         const lastId = this.state.currentIds.slice(-1)[0];
@@ -161,20 +147,9 @@ class MessageListContainer extends Component {
         if(allMessagesIds.length > this.state.currentIds.length && this.checkAfter()) {
             console.log('есть еще!');
             console.log('allMessagesIds',allMessagesIds.length);
+            let lastId = 1+this.props.allMessagesIds.indexOf(this.state.currentIds.slice(-1)[0]);
             this.setState({
-                currentIds:slice(allMessagesIds,this.getStartPoint(),this.getStartPoint()+120)
-            },()=>{
-                console.log('прибавили ', this.state.currentIds.length);
-                let oldHeight = view.getScrollHeight();
-
-                let oldscrollTop = view.getScrollTop();
-                // console.log('oldscrollTop',oldscrollTop);
-                this.setState({
-                    currentIds:slice(this.state.currentIds,30,120)
-                },()=>{
-                    console.log('почикали ',this.state.currentIds.length);
-                    view.scrollTop(oldscrollTop-(oldHeight-view.getScrollHeight()));
-                });
+                currentIds:[...this.state.currentIds,...slice(allMessagesIds,lastId,lastId+30)]
             });
         }
     }
@@ -187,7 +162,10 @@ class MessageListContainer extends Component {
         delete this.registeredElements[data.id];
     }
     onScrollStop(){
-        let key = findKey(this.registeredElements,e=>e.elem.getBoundingClientRect().bottom>0);
+        let key = findKey(this.registeredElements,({elem})=>
+            // elem.offsetTop+elem.offsetHeight>this.messageList.scrollView.getScrollTop()
+            elem.getBoundingClientRect().bottom>0
+        );
         console.log('Первое видимое', key);
     }
     render(){
@@ -212,6 +190,14 @@ class MessageListContainer extends Component {
         );
     }
 }
+{
+authChanged: (callback) =>{
+        return firebaseAuth.onAuthStateChanged(callback);
+};
+};
+{
+    authChanged: ()=>new Promise(res=>firebaseAuth.onAuthStateChanged(user=>res(user)))
+};
 const mapStateToProps = (state,props) =>{
 
     const channel  = state.pagination.idsByChannel[props.params.channel_id];

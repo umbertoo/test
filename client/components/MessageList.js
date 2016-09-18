@@ -17,7 +17,6 @@ class MessageList extends Component {
     constructor(props){
         super(props);
         autoBind(this);
-        moment.locale('ru');
     }
     isScrollOnBottom(){
         let view = this.scrollView;
@@ -90,38 +89,7 @@ class MessageList extends Component {
             prevDay = day;
         }
     );
-    //     forEach(this.props.messages,msg=>{
-    //         day = msg.createdAt;
-    //
-    //         let curDate = moment(msg.createdAt);
-    //         let timeDiff = curDate.diff(prevDate, 'm');
-    //
-    //         let dateDiff;
-    //         if(prevDate){
-    //             dateDiff = curDate.date()!==prevDate.date();
-    //         }
-    //         if(prevDate && dateDiff && (+moment().date()-prevDate.date())!==1 ){
-    //             list.push(<TimeDivider key={msg.createdAt+"1"} content={prevDate.format("D MMMM YYYY")}/>);
-    //         }
-    //         let minimaized = userId ===  msg.userId && timeDiff < 2;
-    //         prevDate = curDate;
-    //         userId = msg.userId;
-    //         prevDayisYesterday = moment(prevDay).isSame(yesterday,'days');
-    //
-    //         if(prevDayisYesterday && !moment(msg.createdAt).isSame(yesterday,'days')){
-    //             list.push(<TimeDivider key={msg.createdAt} content ={"вчера"}/>);
-    //         }
-    //         list.push (
-    //             <Message
-    //               minimaized={minimaized}
-    //               user={this.props.users[msg.userId]}
-    //               text={msg.text}
-    //               key={msg.id}
-    //               createdAt={msg.createdAt}/>
-    //         );
-    //         prevDay = day;
-    //     }
-    // );
+
     return list;
 }
 render(){

@@ -18,6 +18,7 @@ class Message extends Component {
         this.md = new Remarkable('full', {
             html: true
         });
+
         this.emoji=new EmojiConvertor();
         this.emoji.use_sheet = true;
         this.emoji.img_sets.apple.sheet = sheet;
@@ -39,7 +40,7 @@ class Message extends Component {
     render(){
         let {user , minimaized} = this.props;
         let date = moment(this.props.createdAt).calendar();
-        moment.locale('ru');
+
         // console.log('Message render');
         return (
             <div ref="message" className={"message-block "+ (minimaized?'-minimaized':'')}>
