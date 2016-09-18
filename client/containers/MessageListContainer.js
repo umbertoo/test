@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
 import MessageList from '../components/MessageList';
 import autoBind from 'react-autobind';
-import {withRouter} from 'react-router';
+import { withRouter } from 'react-router';
 import { socket } from '../actions/common/socketEvents';
 import LoadMoreBlock from '../components/LoadMoreBlock';
 import shallowEqual from 'shallowequal';
 //edits new branch new new_loading_logic
 import slice from 'lodash/slice';
+import uniq from 'lodash/uniq';
 import findKey from 'lodash/findKey';
 class MessageListContainer extends Component {
     constructor(props){
@@ -20,24 +21,17 @@ class MessageListContainer extends Component {
     componentWillMount(){
         this.props.fetchMessages(this.props.params.channel_id)
         .then(()=> this.messageList.scrollView.scrollToBottom() );
-
-        // socket.on('message', (message)=>{
-        //     if(message.channelId == this.props.params.channel_id){
-
-        //         //
-        //     }
-        //
-        // });
     }
 
     componentWillReceiveProps(nextProps){
-        const {channel_id:prevId} = this.props.params,
-        {channel_id:nextId} = nextProps.params;
-        const {allMessagesIds:prevMsgIds} = this.props,
-        {allMessagesIds:nextMsgIds} = nextProps;
+        const {channel_id:prevId} = this.props.params;
+        const {channel_id:nextId} = nextProps.params;
+        const {allMessagesIds:prevMsgIds} = this.props;
+        const {allMessagesIds:nextMsgIds} = nextProps;
 
         const nextLastId = nextMsgIds.slice(-1)[0];
         const prevLastId = prevMsgIds.slice(-1)[0];
+
         if( prevMsgIds.length && nextMsgIds.length > prevMsgIds.length && nextLastId !== prevLastId){
             let message = nextProps.messages[nextLastId];
             console.log('new MESSAGE CATCHED!',message);
@@ -53,29 +47,40 @@ class MessageListContainer extends Component {
             this.handleSwitchChannel(prevId,nextId);
             this.props.switchChannel(nextId);
         }
-        if(!shallowEqual(prevMsgIds,nextMsgIds)/* && prevId !== nextId */){
-            // console.log('>>>>',nextProps.allMessagesIds.slice(0,90));
-            if(this.messageList.isScrollOnBottom()){
-                this.setState({
-                    currentIds:nextProps.allMessagesIds.slice(0,90)
-                });
-            }
-
-            console.log('айдишники поменялсь , это может значить подгрузку новых сообщений');
-        }
+        // if(!shallowEqual(prevMsgIds,nextMsgIds)/* && prevId !== nextId */){
+        //     // console.log('>>>>',nextProps.allMessagesIds.slice(0,90));
+        //     if(this.messageList.isScrollOnBottom()){
+        //         this.setState({
+        //             currentIds:nextProps.allMessagesIds.slice(0,90)
+        //         });
+        //     }
+        //
+        //     console.log('айдишники поменялсь , это может значить подгрузку новых сообщений');
+        // }
 
     }
     handleSwitchChannel(prevId,nextId){
         //можно объеденить? saveScrollPosition и saveLastVisibleMessage
-        this.props.saveScrollPosition(prevId,this.messageList.scrollView.getScrollTop());
-        // this.props.saveLastVisibleMessage(prevId);//OK
-        this.props.fetchMessages(nextId).then(()=>{//OK
-            this.props.unsetChannelHasNewMessages(nextId); //OK
+        this.props.saveScrollPosition(prevId, this.messageList.scrollView.getScrollTop(), this.findFirstVisibleId());
 
-            if(this.props.scrollPosition){//OK
-                this.messageList.scrollView.scrollTop(this.props.scrollPosition);
+        // this.props.saveLastVisibleMessage(prevId);
+        this.props.fetchMessages(nextId).then(()=>{
+            this.props.unsetChannelHasNewMessages(nextId);
+            const { scrollPosition, firstVisibleId, allMessagesIds } = this.props;
+
+            if(scrollPosition && firstVisibleId){
+                const index = allMessagesIds.indexOf(firstVisibleId);
+                // console.log('вырезка', allMessagesIds.slice(index,index+45));
+                this.setState({
+                    currentIds: allMessagesIds.slice(index,index+30)
+                });
+                this.messageList.scrollView.scrollTop(60);
             }else{
+                this.setState({
+                    currentIds: allMessagesIds
+                });
                 this.messageList.scrollView.scrollToBottom();
+
             }
 
         });
@@ -83,62 +88,50 @@ class MessageListContainer extends Component {
     componentDidMount(){
         this.props.onMount(this.messageList);
     }
-    //
-    // componentWillReceiveProps(nextProps){
-
-    // }
+    checkBefore(){
+        // console.log('checkBefore!!');
+        const lastId = this.state.currentIds[0];
+        const index = this.props.allMessagesIds.indexOf(lastId);
+        return this.props.allMessagesIds.slice(0,index).length;
+    }
     loadHistory(oldScrollHeight){
-        console.log('oldScrollHeight',oldScrollHeight);
-
+        // console.log('oldScrollHeight',oldScrollHeight);
         if(this.checkBefore()){
             console.warn('есть еще вверху уже подгруженые');
             const firstId = this.state.currentIds[0];
-            const index = this.props.allMessagesIds.indexOf(firstId);
-
-
+            const index = this.props.allMessagesIds.indexOf(firstId)-1;
+            // const oldScrollHeight = this.messageList.scrollView.getScrollHeight();
+            const start = index-30 < 0 ? 0 : index-30;
             this.setState({
-                currentIds:this.state.currentIds.slice(0,60)
+                currentIds:[...this.props.allMessagesIds.slice(start,index),...this.state.currentIds]
             },()=>{
-                let oldestHeight = this.messageList.scrollView.getScrollHeight();
-                this.setState({
-                    currentIds:this.props.allMessagesIds.slice(index-30,index-30+90)
-                },()=>{
-
-                    const newScrollHeight = this.messageList.scrollView.getScrollHeight();
-                    this.messageList.scrollView.scrollTop(newScrollHeight-oldestHeight);
-
-                });
+                const newScrollHeight = this.messageList.scrollView.getScrollHeight();
+                this.messageList.scrollView.scrollTop(newScrollHeight-oldScrollHeight);
             });
         }else{
             console.warn('грузим с сервера');
-            this.setState({
-                currentIds:this.props.allMessagesIds.slice(0,60)
-            },()=>{
-                let oldestHeight = this.messageList.scrollView.getScrollHeight();
-                this.props.fetchMessages(this.props.params.channel_id,true).then(()=>{
-                    this.setState({
-                        currentIds:this.props.allMessagesIds.slice(0,90)
-                    });
+            this.props.fetchMessages(this.props.params.channel_id,true).then(()=>{
+                const firstId = this.state.currentIds[0];
+                const index = this.props.allMessagesIds.indexOf(firstId)-1;
+                // const oldScrollHeight = this.messageList.scrollView.getScrollHeight();
+                // let start = index-30 < 0 ? 0 : index-30;
+                const sliced = this.props.allMessagesIds.slice(0,index);
+                this.setState({
+                    // currentIds:[...sliced,...this.state.currentIds]
+                    currentIds:[...sliced,...this.state.currentIds]
+                },()=>{
                     const newScrollHeight = this.messageList.scrollView.getScrollHeight();
-                    this.messageList.scrollView.scrollTop(newScrollHeight-oldestHeight);
+                    this.messageList.scrollView.scrollTop(newScrollHeight-oldScrollHeight);
                 });
+              });
 
-            });
         }
     }
-
     checkAfter(){
         console.log('checkAfter!!');
         const lastId = this.state.currentIds.slice(-1)[0];
         const index = this.props.allMessagesIds.indexOf(lastId);
         return !!this.props.allMessagesIds[index+1];
-
-    }
-    checkBefore(){
-        console.log('checkBefore!!');
-        const lastId = this.state.currentIds[0];
-        const index = this.props.allMessagesIds.indexOf(lastId);
-        return !!this.props.allMessagesIds[index-1];
 
     }
     onScrollBottom(){
@@ -153,20 +146,20 @@ class MessageListContainer extends Component {
             });
         }
     }
-    regELem(data){
-        // console.log('regELem');
-        this.registeredElements[data.id]=data;
+    regELem(message){
+        this.registeredElements[message.id]=message;
     }
-    unregELem(data){
-        // console.log('un!regELem');
-        delete this.registeredElements[data.id];
+    unregELem(message){
+        delete this.registeredElements[message.id];
+    }
+    findFirstVisibleId(){
+        return +findKey(this.registeredElements,({elem})=>
+            elem.offsetTop+elem.offsetHeight > this.messageList.scrollView.getScrollTop()
+            // elem.getBoundingClientRect().bottom > 0
+        );
     }
     onScrollStop(){
-        let key = findKey(this.registeredElements,({elem})=>
-            // elem.offsetTop+elem.offsetHeight>this.messageList.scrollView.getScrollTop()
-            elem.getBoundingClientRect().bottom>0
-        );
-        console.log('Первое видимое', key);
+        // console.log('Первое видимое', this.findFirstVisibleId());
     }
     render(){
         const {
@@ -190,19 +183,12 @@ class MessageListContainer extends Component {
         );
     }
 }
-{
-authChanged: (callback) =>{
-        return firebaseAuth.onAuthStateChanged(callback);
-};
-};
-{
-    authChanged: ()=>new Promise(res=>firebaseAuth.onAuthStateChanged(user=>res(user)))
-};
 const mapStateToProps = (state,props) =>{
 
     const channel  = state.pagination.idsByChannel[props.params.channel_id];
     let {
-        ids:messagesIds = [], scrollPosition = null , lastVisibleMessage={}
+        ids:messagesIds = [], scrollPosition = null , lastVisibleMessage={},
+        firstVisibleId
     } = channel||{};
 
     // let reducedList = messagesIds.lenth>90? reduceList(messagesIds,90):
@@ -215,7 +201,8 @@ const mapStateToProps = (state,props) =>{
         // messages: messagesIds.map(id => messages[id]),
         messages: messages,
         messagesIsFetching: state.entities.messages.isFetching,
-        scrollPosition
+        scrollPosition,
+        firstVisibleId
     };
 };
 

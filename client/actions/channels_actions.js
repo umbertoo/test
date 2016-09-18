@@ -64,9 +64,10 @@ export const saveLastVisibleMessage = (channelId) => async (dispatch,getState) =
         console.error(e);
     }
 };
-export const saveScrollPosition = (channelId, scrollPosition) =>({
+export const saveScrollPosition = (channelId, scrollPosition, firstVisibleId) =>({
     type:types.SAVE_SCROLL_POSITION,
     scrollPosition,
+    firstVisibleId,
     channelId
 });
 

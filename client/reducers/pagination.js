@@ -45,7 +45,10 @@ const idsByChannel = (state = initState, action) => {
         };
         //------------------------------------------------------------------
         case types.SAVE_SCROLL_POSITION:
-        return {...state, scrollPosition: action.scrollPosition};
+        return {...state,
+            scrollPosition: action.scrollPosition,
+            firstVisibleId:action.firstVisibleId
+        };
         //------------------------------------------------------------------
         case types.SAVE_LAST_VISIBLE_MESSAGE:
         return {...state, lastVisibleMessage: action.lastVisibleMessage};
