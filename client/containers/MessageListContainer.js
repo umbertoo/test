@@ -7,7 +7,6 @@ import { withRouter } from 'react-router';
 import { socket } from '../actions/common/socketEvents';
 import LoadMoreBlock from '../components/LoadMoreBlock';
 import shallowEqual from 'shallowequal';
-//edits new branch new new_loading_logic
 import slice from 'lodash/slice';
 import uniq from 'lodash/uniq';
 import findKey from 'lodash/findKey';
@@ -27,26 +26,27 @@ class MessageListContainer extends Component {
     componentWillReceiveProps(nextProps){
         const {channel_id:prevId} = this.props.params;
         const {channel_id:nextId} = nextProps.params;
+
+        if (prevId !== nextId) {
+            this.handleSwitchChannel(prevId,nextId);
+        }
+
         const {allMessagesIds:prevMsgIds} = this.props;
         const {allMessagesIds:nextMsgIds} = nextProps;
 
         const nextLastId = nextMsgIds.slice(-1)[0];
         const prevLastId = prevMsgIds.slice(-1)[0];
 
-        if( prevMsgIds.length && nextMsgIds.length > prevMsgIds.length && nextLastId !== prevLastId){
-            let message = nextProps.messages[nextLastId];
+        if (prevMsgIds.length && nextMsgIds.length > prevMsgIds.length && nextLastId !== prevLastId){
+            const message = nextProps.messages[nextLastId];
             console.log('new MESSAGE CATCHED!',message);
 
             if(this.messageList.isScrollOnBottom()){
                 console.log('крутим вниз');
-                this.messageList.scrollView.scrollTop(
-                    this.messageList.scrollView.getScrollHeight()-5
-                );
+                this.messageList.scrollView.scrollTop(this.messageList.scrollView.getScrollHeight()-5);
             }
         }
-        if(prevId !== nextId) {
-            this.handleSwitchChannel(prevId,nextId);
-        }
+
     }
     handleSwitchChannel(prevId,nextId){
         this.props.saveScrollPosition(prevId, this.messageList.scrollView.getScrollTop(), this.findFirstVisibleId());
@@ -70,45 +70,39 @@ class MessageListContainer extends Component {
             }
 
         });
-
-
     }
     componentDidMount(){
         this.props.onMount(this.messageList);
     }
     checkMoreBefore(){
-        // console.log('checkBefore!!');
         const lastId = this.state.currentIds[0];
         const index = this.props.allMessagesIds.indexOf(lastId);
         return this.props.allMessagesIds.slice(0,index).length;
     }
     loadMoreBefore(oldScrollHeight){
-        // console.log('oldScrollHeight',oldScrollHeight);
-        if(this.checkMoreBefore()){
+        const view = this.messageList.scrollView;
+        const { currentIds } = this.state;
+
+        const index = this.props.allMessagesIds.indexOf(currentIds[0]);
+        if (this.checkMoreBefore()) {
             console.warn('есть еще вверху уже подгруженые');
-            const firstId = this.state.currentIds[0];
-            const index = this.props.allMessagesIds.indexOf(firstId)-1;
-            // const oldScrollHeight = this.messageList.scrollView.getScrollHeight();
-            const start = index-30 < 0 ? 0 : index-30;
+            const start = index - 30 < 0 ? 0 : index - 30;
+
             this.setState({
-                currentIds:[...this.props.allMessagesIds.slice(start,index),...this.state.currentIds]
+                currentIds:[...this.props.allMessagesIds.slice(start, index-1),...currentIds]
             },()=>{
-                const newScrollHeight = this.messageList.scrollView.getScrollHeight();
-                this.messageList.scrollView.scrollTop(newScrollHeight-oldScrollHeight);
+                view.scrollTop(view.getScrollHeight() - oldScrollHeight);
             });
-        }else{
+        } else {
             console.warn('грузим с сервера');
-            this.props.fetchMessages(this.props.params.channel_id,true).then(()=>{
-                const firstId = this.state.currentIds[0];
-                const index = this.props.allMessagesIds.indexOf(firstId)-1;
-                const sliced = this.props.allMessagesIds.slice(0,index);
+            this.props.fetchMessages(this.props.params.channel_id, true).then(()=>{
+
                 this.setState({
-                    currentIds:[...sliced,...this.state.currentIds]
+                    currentIds:[...this.props.allMessagesIds.slice(0, index-1),...currentIds]
                 },()=>{
-                    const newScrollHeight = this.messageList.scrollView.getScrollHeight();
-                    this.messageList.scrollView.scrollTop(newScrollHeight-oldScrollHeight);
+                    view.scrollTop(view.getScrollHeight() - oldScrollHeight);
                 });
-              });
+            });
 
         }
     }
@@ -118,21 +112,21 @@ class MessageListContainer extends Component {
         return !!this.props.allMessagesIds[index+1];
     }
     loadMoreAfter(){
-        const view = this.messageList.scrollView;
-        const { allMessagesIds, messagesIds }= this.props;
-        if(allMessagesIds.length > this.state.currentIds.length && this.checkMoreAfter()) {
+        const { allMessagesIds } = this.props;
+        const { currentIds } = this.state;
+        if(this.checkMoreAfter()) {
             console.log('есть еще!');
-            let lastId = 1+this.props.allMessagesIds.indexOf(this.state.currentIds.slice(-1)[0]);
+            const index = 1 + allMessagesIds.indexOf(currentIds.slice(-1)[0]);
             this.setState({
-                currentIds:[...this.state.currentIds,...slice(allMessagesIds,lastId,lastId+30)]
+                currentIds:[...currentIds, ...allMessagesIds.slice(index, index+30)]
             });
         }
     }
-    regElem(message){
-        this.registeredElements[message.id]=message;
+    regElem(element){
+        this.registeredElements[element.id] = element;
     }
-    unregElem(message){
-        delete this.registeredElements[message.id];
+    unregElem(element){
+        delete this.registeredElements[element.id];
     }
     findFirstVisibleId(){
         return +findKey(this.registeredElements,({elem})=>
@@ -144,8 +138,7 @@ class MessageListContainer extends Component {
     }
     render(){
         const {
-            messages, allMessagesIds,
-            messagesIsFetching, users
+            messages, allMessagesIds, messagesIsFetching, users
         } = this.props;
         return (
             <MessageList
@@ -172,10 +165,9 @@ const mapStateToProps = (state,props) =>{
 
     const messages = state.entities.messages.items;
     return {
-        allMessagesIds:messagesIds,
+        allMessagesIds: messagesIds,
         // lastVisibleMessage,
         users: state.entities.users.items,
-        // messages: messagesIds.map(id => messages[id]),
         messages: messages,
         messagesIsFetching: state.entities.messages.isFetching,
         scrollPosition,
