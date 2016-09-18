@@ -11,6 +11,7 @@ import shallowEqual from 'shallowequal';
 import slice from 'lodash/slice';
 import uniq from 'lodash/uniq';
 import findKey from 'lodash/findKey';
+
 class MessageListContainer extends Component {
     constructor(props){
         super(props);
@@ -45,58 +46,45 @@ class MessageListContainer extends Component {
         }
         if(prevId !== nextId) {
             this.handleSwitchChannel(prevId,nextId);
-            this.props.switchChannel(nextId);
         }
-        // if(!shallowEqual(prevMsgIds,nextMsgIds)/* && prevId !== nextId */){
-        //     // console.log('>>>>',nextProps.allMessagesIds.slice(0,90));
-        //     if(this.messageList.isScrollOnBottom()){
-        //         this.setState({
-        //             currentIds:nextProps.allMessagesIds.slice(0,90)
-        //         });
-        //     }
-        //
-        //     console.log('айдишники поменялсь , это может значить подгрузку новых сообщений');
-        // }
-
     }
     handleSwitchChannel(prevId,nextId){
-        //можно объеденить? saveScrollPosition и saveLastVisibleMessage
         this.props.saveScrollPosition(prevId, this.messageList.scrollView.getScrollTop(), this.findFirstVisibleId());
-
         // this.props.saveLastVisibleMessage(prevId);
-        this.props.fetchMessages(nextId).then(()=>{
+        this.props.switchChannel(nextId);
+
+        this.props.fetchMessages(nextId)
+        .then(()=>{
             this.props.unsetChannelHasNewMessages(nextId);
             const { scrollPosition, firstVisibleId, allMessagesIds } = this.props;
 
             if(scrollPosition && firstVisibleId){
                 const index = allMessagesIds.indexOf(firstVisibleId);
-                // console.log('вырезка', allMessagesIds.slice(index,index+45));
                 this.setState({
-                    currentIds: allMessagesIds.slice(index,index+30)
+                    currentIds: allMessagesIds.slice(index, index+30)
                 });
                 this.messageList.scrollView.scrollTop(60);
             }else{
-                this.setState({
-                    currentIds: allMessagesIds
-                });
+                this.setState({ currentIds: allMessagesIds });
                 this.messageList.scrollView.scrollToBottom();
-
             }
 
         });
+
+
     }
     componentDidMount(){
         this.props.onMount(this.messageList);
     }
-    checkBefore(){
+    checkMoreBefore(){
         // console.log('checkBefore!!');
         const lastId = this.state.currentIds[0];
         const index = this.props.allMessagesIds.indexOf(lastId);
         return this.props.allMessagesIds.slice(0,index).length;
     }
-    loadHistory(oldScrollHeight){
+    loadMoreBefore(oldScrollHeight){
         // console.log('oldScrollHeight',oldScrollHeight);
-        if(this.checkBefore()){
+        if(this.checkMoreBefore()){
             console.warn('есть еще вверху уже подгруженые');
             const firstId = this.state.currentIds[0];
             const index = this.props.allMessagesIds.indexOf(firstId)-1;
@@ -113,11 +101,8 @@ class MessageListContainer extends Component {
             this.props.fetchMessages(this.props.params.channel_id,true).then(()=>{
                 const firstId = this.state.currentIds[0];
                 const index = this.props.allMessagesIds.indexOf(firstId)-1;
-                // const oldScrollHeight = this.messageList.scrollView.getScrollHeight();
-                // let start = index-30 < 0 ? 0 : index-30;
                 const sliced = this.props.allMessagesIds.slice(0,index);
                 this.setState({
-                    // currentIds:[...sliced,...this.state.currentIds]
                     currentIds:[...sliced,...this.state.currentIds]
                 },()=>{
                     const newScrollHeight = this.messageList.scrollView.getScrollHeight();
@@ -127,39 +112,35 @@ class MessageListContainer extends Component {
 
         }
     }
-    checkAfter(){
-        console.log('checkAfter!!');
+    checkMoreAfter(){
         const lastId = this.state.currentIds.slice(-1)[0];
         const index = this.props.allMessagesIds.indexOf(lastId);
         return !!this.props.allMessagesIds[index+1];
-
     }
-    onScrollBottom(){
+    loadMoreAfter(){
         const view = this.messageList.scrollView;
         const { allMessagesIds, messagesIds }= this.props;
-        if(allMessagesIds.length > this.state.currentIds.length && this.checkAfter()) {
+        if(allMessagesIds.length > this.state.currentIds.length && this.checkMoreAfter()) {
             console.log('есть еще!');
-            console.log('allMessagesIds',allMessagesIds.length);
             let lastId = 1+this.props.allMessagesIds.indexOf(this.state.currentIds.slice(-1)[0]);
             this.setState({
                 currentIds:[...this.state.currentIds,...slice(allMessagesIds,lastId,lastId+30)]
             });
         }
     }
-    regELem(message){
+    regElem(message){
         this.registeredElements[message.id]=message;
     }
-    unregELem(message){
+    unregElem(message){
         delete this.registeredElements[message.id];
     }
     findFirstVisibleId(){
         return +findKey(this.registeredElements,({elem})=>
-            elem.offsetTop+elem.offsetHeight > this.messageList.scrollView.getScrollTop()
+            elem.offsetTop + elem.offsetHeight > this.messageList.scrollView.getScrollTop()
             // elem.getBoundingClientRect().bottom > 0
         );
     }
     onScrollStop(){
-        // console.log('Первое видимое', this.findFirstVisibleId());
     }
     render(){
         const {
@@ -169,33 +150,29 @@ class MessageListContainer extends Component {
         return (
             <MessageList
               onScrollStop={this.onScrollStop}
-              onMountMessage={this.regELem}
-              onUnmountMessage={this.unregELem}
+              onMountMessage={this.regElem}
+              onUnmountMessage={this.unregElem}
               messagesIds={this.state.currentIds}
-              onScrollTop={this.loadHistory}
-              onScrollBottom={this.onScrollBottom}
+              onScrollTop={this.loadMoreBefore}
+              onScrollBottom={this.loadMoreAfter}
               users={users}
               ref={c=>this.messageList=c}
               messages={messages}>
-                <LoadMoreBlock
-                  isLoading={messagesIsFetching}/>
+                <LoadMoreBlock isLoading={messagesIsFetching}/>
             </MessageList>
         );
     }
 }
 const mapStateToProps = (state,props) =>{
-
     const channel  = state.pagination.idsByChannel[props.params.channel_id];
     let {
         ids:messagesIds = [], scrollPosition = null , lastVisibleMessage={},
         firstVisibleId
     } = channel||{};
 
-    // let reducedList = messagesIds.lenth>90? reduceList(messagesIds,90):
     const messages = state.entities.messages.items;
     return {
         allMessagesIds:messagesIds,
-        // messagesIds:reduceList(messagesIds,90),
         // lastVisibleMessage,
         users: state.entities.users.items,
         // messages: messagesIds.map(id => messages[id]),

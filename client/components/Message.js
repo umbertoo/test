@@ -31,7 +31,8 @@ class Message extends Component {
         this.props.onUnmount({id:this.props.id, elem:this.refs.message});
     }
     shouldComponentUpdate(nextProps, nextState){
-        return !shallowEqual(this.props.text, nextProps.text);
+        return !shallowEqual(this.props.text, nextProps.text) ||
+        !shallowEqual(this.props.minimaized, nextProps.minimaized);
     }
     rawMarkup() {
         const markup = this.emoji.replace_colons(this.props.text);
