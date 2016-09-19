@@ -93,20 +93,15 @@ class MessageList extends Component {
     return list;
 }
 render(){
-    // console.log('MessageList render');
-    const {messagesIsFetching}= this.props;
+    const { messagesIsFetching }= this.props;
     return(
         <Scrollbars
           className="message-list"
           onScrollStop={this.onScrollStop}
           renderThumbVertical={props => <div {...props} className="message-list__thumb-vertical"/>}
           ref={c=>this.scrollView=c}>
-            {
-                this.props.children
-            }
+            {this.props.children}
             {this.props.users && this.renderMessages()}
-            {/* <EmojiPicker onSelect={(name)=>console.log(name)}/> */}
-
             <div className="message-list__footer"></div>
         </Scrollbars>
 

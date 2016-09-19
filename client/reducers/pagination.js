@@ -26,6 +26,7 @@ export const pagination = (state = initialState, action) => {
 };
 const initState = {
     ids:[],
+    slice:[],
     pageCount:0,
     scrollPosition:null,
     newMessages:false
@@ -52,6 +53,12 @@ const idsByChannel = (state = initState, action) => {
         //------------------------------------------------------------------
         case types.SAVE_LAST_VISIBLE_MESSAGE:
         return {...state, lastVisibleMessage: action.lastVisibleMessage};
+        //------------------------------------------------------------------
+
+
+        case 'UPDATE_SLICE':
+        console.log('UPDATE_SLICE',action.ids);
+        return {...state, slice: action.ids};
         //------------------------------------------------------------------
 
 
