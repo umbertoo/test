@@ -7,8 +7,6 @@ import { withRouter } from 'react-router';
 import { socket } from '../actions/common/socketEvents';
 import LoadMoreBlock from '../components/LoadMoreBlock';
 import shallowEqual from 'shallowequal';
-import slice from 'lodash/slice';
-import uniq from 'lodash/uniq';
 import findKey from 'lodash/findKey';
 
 class MessageListContainer extends Component {
