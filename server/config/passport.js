@@ -13,7 +13,8 @@ const opts = {
 };
 
 export default function(passport){
-    passport.use('jwt',new JwtStrategy(opts, function(jwt_payload, done) {
+
+    passport.use('jwt',new JwtStrategy(opts, (jwt_payload, done)=> {
         User.findOne({where:{ id: jwt_payload.user.id }}).then(user=>{
             if (user) {
                 done(null, jwt_payload.user);
@@ -48,8 +49,8 @@ export default function(passport){
         });
 
     }));
-///login-----------------------------------------------------
-passport.use('login',new LocalStrategy({usernameField: 'email'},
+    ///login-----------------------------------------------------
+    passport.use('login',new LocalStrategy({usernameField: 'email'},
     (email, password, done)=>{
 
         User.findOne({where:{ email: email }}).then(user=>{

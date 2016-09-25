@@ -1,4 +1,4 @@
-import types from '../actions/common/types';
+import type from '../actions/common/types';
 import merge from 'lodash/merge';
 
 const initialState = {
@@ -11,14 +11,14 @@ const initialState = {
 export const messages = (state = initialState, action) => {
 
     switch (action.type) {
-        case types.FETCH_MESSAGES_REQUEST:
-        case types.FETCH_MESSAGES_FAILURE:
+        case type.FETCH_MESSAGES_REQUEST:
+        case type.FETCH_MESSAGES_FAILURE:
         return {...state,
             isFetching:action.isFetching,
             error:action.error
         };
 
-        case types.FETCH_MESSAGES_SUCCESS:
+        case type.FETCH_MESSAGES_SUCCESS:
         return {...state,
             items:merge({},state.items,action.payload.entities.messages),
             isFetching:action.isFetching,
@@ -26,18 +26,21 @@ export const messages = (state = initialState, action) => {
         };
 
         //-------------------------------------------
-        case types.CREATE_MESSAGE_REQUEST:
+        case type.CREATE_MESSAGE_REQUEST:
         return {...state,
             isCreating:action.isCreating
         };
 
-        case types.CREATE_MESSAGE_SUCCESS:
+        case type.CREATE_MESSAGE_SUCCESS:
         return {...state,
-            items:{...state.items, [action.message.id]:action.message},
             isCreating:action.isCreating
         };
+        case type.RECEIVE_MESSAGE:
+        return {...state,
+            items:{...state.items, [action.message.id]:action.message}
+        };
 
-        case types.CREATE_MESSAGE_FAILURE:
+        case type.CREATE_MESSAGE_FAILURE:
         return {...state,
             isCreating:action.isCreating,
             error:action.error

@@ -6,11 +6,11 @@ import '../static/scss/message-block.scss';
 import jdenticon from 'jdenticon';
 import Identicon from 'identicon.js';
 import emojify from 'emojify.js';
-// import EmojiConvertor from 'js-emoji-fork';
 import {EmojiConvertor} from './EmojiPicker/emoji.min';
 import sheet from './EmojiPicker/images/sheet_apple_32.png';
 // import sheet from './EmojiPicker/images/sheet_twitter_32.png';
 import shallowEqual from 'shallowequal';
+
 class Message extends Component {
     constructor(props){
         super(props);

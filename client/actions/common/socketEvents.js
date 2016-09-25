@@ -2,23 +2,33 @@
 // import * as actions from '../index';
 import {
     updateUsers, updateUsersOnline,
-    loadMessages, createMessageSuccess , setChannelHasNewMessages
+    loadMessages, receiveMessage , setChannelHasNewMessages,
+    addMessageToSlice
 } from '../index';
 import io from 'socket.io-client';
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "../common/schemas";
 
-export const socket = io.connect('http://localhost:8000/',{
+export const socket = io.connect('http://localhost:3000/',{
     'query': 'token=' + localStorage.getItem('token')
 });
 
 const socketEvents =  ({dispatch, getState}) => {
     socket.on('message', message=>{
         //message from other users
-        dispatch(createMessageSuccess(message));
+        dispatch(receiveMessage(message));
+
+        const {
+            ids=[], pageCount=0, slice=[]
+        } = getState().pagination.idsByChannel[message.channelId]||{};
+        // const messageId = ids.slice(-1)[0];
+        if(ids.slice(-2)[0] === slice.slice(-1)[0]){
+            dispatch(addMessageToSlice(message));
+        }
+
         //need id of active channel
         if(getState().ui.selectedChannel !== message.channelId){
-            setChannelHasNewMessages(message.channelId);
+            dispatch(setChannelHasNewMessages(message.channelId));
         }
 
 

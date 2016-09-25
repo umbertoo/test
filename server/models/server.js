@@ -20,7 +20,7 @@ Server.belongsToMany(User, {through: 'server_members'});
 
 
 
-Server.hasMany(Message, {as: 'Messages',foreignKey: 'serverId'});
-Message.belongsTo(Server, {foreignKey: 'serverId'});
+Server.hasMany(Message, {as: 'Messages',foreignKey: {name:'serverId', allowNull:false}});
+Message.belongsTo(Server, {foreignKey: {name:'serverId', allowNull:false}});
 
 export default Server;

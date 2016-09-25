@@ -1,4 +1,4 @@
-import types from '../actions/common/types';
+import type from '../actions/common/types';
 //
 import assign from 'lodash/assign';
 import omit from 'lodash/omit';
@@ -34,24 +34,24 @@ const initState = {
 
 const idsByChannel = (state = initState, action) => {
     switch (action.type) {
-        case types.FETCH_MESSAGES_SUCCESS:
+        case type.FETCH_MESSAGES_SUCCESS:
         return {...state,
             ids: union(action.payload.result,state.ids ),
             pageCount:state.pageCount+1
         };
         //------------------------------------------------------------------
-        case types.CREATE_MESSAGE_SUCCESS:
+        case 'RECEIVE_MESSAGE':
         return {...state,
             ids: [...state.ids, action.message.id],
         };
         //------------------------------------------------------------------
-        case types.SAVE_SCROLL_POSITION:
+        case type.SAVE_SCROLL_POSITION:
         return {...state,
             scrollPosition: action.scrollPosition,
             firstVisibleId:action.firstVisibleId
         };
         //------------------------------------------------------------------
-        case types.SAVE_LAST_VISIBLE_MESSAGE:
+        case type.SAVE_LAST_VISIBLE_MESSAGE:
         return {...state, lastVisibleMessage: action.lastVisibleMessage};
         //------------------------------------------------------------------
 

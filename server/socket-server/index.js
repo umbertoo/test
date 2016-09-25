@@ -10,51 +10,60 @@ import User from '../models/user';
 
 let exclude = ['password','resetPasswordExpires','resetPasswordToken'];
 
-export default function (server) {
-    const io = IO(server);
+// export default function (server) {
+ // let io;
+export default function createSocketServer(server){
 
-    let usersOnline={};
+    if(server) {
+         const io = IO(server);
 
-    io.use(socketioJwt.authorize({
-        secret: config.secret,
-        handshake: true
-    }));
-    io.on('connection', socket => {
-        const {user} = socket.decoded_token;
-        socket.user = {...user};
-        delete socket.user.password;
+        let usersOnline={};
 
-        usersOnline[socket.user.id] = socket.user;
+        io.use(socketioJwt.authorize({
+            secret: config.secret,
+            handshake: true
+        }));
+        io.on('connection', socket => {
+            const {user} = socket.decoded_token;
+            socket.user = {...user};
+            delete socket.user.password;
 
-        io.sockets.emit('updateUsersOnline',usersOnline);
+            usersOnline[socket.user.id] = socket.user;
 
-        socket.on('message', (message,cb) => {
-            console.log('message');
-            Message.create({
-                ...message,
-                userId:socket.user.id
-            }).then(message => {
-                //send message to other sockets
-                socket.broadcast.emit('message',message);
-                //send message to this socket
-                cb(null,message);
-            }).catch(err=> cb(err));
+            io.sockets.emit('updateUsersOnline',usersOnline);
 
-        });
-
-        socket.on('disconnect', () => {
-            delete usersOnline[socket.user.id];
-            socket.broadcast.emit('updateUsersOnline',usersOnline);
-            // socket.broadcast.emit('message',socket.user.name+' was disconnect');
-        });
-        socket.on('switchServer', (serverId) => {
-            let oldServer = socket.channel;
-            socket.server = newchannel;
-            socket.leave(oldchannel.id);
-            socket.join(socket.channel.id);
-
+            // socket.on('message', (message,cb) => {
+            //     console.log('message');
+            //     Message.create({
+            //         ...message,
+            //         userId:socket.user.id
+            //     }).then(message => {
+            //         //send message to other sockets
+            //         // socket.broadcast.emit('message',message);
+            //         io.sockets.emit('message',message);
+            //         //send message to this socket
+            //         cb(null,message);
+            //     }).catch(err=> cb(err));
             //
-        });
-    });
+            // });
 
+            socket.on('disconnect', () => {
+                delete usersOnline[socket.user.id];
+                socket.broadcast.emit('updateUsersOnline',usersOnline);
+                // socket.broadcast.emit('message',socket.user.name+' was disconnect');
+            });
+            socket.on('switchServer', (serverId) => {
+                let oldServer = socket.channel;
+                socket.server = newchannel;
+                socket.leave(oldchannel.id);
+                socket.join(socket.channel.id);
+
+                //
+            });
+        });
+        return io;
+    }else {
+        console.error('socket-sever error: server has not been passed');
+    }
 }
+// }

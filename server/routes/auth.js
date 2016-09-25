@@ -90,7 +90,7 @@ authRouter.post('/signup', (req,res)=>{
 
 	});
 
-	authRouter.post('/change_password',checkJWTResetPassword,(req,res)=>{
+	authRouter.post('/change_password', checkJWTResetPassword,(req,res)=>{
 		res.json({YES:'YES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', ss: req.query});
 
 	});

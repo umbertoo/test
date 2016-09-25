@@ -15,20 +15,20 @@ const Channel = db.define('channel', {
 });
 
 
-Channel.hasMany(Message, {as: 'Messages',foreignKey: 'channelId'});
-Message.belongsTo(Channel,{foreignKey: 'channelId'});
+Channel.hasMany(Message, {as: 'Messages',foreignKey: {name:'channelId', allowNull:false}});
+Message.belongsTo(Channel,{foreignKey: {name:'channelId', allowNull:false}});
 
-Server.hasMany(Channel, {as: 'Channels',foreignKey: 'serverId'});
-Channel.belongsTo(Server, {foreignKey: 'serverId'});
+Server.hasMany(Channel, {as: 'Channels',foreignKey: {name:'serverId', allowNull:false}});
+Channel.belongsTo(Server, {foreignKey: {name:'serverId', allowNull:false}});
 // Message will have channelId
 // Channel will get accessors getMessages and setMessages;
-User.hasMany(Message, {as: 'Messages',foreignKey: 'userId'});
-Message.belongsTo(User, {foreignKey: 'userId'});
+User.hasMany(Message, {as: 'Messages',foreignKey: {name:'userId', allowNull:false}});
+Message.belongsTo(User, {foreignKey: {name:'userId', allowNull:false}});
 // Message will have userId
 // User will get accessors getMessages and setMessages;
 Channel.sync(
     // {force: true}
-).then( ()=> {  
+).then( ()=> {
     // console.log('я тут');
     //   Server.create({
     //     name: 'server1',
@@ -38,17 +38,17 @@ Channel.sync(
     //     server.setUsers([1,2,3]);
     //
     //     Channel.create({
-    //       name: 'channel3',
-    //       description: 'third channel',
+    //       name: 'channel1',
+    //       description: 'first channel',
     //       serverId:1
     //   });
     //     Channel.create({
     //       name: 'channel2',
-    //       description: 'third channel',
+    //       description: 'second channel',
     //       serverId:1
     //   });
     //     Channel.create({
-    //       name: 'channel1',
+    //       name: 'channel3',
     //       description: 'third channel',
     //       serverId:1
     //   });

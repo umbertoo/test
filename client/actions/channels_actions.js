@@ -5,8 +5,8 @@ import * as schemas from "./common/schemas";
 
 
 
-export const switchChannel = (id) =>({
-    type:types.SWITCH_CHANNEL,
+export const selectChannel = (id) =>({
+    type:types.SELECT_CHANNEL,
     id
 });
 
@@ -76,10 +76,15 @@ export const setChannelHasNewMessages = (channelId) =>({
     channelId
 });
 
-export const unsetChannelHasNewMessages = (channelId) =>({
-    type:types.UNSET_CHANNEL_HAS_NEW_MESSAGES,
-    channelId
-});
+export const unsetChannelHasNewMessages = (channelId) =>(dispatch, getState)=>{
+    const { channelsWithNewMessages } = getState().entities.channels;
+    if (channelsWithNewMessages.indexOf(channelId)>-1){
+        dispatch({
+            type:types.UNSET_CHANNEL_HAS_NEW_MESSAGES,
+            channelId
+        });
+    }
+};
 
 
 
@@ -90,16 +95,16 @@ export const unsetChannelHasNewMessages = (channelId) =>({
 
 
 // export function logout(router) {
-    //   return async (dispatch) => {
-        //     try {
-        //       const {data: {success, message}} = await axios.get('/logout');
-        //
-        //       (success)
-        //         ? dispatch({ type: LOGOUT_SUCCESS })
-        //         : dispatch({ type: LOGOUT_FAILURE, message });
-        //
-        //      } catch (e) {
-        //          dispatch({ type: LOGOUT_FAILURE, e.data.message });
-        //      }
-        //    };
-        // }
+//   return async (dispatch) => {
+//     try {
+//       const {data: {success, message}} = await axios.get('/logout');
+//
+//       (success)
+//         ? dispatch({ type: LOGOUT_SUCCESS })
+//         : dispatch({ type: LOGOUT_FAILURE, message });
+//
+//      } catch (e) {
+//          dispatch({ type: LOGOUT_FAILURE, e.data.message });
+//      }
+//    };
+// }

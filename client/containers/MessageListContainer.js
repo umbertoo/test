@@ -7,6 +7,8 @@ import { withRouter } from 'react-router';
 import { socket } from '../actions/common/socketEvents';
 import LoadMoreBlock from '../components/LoadMoreBlock';
 import shallowEqual from 'shallowequal';
+import slice from 'lodash/slice';
+import uniq from 'lodash/uniq';
 import findKey from 'lodash/findKey';
 
 class MessageListContainer extends Component {
@@ -19,7 +21,7 @@ class MessageListContainer extends Component {
     componentWillMount(){
         this.props.fetchMessages(this.props.params.channel_id)
         .then(()=> this.messageList.scrollView.scrollToBottom() );
-        this.props.switchChannel(this.props.params.channel_id);
+        this.props.selectChannel(this.props.params.channel_id);
     }
     componentDidMount(){
         this.props.onMount(this.messageList);
@@ -34,7 +36,7 @@ class MessageListContainer extends Component {
 
         const {allMessagesIds:prevMsgIds} = this.props;
         const {allMessagesIds:nextMsgIds} = nextProps;
-
+ 
         const nextLastId = nextMsgIds.slice(-1)[0];
         const prevLastId = prevMsgIds.slice(-1)[0];
 
@@ -57,7 +59,7 @@ class MessageListContainer extends Component {
         };
         this.props.saveScrollPosition(channelInfo);
         // this.props.saveLastVisibleMessage(prevId);
-        this.props.switchChannel(nextId);
+        this.props.selectChannel(nextId);
 
         this.props.fetchMessages(nextId).then(()=>{
 
@@ -72,24 +74,15 @@ class MessageListContainer extends Component {
             }
         });
     }
-    checkMoreBefore(){
-        const lastId = this.props.slice[0];
-        const index = this.props.allMessagesIds.indexOf(lastId);
-        return this.props.allMessagesIds.slice(0,index).length;
-    }
+
     loadMoreBefore(oldScrollHeight){
         const view = this.messageList.scrollView;
-        this.props.fetchMessages(this.props.params.channel_id, true, this.checkMoreBefore())
+        this.props.loadMoreBefore(this.props.params.channel_id)
         .then(()=> view.scrollTop(view.getScrollHeight() - oldScrollHeight));
+    }
 
-    }
-    checkMoreAfter(){
-        const lastId = this.props.slice.slice(-1)[0];
-        const index = this.props.allMessagesIds.indexOf(lastId);
-        return !!this.props.allMessagesIds[index+1];
-    }
     loadMoreAfter(){
-        this.props.fetchMessages(this.props.params.channel_id, true, null, this.checkMoreAfter());
+        this.props.loadMoreAfter(this.props.params.channel_id);
     }
     regElem(element){
         this.registeredElements[element.id] = element;

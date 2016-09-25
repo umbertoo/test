@@ -23,23 +23,24 @@ class Chat extends Component {
         };
     }
     componentWillMount(){
-        socket.on('message', (message)=>{
-            if(message.channelId == this.props.params.channel_id){
-                this.messageList.scrollView.scrollToBottom();
-            }else{
-                this.props.setChannelHasNewMessages(message.channelId);
-            }
-
-        });
+        // socket.on('message', (message)=>{
+        //     if(message.channelId == this.props.params.channel_id){
+        //         this.messageList.scrollView.scrollToBottom();
+        //     }else{
+        //         this.props.setChannelHasNewMessages(message.channelId);
+        //     }
+        //
+        // });
         this.props.fetchChannels(this.props.params.server_id);
-        this.props.fetchMessages(this.props.params.channel_id)
-        .then(()=> this.messageList.scrollView.scrollToBottom() );
+        // this.props.fetchMessages(this.props.params.channel_id)
+        // .then(()=> this.messageList.scrollView.scrollToBottom() );
     }
 
     sendMessage(text){
         if(text){
             const {channel_id:channelId} = this.props.params;
-            this.props.createMessage({text,channelId}).then(msg => this.messageList.scrollView.scrollToBottom() );
+            this.props.createMessage({text,channelId})
+            .then(msg => this.messageList.scrollView.scrollToBottom() );
         }
     }
     handleChangeHeightMessageForm(height){
@@ -52,9 +53,6 @@ class Chat extends Component {
         this.setState({
             message_input_height:this.refs.messageForm.offsetHeight
         },callback);
-
-
-
     }
     render(){
         const { params:{channel_id} } = this.props,

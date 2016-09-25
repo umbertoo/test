@@ -21,7 +21,6 @@ const compiler = webpack(webpackConfig);
 
 const app = express();
 
-// const io = IO(server);
 
 app.disable('x-powered-by');
 app.use(require("webpack-dev-middleware")(compiler, {
@@ -52,11 +51,11 @@ app.get('/*', (req, res)=> {
     res.sendFile('views/index.html', {root: './server/' });
 });
 const server = Server(app);
-server.listen(8000,()=>{
-    console.log('start Server at localhost:3000');
+server.listen(3000,()=>{
+    console.log('start Server at localhost:8080');
 });
 
-socketServer(server);
+export const io = socketServer(server);
 
 
 // let clients2= {};

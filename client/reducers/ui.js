@@ -7,7 +7,7 @@ const initialState = {
 export const ui = (state = initialState, action) => {
     switch (action.type) {
 
-        case types.SWITCH_CHANNEL:
+        case types.SELECT_CHANNEL:
         return { selectedChannel: action.id };
 
         default: return state;

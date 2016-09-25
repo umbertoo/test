@@ -9,7 +9,7 @@ class ChatHeaderContainer extends Component {
         const {channels, params:{channel_id}} = this.props;
         return (
             <div className="chat-header">
-                {channels[channel_id] &&
+                {channels[channel_id] && 
                     <h1 className="chat-header__title">{channels[channel_id].name}</h1>
                 }
             </div>

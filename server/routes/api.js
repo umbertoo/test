@@ -1,26 +1,37 @@
 import {Router} from 'express';
-
+import passport from 'passport';
 import Message from '../models/message';
+import Server from '../models/server';
 import User from '../models/user';
 import Channel from '../models/channel';
-import Server from '../models/server';
+import {io} from '../app';
 
-let exclude = ['password','resetPasswordExpires','resetPasswordToken'];
+const exclude = ['password','resetPasswordExpires','resetPasswordToken'];
 const router = Router();
 
+const checkJWT = passport.authenticate('jwt', { session: false});
+
 // create message
-router.post('/messages',(req,res)=>{
+router.post('/messages',(req,res, next)=>{
+
     Message.create({
         text: req.body.text,
         userId: req.body.userId,
         channelId:req.body.channelId
     })
-    .then(message => res.json(message) )
-    .catch(err => res.status(500).json(err) );
+    .then(message => {
+        io.sockets.emit('message',message);
+        res.json(message);
+    })
+    .catch(err => {
+      // console.log(err)
+      res.status(500).json(err);
+      next(err)
+    } );
 });
 
 //get count messages since date
-router.get('/channels/:id/messages/count/',(req,res)=>{
+router.get('/channels/:id/messages/count/', (req,res)=>{
     const {date, id:messageId} = req.query;
     const {id} = req.params;
     Message.findAndCountAll({where:{
@@ -47,20 +58,36 @@ router.get('/channels/:id/messages/count/',(req,res)=>{
 //
 //     },err=>res.status(500).json(err));
 // });
+
+router.get('/user',checkJWT,(req,res)=>{
+    res.json({ok:'ok!!!'})
+
+});
 // get messages by channel
-router.get('/channels/:id/messages',(req,res)=>{
+
+router.get('/channels/:id/messages',checkJWT,(req,res)=>{
+    // console.log('io',io);
+
     const {offset, limit} = req.query;
     const {id} = req.params;
 
-    Channel.findById(id)
-    .then(channel => channel.getMessages({
+    // Channel.findById(id)
+    // .then(channel => channel.getMessages({
+    //     offset: parseInt(offset) || null,
+    //     limit: parseInt(limit) || null,
+    //     order: [['createdAt', 'DESC']],
+    //     include:
+    //     [{model:Channel,},{model:User, attributes:{ exclude } }]
+    // }))
+    Message.findAndCountAll({
+        where:{channelId:id},
         offset: parseInt(offset) || null,
         limit: parseInt(limit) || null,
         order: [['createdAt', 'DESC']],
         include:
-        [{model:Channel,},{model:User, attributes:{ exclude } }]
-    }))
-    .then(messages => res.json(messages.reverse()))
+        [{model:Channel},{model:User, attributes:{ exclude } }]
+    })
+    .then(result => res.json(result.rows.reverse()))
     .catch(err => console.log(err));
 });
 
