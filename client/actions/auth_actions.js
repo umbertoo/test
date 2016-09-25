@@ -3,7 +3,6 @@ import { normalize, arrayOf } from "normalizr";
 import { schemas } from "./common/schemas";
 import API from "./common/API/API";
 import { checkStatus } from "./common/check_status_response";
-// import 'whatwg-fetch';
 
 //-----------Login--------------------------------------
 export const requestLogin = () =>( {
@@ -12,7 +11,6 @@ export const requestLogin = () =>( {
     isAuthenticated: false,
     logtest:true,
     errors:"",
-    // creds
 });
 
 export const receiveLogin = payload =>( {
@@ -22,32 +20,29 @@ export const receiveLogin = payload =>( {
     token: payload.token
 });
 
-export const loginError = (message,getState) =>( {
+export const loginError =  message  =>( {
     type: types.LOGIN_FAILURE,
     isFetching: false,
     isAuthenticated: false,
-    message,
-    getState:getState
+    message
 });
 
 
-export const loginUser = creds => (dispatch ,getState) =>{
+export const loginUser = creds => async (dispatch) =>{
+  try {
     dispatch(requestLogin());
 
-    return API.auth.login(creds)
-    .then(res =>  {
-        localStorage.setItem('token', res.token);
-        dispatch(receiveLogin(res));
-        return res;
-    })
-    .catch(err => {
-        err.response.json().then(body=>{
-            // console.log('loginUser', body, err.response.status);
-            dispatch(loginError(body,getState));
-        });
+    const res = await API.auth.login(creds);
+    localStorage.setItem('token', res.token);
+    dispatch(receiveLogin(res));
+    return res;
 
+  } catch (err) {
+    err.response.json().then(body=>{
+        // console.log('loginUser', body, err.response.status);
+        dispatch(loginError(body));
     });
-
+  }
 };
 //-----------Logout--------------------------------------
 export const requestLogout = () =>( {
@@ -92,21 +87,49 @@ export const SignupError = message =>( {
     message
 });
 
-export const signupUser = creds => dispatch =>{
+export const signupUser = creds => async (dispatch) =>{
+  try {
     dispatch(requestSignup());
 
-    return API.auth.signup(creds)
-    .then(res =>  {
-        localStorage.setItem('token', res.token);
-        dispatch(receiveSignup(res));
-        return res;
-    })
-    .catch(err => {
-        err.response.json().then(body=>{
-            console.log('loginUser', body, err.response.status);
-            dispatch(SignupError(body));
-        });
+    const res = await API.auth.signup(creds)
+    localStorage.setItem('token', res.token);
+    dispatch(receiveSignup(res));
+    return res;
 
+  } catch (err) {
+    err.response.json().then(body=>{
+        console.error('SignupError', body, err.response.status);
+        dispatch(SignupError(body));
     });
-
+  }
 };
+
+
+
+//---------------------current-user-----------------
+
+export const fetchCurrentUserRequest = () =>({
+  type:types.FETCH_CURRENT_USER_REQUEST,
+  isFetching:true
+});
+export const fetchCurrentUserSuccess = (user) =>({
+  type:types.FETCH_CURRENT_USER_SUCCESS,
+  isFetching:false,
+  user
+});
+export const fetchCurrentUserFailure = (error) =>({
+  type:types.FETCH_CURRENT_USER_FAILURE,
+  isFetching:false,
+  error
+});
+
+export const fetchCurrentUser = () => async (dispatch) =>{
+  try {
+    dispatch(fetchCurrentUserRequest());
+    const user = await API.User.get();
+    dispatch(fetchCurrentUserSuccess(user));
+    return user;
+  } catch (e) {
+    dispatch(fetchCurrentUserFailure(e))
+  }
+}

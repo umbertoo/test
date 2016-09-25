@@ -27,10 +27,7 @@ fetch('/signup',{
 }).then(checkStatus).then(res=> res.json());
 
 User.get = () =>
-fetch('/user',{
-    method: 'GET',
-    headers,
-}).then(checkStatus).then(res=> res.json());
+fetch('/api/user',{headers}).then(checkStatus).then(res=> res.json());
 
 Message.create = message =>
 fetch('/api/messages',{
@@ -41,33 +38,19 @@ fetch('/api/messages',{
 
 Message.getByChannel = (channelId, limit, offset)=>
 fetch(`/api/channels/${channelId}/messages?limit=${limit}&offset=${offset}`,
-  {method: 'GET', headers}
+  {headers}
 ).then(checkStatus).then(res=> res.json());
 
 Channel.getByServer = server =>
-fetch('/api/servers/'+server+'/channels')
+fetch('/api/servers/'+server+'/channels', {headers})
 .then(checkStatus).then(res=> res.json());
 
 Message.getCount = (channelId, id, date)=>
-fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`
+fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`,
+  {headers}
 ).then(checkStatus).then(res=> res.json());
 
-//
-// Note.create = body =>
-// fetch('/api/notes/', {
-//     method: 'POST',
-//     headers,
-//     body: JSON.stringify(body)
-// }).then(checkStatus).then(res=> res.json());
-//
-// Note.create = body =>
-// fetch('/api/notes/', {
-//     method: 'POST',
-//     headers,
-//     body: JSON.stringify(body)
-// }).then(checkStatus).then(res=> res.json());
-//
-// Note.update = (id, body) =>
+
 // fetch('/api/notes/' + id, {
 //     method: 'PUT',
 //     headers,

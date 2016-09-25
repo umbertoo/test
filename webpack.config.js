@@ -17,8 +17,7 @@ module.exports = {
         ascii_only: true,
         path: path.join(__dirname, 'public'),
         publicPath: '/',
-        filename: 'bundle.js',
-        library:'my'
+        filename: 'bundle.js'
     },
 
     module: {

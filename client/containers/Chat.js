@@ -23,23 +23,14 @@ class Chat extends Component {
         };
     }
     componentWillMount(){
-        // socket.on('message', (message)=>{
-        //     if(message.channelId == this.props.params.channel_id){
-        //         this.messageList.scrollView.scrollToBottom();
-        //     }else{
-        //         this.props.setChannelHasNewMessages(message.channelId);
-        //     }
-        //
-        // });
         this.props.fetchChannels(this.props.params.server_id);
-        // this.props.fetchMessages(this.props.params.channel_id)
-        // .then(()=> this.messageList.scrollView.scrollToBottom() );
+        this.props.fetchCurrentUser();
     }
-
     sendMessage(text){
         if(text){
-            const {channel_id:channelId} = this.props.params;
-            this.props.createMessage({text,channelId})
+            const {channel_id:channelId, server_id:serverId} = this.props.params;
+            console.log(serverId,'serverId');
+            this.props.createMessage({text,channelId,serverId })
             .then(msg => this.messageList.scrollView.scrollToBottom() );
         }
     }
@@ -52,29 +43,32 @@ class Chat extends Component {
         }
         this.setState({
             message_input_height:this.refs.messageForm.offsetHeight
-        },callback);
+        }, callback);
     }
     render(){
-        const { params:{channel_id} } = this.props,
+        const { params:{channel_id} , user} = this.props,
               { message_input_height } = this.state;
         return (
             <div className="chat">
                 <div className="chat__col-left">
                     <div className="server-menu">
-                        Server
+                        Server <br/>
+                        <span>user.name {user.name}</span> <br/>
+                        <span>user.id {user.id}</span>
                     </div>
-                    <ChannelListContainer
-                      //   onSelectChannel={this.selectChannel}
-            />
+                     <br/><br/><br/>
+                      <ChannelListContainer  />
                 </div>
                 <div className="chat__col-right">
                     <ChatHeaderContainer  />
                     <div className="chat__body">
-                        <div className="chat__body-top" style={{paddingBottom:message_input_height+'px'}}>
+                        <div className="chat__body-top"
+                         style={{paddingBottom:message_input_height+'px'}}>
                             <MessageListContainer onMount={c=>this.messageList=c} />
                         </div>
                         <div ref="messageForm" className="chat__body-bottom">
-                            <MessageForm onChangeHeight={this.handleChangeHeightMessageForm} onSubmit={this.sendMessage} />
+                            <MessageForm onChangeHeight={this.handleChangeHeightMessageForm}
+                             onSubmit={this.sendMessage} />
                         </div>
                         <div className="chat__side-panel">
                             <UserListContainer />
@@ -86,5 +80,7 @@ class Chat extends Component {
         );
     }
 }
-
-export default connect(null,actions)(withRouter(Chat));
+const mapStateToProps = (state)=>({
+  user:state.auth.user
+})
+export default connect(mapStateToProps,actions)(withRouter(Chat));
