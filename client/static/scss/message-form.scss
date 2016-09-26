@@ -4,25 +4,6 @@
     // height: 100%;
     position: relative;
     margin: 0 20px 20px 20px;
-
-    &__input{
-        min-height: 46px;
-        background-color: #424549;
-        border: 2px solid #686a6e;
-        border-radius: 3px;
-        color: #b3b4b6;
-        outline: none;
-        width: 100%;
-        font-size: 15px;
-        padding: 12px 38px 10px 54px;
-        resize: none !important;
-        vertical-align: top;
-    }
-    &__emoji{
-        position: absolute;
-        right: 0;
-        top: 0;
-    }
     &__add-btn{
         color: #686a6e;
         position: absolute;
@@ -35,14 +16,8 @@
         height: 100%;
         border-right: 2px solid #686a6e;
     }
-    &__emoji-btn{
-        background-image: url("//cdn.jsdelivr.net/emojione/assets/png/1f642.png?v=2.2.6");
-        opacity: 0.3;
-        cursor: pointer;
-        width: 45px;
-        height: 45px;
-        background-size: 20px 20px;
-        background-repeat: no-repeat;
-        background-position: center center;
+    .message-textarea__input{
+      padding: 12px 38px 10px 54px;
+
     }
 }

@@ -54,21 +54,22 @@ class Chat extends Component {
                     <div className="server-menu">
                         Server <br/>
                         <span>user.name {user.name}</span> <br/>
-                        <span>user.id {user.id}</span>
+                        <span>user.id {user.id}</span> <br/>
+                        <img src={user.avatar}/>
                     </div>
-                     <br/><br/><br/>
-                      <ChannelListContainer  />
+                    <br/><br/><br/>
+                    <ChannelListContainer  />
                 </div>
                 <div className="chat__col-right">
                     <ChatHeaderContainer  />
                     <div className="chat__body">
                         <div className="chat__body-top"
-                         style={{paddingBottom:message_input_height+'px'}}>
+                          style={{paddingBottom:message_input_height+'px'}}>
                             <MessageListContainer onMount={c=>this.messageList=c} />
                         </div>
                         <div ref="messageForm" className="chat__body-bottom">
                             <MessageForm onChangeHeight={this.handleChangeHeightMessageForm}
-                             onSubmit={this.sendMessage} />
+                              onSubmit={this.sendMessage} />
                         </div>
                         <div className="chat__side-panel">
                             <UserListContainer />
@@ -82,5 +83,5 @@ class Chat extends Component {
 }
 const mapStateToProps = (state)=>({
   user:state.auth.user
-})
+});
 export default connect(mapStateToProps,actions)(withRouter(Chat));

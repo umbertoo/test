@@ -7,6 +7,8 @@ import { socket } from './common/socketEvents';
 
 const LIMIT_PAGINATION = 45;
 
+
+
 export const receiveMessage = (message) =>({
     type:type.RECEIVE_MESSAGE,
     message,
@@ -153,8 +155,34 @@ export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) 
         }
 
         // return payload;
-    } catch (e) {
+    } catch (e) { 
         dispatch(fetchMessagesFailure(e));
         console.error('error',e);
+    }
+};
+
+
+export const editMessageRequest = () =>({
+    type:types.EDIT_MESSAGE_REQUEST,
+    isFetching:true
+});
+export const editMessageSuccess = (payload) =>({
+    type:types.EDIT_MESSAGE_SUCCESS,
+    isFetching:false,
+    payload
+});
+export const editMessageFailure = (error) =>({
+    type:types.EDIT_MESSAGE_FAILURE,
+    isFetching:false,
+    error
+});
+
+export const editMessage = (message) => async dispatch =>{
+    try {
+      dispatch(editMessageRequest());
+      const message = await API.Message.edit(message)
+      dispatch(editMessageSuccess(message))
+    } catch (e) {
+      dispatch(editMessageFailure(e))
     }
 };

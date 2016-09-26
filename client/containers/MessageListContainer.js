@@ -36,7 +36,7 @@ class MessageListContainer extends Component {
 
         const {allMessagesIds:prevMsgIds} = this.props;
         const {allMessagesIds:nextMsgIds} = nextProps;
- 
+
         const nextLastId = nextMsgIds.slice(-1)[0];
         const prevLastId = prevMsgIds.slice(-1)[0];
 
@@ -96,6 +96,9 @@ class MessageListContainer extends Component {
         // elem.getBoundingClientRect().bottom > 0
 
     }
+    onMessageEdit(){
+      console.log('onMessageEdit <<<<<<<');
+    }
     onScrollStop(){
     }
     render(){
@@ -104,6 +107,7 @@ class MessageListContainer extends Component {
         } = this.props;
         return (
             <MessageList
+            onMessageEdit={this.onMessageEdit}
               onScrollStop={this.onScrollStop}
               onMountMessage={this.regElem}
               onUnmountMessage={this.unregElem}

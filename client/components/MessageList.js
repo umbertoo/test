@@ -77,6 +77,7 @@ class MessageList extends Component {
             }
             list.push (
                 <Message
+                onEdit={this.props.onEdit}
                   onMount={this.props.onMountMessage}
                   onUnmount={this.props.onUnmountMessage}
                   id={msg.id}

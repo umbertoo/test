@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import db from '../db';
 import bcrypt from 'bcrypt-nodejs';
-
+import path from 'path';
 const User = db.define('user', {
     name: {
         type: Sequelize.STRING,
@@ -12,6 +12,10 @@ const User = db.define('user', {
         validate:{
             len:{args:[3], msg: "Minimum 3" },
         },
+    },
+    avatar: {
+        type: Sequelize.STRING,
+        defaultValue:'/images/avatars/defavatar.jpg'
     },
     email: {
         type: Sequelize.STRING,
@@ -30,27 +34,27 @@ const User = db.define('user', {
     }
 },{
     instanceMethods: {
-        setPassword: function(password, done) {
-            return bcrypt.genSalt(10, function(err, salt) {
-                return bcrypt.hash(password, salt, function(error, encrypted) {
+        setPassword(password, done) {
+            return bcrypt.genSalt(10, (err, salt) =>  {
+                return bcrypt.hash(password, salt, (error, encrypted)=> {
                     this.password = encrypted;
                     this.salt = salt;
                     return done();
                 });
             });
         },
-        verifyPassword: function(password, done) {
-            return bcrypt.compare(password, this.password, function(err, res) {
+        verifyPassword(password, done) {
+            return bcrypt.compare(password, this.password, (err, res)=> {
                 return done(err, res);
             });
         }
     }
 });
-User.beforeCreate(function(user, options, done) {
-    bcrypt.genSalt(10, function(err, salt) {
+User.beforeCreate((user, options, done) => {
+    bcrypt.genSalt(10, (err, salt) => {
         if (err) return done(err);
         console.log('Salt: ' + 'getting ' + salt);
-        bcrypt.hash(user.password, salt, null, function(err, hash) {
+        bcrypt.hash(user.password, salt, null, (err, hash) => {
             if (err) return done(err);
 
             console.log('Info: ' + 'getting ' + hash);

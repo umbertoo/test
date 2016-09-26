@@ -1,0 +1,4 @@
+id,name,password,email,resetPasswordToken,resetPasswordExpires,createdAt,updatedAt
+1,utro,$2a$10$9UPwjHkpJsCHHPEAykHMkOfoH7gIo/mnj0FyiKG2C5wPv/K6d1WgG,v.kokovin@gmail.com,NULL,NULL,"2016-09-24 22:40:04","2016-09-24 22:40:04"
+2,admin,$2a$10$Lecfe1YNHgKCbk04BQdV6uIfMox9gy3A2wjpOy2iWmJGGGEqZvP7W,test@test.test,NULL,NULL,"2016-09-24 22:40:04","2016-09-24 22:40:04"
+3,superchel,$2a$10$i7Yh62.WZYk71ZjmjWE2Kun5gkBMtPuQjk6Aa2KtpDBxNBNHlOI5a,test2@test.test,NULL,NULL,"2016-09-24 22:40:04","2016-09-24 22:40:04"
