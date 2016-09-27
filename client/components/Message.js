@@ -15,9 +15,6 @@ class Message extends Component {
   constructor(props){
     super(props);
     autoBind(this);
-    this.state = {
-      edit_mode:false
-    };
     this.md = new Remarkable('full', {
       html: true
     });
@@ -34,25 +31,39 @@ class Message extends Component {
   shouldComponentUpdate(nextProps, nextState){
     return !shallowEqual(this.props.text, nextProps.text) ||
     !shallowEqual(this.props.minimaized, nextProps.minimaized)||
+    !shallowEqual(this.props.isEditable, nextProps.isEditable)||
     !shallowEqual(this.state,nextState);
   }
   rawMarkup() {
     const markup = this.emoji.replace_colons(this.props.text);
     return { __html: this.md.render(markup) };
   }
+
+  onClickSave(){
+    this.props.onSaveEdit(this.props.id, this.textarea.getValue());
+  }
+  onClickCancel(){
+    console.log('onClickCancel');
+    this.props.onCancelEdit();
+  }
+  componentDidUpdate(prevProps, prevState){
+    if(this.props.isEditable) {
+      this.textarea.setValue(this.props.text);
+    }
+  }
   onClickEdit(){
     console.log('onClickEdit');
-    this.setState({
-      edit_mode:true
-    });
+    this.props.onEdit(this.props.id);
+  }
+  onClickDelete(){
+    console.log('onClickDelete');
+    this.props.onDelete(this.props.id);
   }
   renderBody(){
     const {user , minimaized} = this.props;
     const date = moment(this.props.createdAt).calendar();
     return  (
         <span>
-            <div onClick={this.onClickEdit}
-              className="message-block__edit-btn">Редактировать</div>
             {!minimaized &&
                 <div className="message-block__head">
                     <span className="message-block__username">
@@ -65,6 +76,10 @@ class Message extends Component {
             }
             <span className="message-block__content"
               dangerouslySetInnerHTML={this.rawMarkup()}/>
+            <div onClick={this.onClickEdit}
+              className="message-block__edit-btn">Редактировать</div>
+            <div onClick={this.onClickDelete}
+              className="message-block__delete-btn">Удалить</div>
         </span>
     );
   }
@@ -72,18 +87,23 @@ class Message extends Component {
     return (
         <div className="message-block__edit-block">
             <MessageTextArea
-              onEnterKey={this.props.onSubmit}
+              ref={c=>this.textarea=c}
+              onEnterKey={this.onClickSave}
               onChangeHeight={this.props.onChangeHeight}/>
-
+            <div className="message-block__save-btn"
+              onClick={this.onClickSave}>
+                Cохранить
+            </div>
+            <div className="message-block__cancel-btn"
+              onClick={this.onClickCancel}>
+                Отменить
+            </div>
         </div>
     );
   }
   render(){
-    const {user , minimaized} = this.props;
-    const {edit_mode} = this.state;
+    const {user, minimaized, isEditable} = this.props;
 
-
-    // console.log('Message render');
     return (
         <div ref="message" className={"message-block "+ (minimaized?'-minimaized':'')}>
             {!minimaized  &&  <div className="message-block__avatar">
@@ -91,10 +111,8 @@ class Message extends Component {
                 avatar
             </div>}
             <div className="message-block__body">
-                {!edit_mode? this.renderBody(): this.renderEditMode()}
+                {!isEditable? this.renderBody(): this.renderEditMode()}
             </div>
-
-
         </div>
     );
   }

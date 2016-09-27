@@ -8,7 +8,7 @@ import { socket } from './common/socketEvents';
 const LIMIT_PAGINATION = 45;
 
 
-
+//_____________________________________________________________________________
 export const receiveMessage = (message) =>({
     type:type.RECEIVE_MESSAGE,
     message,
@@ -31,17 +31,22 @@ export const createMessageFailure = (error) =>({
     error
 });
 
-export const createMessage = (message) => async (dispatch) =>{
+export const createMessage = (message) => async (dispatch, getState) =>{
     try {
         dispatch(createMessageRequest());
         const res = await API.Message.create(message);
-        dispatch(createMessageSuccess(message));
-
+        dispatch(createMessageSuccess(res));
+        const {
+            ids=[]
+        } = getState().pagination.idsByChannel[message.channelId]||{};
+        const lastIndex = ids.length;
+        const slice = ids.slice(lastIndex-LIMIT_PAGINATION,lastIndex);
+        dispatch(updateSlice(slice, message.channelId));
     } catch (e) {
         dispatch(createMessageFailure(e));
     }
 };
-
+//_____________________________________________________________________________
 export const fetchMessagesRequest = () =>({
     type:type.FETCH_MESSAGES_REQUEST,
     isFetching:true,
@@ -120,7 +125,7 @@ export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) 
             ids=[], pageCount=0, slice=[]
         } = getState().pagination.idsByChannel[channelId]||{};
 
-        const offset = ids.length;
+        const offset = pageCount ? ids.length : 0;
         if(nextPage || pageCount===0){
             console.warn('грузим с сервера');
 
@@ -155,34 +160,76 @@ export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) 
         }
 
         // return payload;
-    } catch (e) { 
+    } catch (e) {
         dispatch(fetchMessagesFailure(e));
         console.error('error',e);
     }
 };
 
-
+//_____________________________________________________________________________
 export const editMessageRequest = () =>({
-    type:types.EDIT_MESSAGE_REQUEST,
+    type:type.EDIT_MESSAGE_REQUEST,
     isFetching:true
 });
-export const editMessageSuccess = (payload) =>({
-    type:types.EDIT_MESSAGE_SUCCESS,
+export const editMessageSuccess = (message) =>({
+    type:type.EDIT_MESSAGE_SUCCESS,
     isFetching:false,
-    payload
+    message
 });
 export const editMessageFailure = (error) =>({
-    type:types.EDIT_MESSAGE_FAILURE,
+    type:type.EDIT_MESSAGE_FAILURE,
     isFetching:false,
     error
 });
 
-export const editMessage = (message) => async dispatch =>{
+export const editMessage = (id, text) => async dispatch =>{
     try {
       dispatch(editMessageRequest());
-      const message = await API.Message.edit(message)
-      dispatch(editMessageSuccess(message))
+      const message = await API.Message.edit(id, text);
+      dispatch(editMessageSuccess(message));
+      return message;
     } catch (e) {
-      dispatch(editMessageFailure(e))
+      dispatch(editMessageFailure(e));
+    }
+};
+
+export const updateMessage = (message) =>({
+    type:type.UPDATE_MESSAGE,
+    message
+});
+//_____________________________________________________________________________
+export const setEditableMessage = (id) =>({
+    type:type.SET_EDITABLE_MESSAGE,
+    id
+});
+
+export const unsetEditableMessage = () =>({
+    type:type.UNSET_EDITABLE_MESSAGE,
+    id:null
+});
+
+//_____________________________________________________________________________
+export const deleteMessageRequest = () =>({
+    type:type.DELETE_MESSAGE_REQUEST,
+    isFetching:true
+});
+export const deleteMessageSuccess = (message) =>({
+    type:type.DELETE_MESSAGE_SUCCESS,
+    isFetching:false,
+    message,
+    channelId:message.channelId
+});
+export const deleteMessageFailure = (error) =>({
+    type:type.DELETE_MESSAGE_FAILURE,
+    isFetching:false,
+    error
+});
+export const deleteMessage = (id) => async dispatch =>{
+    try {
+      dispatch(deleteMessageRequest());
+      const message = await API.Message.delete(id);
+      dispatch(deleteMessageSuccess(message));
+    } catch (e) {
+      dispatch(deleteMessageFailure(e));
     }
 };

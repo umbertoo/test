@@ -12,53 +12,64 @@ class MessageTextArea extends Component {
       autoBind(this);
   }
   componentDidMount() {
-      autosize(this.messageInput);
-      this.messageInput.addEventListener('autosize:resized',
+      autosize(this.textarea);
+      this.textarea.addEventListener('autosize:resized',
       this.onInputResize);
   }
   componentWillUnmount(){
-      this.messageInput.removeEventListener('autosize:resized',
+      this.textarea.removeEventListener('autosize:resized',
       this.onInputResize);
   }
   onInputResize(e){
       // console.log('onInputResize',e);
-      this.props.onChangeHeight(e.target.parentNode.offsetHeight);
+      this.props.onChangeHeight && this.props.onChangeHeight(e.target.parentNode.offsetHeight);
+  }
+  setValue(value){
+    this.textarea.value = value;
+    const event = document.createEvent('Event');
+    event.initEvent('autosize:update', true, false);
+    this.textarea.dispatchEvent(event);
+  }
+  getValue(){
+    return this.textarea.value;
   }
   inpuKeyDown(e){
     //on Ctrl+Enter
       if (e.keyCode == 13 && e.ctrlKey) {
+        console.log('e.keyCode == 13 && e.ctrlKey');
           e.preventDefault();
-          this.messageInput.value+='\n';
+          this.textarea.value+='\n';
           const event = document.createEvent('Event');
           event.initEvent('autosize:update', true, false);
-          this.messageInput.dispatchEvent(event);
+          this.textarea.dispatchEvent(event);
       }
         //on Enter
       if (e.keyCode == 13 && !e.ctrlKey) {
-        this.props.onEnterKey(this.messageInput.value);
-        this.messageInput.value='';
+        e.preventDefault();
+        console.log("e.keyCode == 13 && !e.ctrlKey");
+        this.props.onEnterKey(this.textarea.value.trim());
+        this.textarea.value='';
       }
   }
   onSelectEmoji(shortname){
-      const el = this.messageInput;
-      const{selectionStart,selectionEnd,value}=this.messageInput;
+      const el = this.textarea;
+      const{selectionStart,selectionEnd,value}=this.textarea;
 
       const before = value.substring(0, selectionStart);
       const after  = value.substring(selectionEnd, value.length);
       el.value = (before +" "+ shortname+" "+after);
       el.selectionStart = el.selectionEnd = selectionStart + shortname.length+2;
 
-      // this.messageInput.value += ` ${shortname} `;
-      this.messageInput.focus();
+      // this.textarea.value += ` ${shortname} `;
+      this.textarea.focus();
   }
-
-    render(){
+  render(){
         return (
             <div className="message-textarea">
                 <textarea
                   rows={1}
                   onKeyDown={this.inpuKeyDown}
-                  ref={c=>this.messageInput=c}
+                  ref={c=>this.textarea=c}
                   className="message-textarea__input"
                   name="message"
                   type="text"

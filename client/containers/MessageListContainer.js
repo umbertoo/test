@@ -96,18 +96,40 @@ class MessageListContainer extends Component {
         // elem.getBoundingClientRect().bottom > 0
 
     }
-    onMessageEdit(){
-      console.log('onMessageEdit <<<<<<<');
+    onMessageEdit(id){
+      console.log('onMessageEdit <<<<<<<',id);
+      this.props.setEditableMessage(id);
+    }
+    onMessageDelete(id){
+      console.log('onMessageEdit <<<<<<<',id);
+      this.props.deleteMessage(id);
+    }
+    onSaveMessageEdit(id,text){
+      console.log('onSaveMessageEdit <<<<<<<',id,text);
+      if(text){
+        this.props.unsetEditableMessage();
+        this.props.editMessage(id,text);
+      }
+    }
+    onCancelMessageEdit(){
+      this.props.unsetEditableMessage();
+      console.log('onCancelMessageEdit <<<<<<<');
     }
     onScrollStop(){
     }
     render(){
         const {
-            messages, allMessagesIds, messagesIsFetching, users, slice
+            messages, allMessagesIds, messagesIsFetching, users, slice,
+            editableMessage
         } = this.props;
         return (
             <MessageList
-            onMessageEdit={this.onMessageEdit}
+              onSaveMessageEdit={this.onSaveMessageEdit}
+              onCancelMessageEdit={this.onCancelMessageEdit}
+              onMessageEdit={this.onMessageEdit}
+              onMessageDelete={this.onMessageDelete}
+              editableMessage={editableMessage}
+
               onScrollStop={this.onScrollStop}
               onMountMessage={this.regElem}
               onUnmountMessage={this.unregElem}
@@ -132,6 +154,7 @@ const mapStateToProps = (state,props) =>{
 
     const messages = state.entities.messages.items;
     return {
+        editableMessage:state.ui.editableMessage,
         slice,
         allMessagesIds: messagesIds,
         users: state.entities.users.items,

@@ -8,14 +8,13 @@ class MessageForm extends Component {
         super(props);
         autoBind(this);
     }
-
     render(){
         return (
             <div ref={c=>this.form=c}  className="message-form">
-                <div className="message-form__add-btn">+</div>
                 <MessageTextArea
                   onEnterKey={this.props.onSubmit}
                   onChangeHeight={this.props.onChangeHeight}/>
+                <div className="message-form__add-btn">+</div>
             </div>
         );
     }

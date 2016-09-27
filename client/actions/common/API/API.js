@@ -36,6 +36,19 @@ fetch('/api/messages',{
     body: JSON.stringify(message)
 }).then(checkStatus).then(res=> res.json());
 
+Message.edit = (id, text) =>
+fetch(`/api/messages/${id}`,{
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({text})
+}).then(checkStatus).then(res=> res.json());
+
+Message.delete = (id) =>
+fetch(`/api/messages/${id}`,{
+    method: 'DELETE',
+    headers
+}).then(checkStatus).then(res=> res.json());
+
 Message.getByChannel = (channelId, limit, offset)=>
 fetch(`/api/channels/${channelId}/messages?limit=${limit}&offset=${offset}`,
   {headers}

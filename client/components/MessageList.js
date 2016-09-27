@@ -32,9 +32,7 @@ class MessageList extends Component {
         //if scrollOnBottom
         if(this.isScrollOnBottom()){
             console.log('вниз пришли');
-
             this.props.onScrollBottom();
-
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -77,7 +75,11 @@ class MessageList extends Component {
             }
             list.push (
                 <Message
-                onEdit={this.props.onEdit}
+                  onSaveEdit={this.props.onSaveMessageEdit}
+                  onCancelEdit={this.props.onCancelMessageEdit}
+                  onEdit={this.props.onMessageEdit}
+                  onDelete={this.props.onMessageDelete}
+                  isEditable={this.props.editableMessage==msg.id}
                   onMount={this.props.onMountMessage}
                   onUnmount={this.props.onUnmountMessage}
                   id={msg.id}
@@ -103,7 +105,7 @@ render(){
           ref={c=>this.scrollView=c}>
             {this.props.children}
             {this.props.users && this.renderMessages()}
-            <div className="message-list__footer"></div>
+            <div className="message-list__footer"/>
         </Scrollbars>
 
     );}

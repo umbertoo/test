@@ -15,14 +15,15 @@ let exclude = ['password','resetPasswordExpires','resetPasswordToken'];
 export default function createSocketServer(server){
 
     if(server) {
-         const io = IO(server);
+        const io = IO(server);
 
-        let usersOnline={};
+        const usersOnline={};
 
         io.use(socketioJwt.authorize({
             secret: config.secret,
             handshake: true
         }));
+
         io.on('connection', socket => {
             const {user} = socket.decoded_token;
             socket.user = {...user};
@@ -53,10 +54,10 @@ export default function createSocketServer(server){
                 // socket.broadcast.emit('message',socket.user.name+' was disconnect');
             });
             socket.on('switchServer', (serverId) => {
-                let oldServer = socket.channel;
-                socket.server = newchannel;
-                socket.leave(oldchannel.id);
-                socket.join(socket.channel.id);
+                let oldServer = socket.server;
+                socket.server = serverId;
+                socket.leave(oldServer);
+                socket.join(socket.server);
 
                 //
             });

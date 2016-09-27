@@ -11,6 +11,13 @@ const initialState = {
 export const messages = (state = initialState, action) => {
 
     switch (action.type) {
+        case type.UPDATE_MESSAGE:
+        case type.EDIT_MESSAGE_SUCCESS:
+        return {...state,
+            items:{...state.items, [action.message.id]: action.message}
+        };
+        //-------------------------------------------
+
         case type.FETCH_MESSAGES_REQUEST:
         case type.FETCH_MESSAGES_FAILURE:
         return {...state,
@@ -30,21 +37,22 @@ export const messages = (state = initialState, action) => {
         return {...state,
             isCreating:action.isCreating
         };
-
         case type.CREATE_MESSAGE_SUCCESS:
         return {...state,
-            isCreating:action.isCreating
-        };
-        case type.RECEIVE_MESSAGE:
-        return {...state,
+            isCreating:action.isCreating,
             items:{...state.items, [action.message.id]:action.message}
         };
-
         case type.CREATE_MESSAGE_FAILURE:
         return {...state,
             isCreating:action.isCreating,
             error:action.error
         };
+
+        case type.RECEIVE_MESSAGE:
+        return {...state,
+            items:{...state.items, [action.message.id]:action.message}
+        };
+
         default: return state;
     }
 };

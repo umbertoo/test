@@ -1,7 +1,7 @@
 import type from '../actions/common/types';
 //
 import assign from 'lodash/assign';
-import omit from 'lodash/omit';
+import pull from 'lodash/pull';
 
 import set from 'lodash/set';
 import merge from 'lodash/merge';
@@ -34,13 +34,19 @@ const initState = {
 
 const idsByChannel = (state = initState, action) => {
     switch (action.type) {
+        case type.DELETE_MESSAGE_SUCCESS:
+        return {...state,
+            ids: pull([...state.ids], action.message.id),
+            slice: pull([...state.slice], action.message.id),
+        };
         case type.FETCH_MESSAGES_SUCCESS:
         return {...state,
             ids: union(action.payload.result,state.ids ),
             pageCount:state.pageCount+1
         };
         //------------------------------------------------------------------
-        case 'RECEIVE_MESSAGE':
+        case type.RECEIVE_MESSAGE:
+        case type.CREATE_MESSAGE_SUCCESS:
         return {...state,
             ids: [...state.ids, action.message.id],
         };
