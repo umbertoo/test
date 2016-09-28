@@ -33,7 +33,10 @@ class MessageTextArea extends Component {
   getValue(){
     return this.textarea.value;
   }
+
   inpuKeyDown(e){
+    this.props.onTyping();
+
     //on Ctrl+Enter
       if (e.keyCode == 13 && e.ctrlKey) {
         console.log('e.keyCode == 13 && e.ctrlKey');

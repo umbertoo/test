@@ -33,21 +33,6 @@ export default function createSocketServer(server){
 
             io.sockets.emit('updateUsersOnline',usersOnline);
 
-            // socket.on('message', (message,cb) => {
-            //     console.log('message');
-            //     Message.create({
-            //         ...message,
-            //         userId:socket.user.id
-            //     }).then(message => {
-            //         //send message to other sockets
-            //         // socket.broadcast.emit('message',message);
-            //         io.sockets.emit('message',message);
-            //         //send message to this socket
-            //         cb(null,message);
-            //     }).catch(err=> cb(err));
-            //
-            // });
-
             socket.on('disconnect', () => {
                 delete usersOnline[socket.user.id];
                 socket.broadcast.emit('updateUsersOnline',usersOnline);
@@ -58,8 +43,6 @@ export default function createSocketServer(server){
                 socket.server = serverId;
                 socket.leave(oldServer);
                 socket.join(socket.server);
-
-                //
             });
         });
         return io;

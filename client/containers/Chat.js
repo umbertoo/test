@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import MessageList from '../components/MessageList';
 import ChannelListContainer from '../containers/ChannelListContainer';
 import MessageForm from '../components/MessageForm';
+import TypingIndicator from '../components/TypingIndicator';
 import UserListContainer from '../containers/UserListContainer';
 import MessageListContainer from '../containers/MessageListContainer';
 import ChatHeaderContainer from '../containers/ChatHeaderContainer';
@@ -12,7 +13,8 @@ import autoBind from 'react-autobind';
 import * as actions from '../actions';
 import { socket } from '../actions/common/socketEvents';
 import { withRouter } from 'react-router';
-
+import debounce from 'lodash/debounce';
+import throttle from 'lodash/throttle';
 
 class Chat extends Component {
     constructor(props){
@@ -21,6 +23,7 @@ class Chat extends Component {
         this.state={
             message_input_height:66
         };
+        this.onTypingMessage = throttle(this.onTypingMessage, 8000, {trailing :false});
     }
     componentWillMount(){
         this.props.fetchChannels(this.props.params.server_id);
@@ -31,7 +34,11 @@ class Chat extends Component {
             const {channel_id:channelId, server_id:serverId} = this.props.params;
             console.log(serverId,'serverId');
             this.props.createMessage({text,channelId,serverId })
-            .then(msg => this.messageList.scrollView.scrollToBottom() );
+            .then(msg => {
+              this.messageList.scrollView.scrollToBottom();
+              this.onTypingMessage.cancel();
+
+             });
         }
     }
     handleChangeHeightMessageForm(height){
@@ -44,6 +51,10 @@ class Chat extends Component {
         this.setState({
             message_input_height:this.refs.messageForm.offsetHeight
         }, callback);
+    }
+    onTypingMessage(){
+       this.props.sendTyping(this.props.params.channel_id);
+       console.log('onTypingMessage...');
     }
     render(){
         const { params:{channel_id} , user} = this.props,
@@ -68,8 +79,11 @@ class Chat extends Component {
                             <MessageListContainer onMount={c=>this.messageList=c} />
                         </div>
                         <div ref="messageForm" className="chat__body-bottom">
-                            <MessageForm onChangeHeight={this.handleChangeHeightMessageForm}
+                            <MessageForm
+                              onTypingMessage={this.onTypingMessage}
+                              onChangeHeight={this.handleChangeHeightMessageForm}
                               onSubmit={this.sendMessage} />
+                            <TypingIndicator channelId={channel_id} />
                         </div>
                         <div className="chat__side-panel">
                             <UserListContainer />

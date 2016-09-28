@@ -58,6 +58,10 @@ Channel.getByServer = server =>
 fetch('/api/servers/'+server+'/channels', {headers})
 .then(checkStatus).then(res=> res.json());
 
+Channel.sendTyping = channelId =>
+fetch(`/api/channels/${channelId}/typing`, {method: 'POST',headers})
+.then(checkStatus).then(res=> res.json());
+
 Message.getCount = (channelId, id, date)=>
 fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`,
   {headers}

@@ -50,7 +50,7 @@ router.delete('/messages/:id', (req, res)=> {
     }})
     .then(message=>{
       res.json(message);
-      io.sockets.emit('deletemessage',message);
+      io.sockets.emit('deleteMessage',message);
     })
     .catch(err => {
       // console.log(err)
@@ -71,7 +71,7 @@ router.put('/messages/:id', (req, res, next)=>{
     }})
     .then(message=>{
       res.json(message);
-      io.sockets.emit('editmessage',message);
+      io.sockets.emit('editMessage',message);
     })
     .catch(err => {
       // console.log(err)
@@ -95,12 +95,6 @@ router.put('/messages/:id', (req, res, next)=>{
       next(err);
     });
 
-  });
-
-  router.get('/user',(req,res)=>{
-    User.findOne({where:{id:req.user.id}, attributes:{ exclude }}).then(user=>{
-      res.json(user);
-    });
   });
 
   // get messages by channel
@@ -152,6 +146,19 @@ router.put('/messages/:id', (req, res, next)=>{
       res.status(500).json(err);
       next(err);
     });
+  });
+
+  router.get('/user',(req,res)=>{
+    User.findOne({where:{id:req.user.id}, attributes:{ exclude }}).then(user=>{
+      res.json(user);
+    });
+  });
+
+  router.post('/channels/:id/typing',(req,res)=>{
+    const {id, name} = req.user;
+    const user = {id,name};
+    req.user.socket.broadcast.emit('startTyping',{user, channelId: req.params.id});
+    res.json({ok:'ok'});
   });
 
   export default router;

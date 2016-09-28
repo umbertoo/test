@@ -94,7 +94,6 @@ class MessageListContainer extends Component {
         return +findKey(this.registeredElements,({elem})=>
         elem.offsetTop + elem.offsetHeight > this.messageList.scrollView.getScrollTop());
         // elem.getBoundingClientRect().bottom > 0
-
     }
     onMessageEdit(id){
       console.log('onMessageEdit <<<<<<<',id);
@@ -144,8 +143,7 @@ class MessageListContainer extends Component {
         );
     }
 }
-const mapStateToProps = (state,props) =>{
-    // const channel  = state.pagination.idsByChannel[props.params.channel_id];
+const mapStateToProps = (state) =>{
     const channel  = state.pagination.idsByChannel[state.ui.selectedChannel];
     let {
         ids:messagesIds = [], scrollPosition = null , lastVisibleMessage={},

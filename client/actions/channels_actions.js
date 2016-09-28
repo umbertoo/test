@@ -1,27 +1,27 @@
-import types from './common/types';
+import type from './common/types';
 import API from "./common/API/API";
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "./common/schemas";
-
-
+import debounce from 'lodash/debounce';
+import throttle from 'lodash/throttle';
 
 export const selectChannel = (id) =>({
-    type:types.SELECT_CHANNEL,
+    type:type.SELECT_CHANNEL,
     id
 });
 
 //------------------------------------------------------------------------
 export const fetchChannelsRequest = () =>({
-    type:types.FETCH_CHANNELS_REQUEST,
+    type:type.FETCH_CHANNELS_REQUEST,
     isFetching:true
 });
 export const fetchChannelsSuccess = (payload) =>({
-    type:types.FETCH_CHANNELS_SUCCESS,
+    type:type.FETCH_CHANNELS_SUCCESS,
     isFetching:false,
     payload
 });
 export const fetchChannelsFailure = (error) =>({
-    type:types.FETCH_CHANNELS_FAILURE,
+    type:type.FETCH_CHANNELS_FAILURE,
     isFetching:false,
     error
 });
@@ -56,7 +56,7 @@ export const saveLastVisibleMessage = (channelId) => async (dispatch,getState) =
         last_messages_by_channel[channelId] = last_id;
         localStorage.setItem('last_messages_by_channel',JSON.stringify(last_messages_by_channel));
         dispatch({
-            type:types.SAVE_LAST_VISIBLE_MESSAGE,
+            type:type.SAVE_LAST_VISIBLE_MESSAGE,
             lastVisibleMessage:{date:message.createdAt, id:message.id},
             channelId
         });
@@ -65,14 +65,14 @@ export const saveLastVisibleMessage = (channelId) => async (dispatch,getState) =
     }
 };
 export const saveScrollPosition = ({channelId, scrollPosition, firstVisibleId}) =>({
-    type:types.SAVE_SCROLL_POSITION,
+    type:type.SAVE_SCROLL_POSITION,
     scrollPosition,
     firstVisibleId,
     channelId
 });
 
 export const setChannelHasNewMessages = (channelId) =>({
-    type:types.SET_CHANNEL_HAS_NEW_MESSAGES,
+    type:type.SET_CHANNEL_HAS_NEW_MESSAGES,
     channelId
 });
 
@@ -80,31 +80,47 @@ export const unsetChannelHasNewMessages = (channelId) =>(dispatch, getState)=>{
     const { channelsWithNewMessages } = getState().entities.channels;
     if (channelsWithNewMessages.indexOf(channelId)>-1){
         dispatch({
-            type:types.UNSET_CHANNEL_HAS_NEW_MESSAGES,
+            type:type.UNSET_CHANNEL_HAS_NEW_MESSAGES,
             channelId
         });
     }
 };
 
+export const sendTypingRequest = () =>({
+    type:type.SEND_TYPING_REQUEST,
+    isFetching:true
+});
+export const sendTypingSuccess = (payload) =>({
+    type:type.SEND_TYPING_SUCCESS,
+    isFetching:false,
+    payload
+});
+export const sendTypingFailure = (error) =>({
+    type:type.SEND_TYPING_FAILURE,
+    isFetching:false,
+    error
+});
 
+export const sendTyping = (channelId) => async dispatch =>{
+  console.log('sendTyping');
+    try {
+      dispatch(sendTypingRequest());
+      const res = await API.Channel.sendTyping(channelId);
+      dispatch(sendTypingSuccess());
+    } catch (e) {
+      dispatch(sendTypingFailure(e));
+    }
+};
 
+export const stopTyping = (userId, channelId) =>({
+  type:type.STOP_TYPING, userId, channelId
+});
 
-
-
-
-
-
-// export function logout(router) {
-//   return async (dispatch) => {
-//     try {
-//       const {data: {success, message}} = await axios.get('/logout');
-//
-//       (success)
-//         ? dispatch({ type: LOGOUT_SUCCESS })
-//         : dispatch({ type: LOGOUT_FAILURE, message });
-//
-//      } catch (e) {
-//          dispatch({ type: LOGOUT_FAILURE, e.data.message });
-//      }
-//    };
-// }
+export const startTyping = (userId, channelId) => dispatch =>{
+  dispatch({type:type.START_TYPING, userId, channelId});
+console.log('after startTyping');
+  setTimeout(()=>{
+    console.log('timeout!');
+    dispatch(stopTyping(userId, channelId))},7000);
+  console.log('startTyping', userId, channelId);
+};
