@@ -60,7 +60,7 @@ class Message extends Component {
     this.props.onDelete(this.props.id);
   }
   renderBody(){
-    const {user , minimaized} = this.props;
+    const {user , minimaized, isEdited} = this.props;
     const date = moment(this.props.createdAt).calendar();
     return  (
         <span>
@@ -76,6 +76,7 @@ class Message extends Component {
             }
             <span className="message-block__content"
               dangerouslySetInnerHTML={this.rawMarkup()}/>
+            {isEdited && <span className="message-block__edited-label">отредактировано</span>}
             <div onClick={this.onClickEdit}
               className="message-block__edit-btn">Редактировать</div>
             <div onClick={this.onClickDelete}

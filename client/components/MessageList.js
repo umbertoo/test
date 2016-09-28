@@ -77,6 +77,7 @@ class MessageList extends Component {
                 <Message
                   onSaveEdit={this.props.onSaveMessageEdit}
                   onCancelEdit={this.props.onCancelMessageEdit}
+                  isEdited={msg.createdAt!==msg.updatedAt}
                   onEdit={this.props.onMessageEdit}
                   onDelete={this.props.onMessageDelete}
                   isEditable={this.props.editableMessage==msg.id}

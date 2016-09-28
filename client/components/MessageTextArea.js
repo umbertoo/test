@@ -89,5 +89,7 @@ class MessageTextArea extends Component {
             </div>);
     }
 }
-
+MessageTextArea.defaultProps={
+  onTyping:()=>{}
+};
 export default MessageTextArea;

@@ -36,7 +36,6 @@ const initState = {
 const idsByChannel = (state = initState, action) => {
   switch (action.type) {
     case type.START_TYPING:
-    console.log('START_TYPING <<');
     return {...state, typingUsers: [...state.typingUsers, action.userId]};
 
     case type.STOP_TYPING:
@@ -68,7 +67,6 @@ const idsByChannel = (state = initState, action) => {
     case type.SAVE_LAST_VISIBLE_MESSAGE:
     return {...state, lastVisibleMessage: action.lastVisibleMessage};
     //------------------------------------------------------------------
-
 
     case 'UPDATE_SLICE':
     console.log('UPDATE_SLICE',action.ids);

@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
+import '../static/scss/typing-block.scss';
+
 const TypingIndicator = (props)=>{
   return(
-      <div>TypingIndicato : {props.users.map(user=><span key={user.id}>{user.name}</span>)}</div>
+      <div className="typing-block">
+          {props.users.length ? "печатает:" : null}
+          {props.users.map(user=><span key={user.id}> {user.name} </span>)}
+      </div>
   );
 };
 
