@@ -119,7 +119,7 @@ class MessageListContainer extends Component {
     render(){
         const {
             messages, allMessagesIds, messagesIsFetching, users, slice,
-            editableMessage
+            editableMessage,currentUser
         } = this.props;
         return (
             <MessageList
@@ -128,7 +128,7 @@ class MessageListContainer extends Component {
               onMessageEdit={this.onMessageEdit}
               onMessageDelete={this.onMessageDelete}
               editableMessage={editableMessage}
-
+              currentUser={currentUser}
               onScrollStop={this.onScrollStop}
               onMountMessage={this.regElem}
               onUnmountMessage={this.unregElem}
@@ -152,6 +152,7 @@ const mapStateToProps = (state) =>{
 
     const messages = state.entities.messages.items;
     return {
+        currentUser:state.auth.user,
         editableMessage:state.ui.editableMessage,
         slice,
         allMessagesIds: messagesIds,

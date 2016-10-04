@@ -14,7 +14,7 @@ export const checkStatus = response => {
 
     let error = new Error(response.statusText);
     error.response = response;
-console.log('ОШИБКА',error);
+    console.log('ОШИБКА',error);
     throw error;
 
 };

@@ -60,7 +60,7 @@ class Message extends Component {
     this.props.onDelete(this.props.id);
   }
   renderBody(){
-    const {user , minimaized, isEdited} = this.props;
+    const {user , minimaized, isEdited, canBeEditable} = this.props;
     const date = moment(this.props.createdAt).calendar();
     return  (
         <span>
@@ -77,10 +77,14 @@ class Message extends Component {
             <span className="message-block__content"
               dangerouslySetInnerHTML={this.rawMarkup()}/>
             {isEdited && <span className="message-block__edited-label">отредактировано</span>}
-            <div onClick={this.onClickEdit}
-              className="message-block__edit-btn">Редактировать</div>
-            <div onClick={this.onClickDelete}
-              className="message-block__delete-btn">Удалить</div>
+            {canBeEditable &&
+                <div className="message-block__menu">
+                    <div onClick={this.onClickEdit}
+                      className="message-block__edit-btn">Редактировать</div>
+                    <div onClick={this.onClickDelete}
+                      className="message-block__delete-btn">Удалить</div>
+                </div>
+            }
         </span>
     );
   }
@@ -103,7 +107,7 @@ class Message extends Component {
     );
   }
   render(){
-    const {user, minimaized, isEditable} = this.props;
+    const {user, minimaized, isEditable, canBeEditable} = this.props;
 
     return (
         <div ref="message" className={"message-block "+ (minimaized?'-minimaized':'')}>

@@ -52,21 +52,22 @@ Channel.sync(
     //       description: 'third channel',
     //       serverId:1
     //   });
+    // for(let i=0; i<20; i++){
     //   User.create({
-    //       name: 'utro',
+    //       name: 'user2',
     //       password: '123',
     //       email:'v.kokovin@gmail.com'
-    //   });
-    //   User.create({
-    //       name: 'admin',
-    //       password: '123',
-    //       email:'test@test.test'
-    //   });
-    //   User.create({
-    //       name: 'superchel',
-    //       password: '123',
-    //       email:'test2@test.test'
-    //   });
+    //   });}
+      // User.create({
+      //     name: 'admin',
+      //     password: '123',
+      //     email:'test@test.test'
+      // }).then(user=> user.setOwnServers([1]));
+      // User.create({
+      //     name: 'superchel',
+      //     password: '123',
+      //     email:'test2@test.test'
+      // });
     // });
 
 });

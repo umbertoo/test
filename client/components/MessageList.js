@@ -36,8 +36,6 @@ class MessageList extends Component {
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
-        // return !shallowEqual(nextProps.messages,this.props.messages)||
-        // nextProps.isFetching!==this.props.isFetching;
         return !shallowEqual(this.props,nextProps);
     }
     renderMessages(){
@@ -73,18 +71,24 @@ class MessageList extends Component {
             if(prevDayisYesterday && !moment(msg.createdAt).isSame(yesterday,'days')){
                 list.push(<TimeDivider key={msg.createdAt} content ={"вчера"}/>);
             }
+            console.log('this.props.currentUser',this.props.currentUser);
             list.push (
                 <Message
+                  isEdited={msg.createdAt!==msg.updatedAt}
+                  isEditable={this.props.editableMessage==msg.id}
+                  canBeEditable={this.props.currentUser.id==msg.userId}
+
+                  minimaized={minimaized}
+
+                  onEdit={this.props.onMessageEdit}
                   onSaveEdit={this.props.onSaveMessageEdit}
                   onCancelEdit={this.props.onCancelMessageEdit}
-                  isEdited={msg.createdAt!==msg.updatedAt}
-                  onEdit={this.props.onMessageEdit}
+
                   onDelete={this.props.onMessageDelete}
-                  isEditable={this.props.editableMessage==msg.id}
+
                   onMount={this.props.onMountMessage}
                   onUnmount={this.props.onUnmountMessage}
                   id={msg.id}
-                  minimaized={minimaized}
                   user={this.props.users[msg.userId]}
                   text={msg.text}
                   key={msg.id}
