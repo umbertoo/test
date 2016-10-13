@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "../common/schemas";
 
-export const socket = io.connect('http://localhost:3000/',{
+export const socket = io.connect('http://localhost:8090/',{
     'query': 'token=' + localStorage.getItem('token')
 });
 
