@@ -21,7 +21,8 @@ const generateJWT = user =>{
 authRouter.post('/login', (req, res, next)=> {
 	passport.authenticate('login', (err, user, info)=> {
 		if (err) {
-			return next(err); }
+			return next(err);
+		 }
 			if (!user) {
 				return res.status(401).json(info);
 			}
@@ -34,7 +35,7 @@ authRouter.post('/login', (req, res, next)=> {
 );
 
 authRouter.post('/signup', (req,res)=>{
-	let { password, name, email } = req.body;
+	const { password, name, email } = req.body;
 	if (!email)
 	return res.status(401).json( {message: 'the email is required'} );
 	if (!name)
@@ -54,7 +55,7 @@ authRouter.post('/signup', (req,res)=>{
 			}).then(
 				user=>res.json({user:user, token:'JWT '+generateJWT(user)}),
 				err=>{
-					let list = err.errors.map(err=>err.message);
+					const list = err.errors.map(err=>err.message);
 					return res.status(401).json({message: list.join(',') });
 				});
 			}
@@ -69,7 +70,7 @@ authRouter.post('/signup', (req,res)=>{
 
 			User.findOne({where:{email:req.body.email}}).then(user=>{
 
-				let mailOptions = {
+				const mailOptions = {
 					from: '"support 👥" <foo@blurdybloop.com>', // sender address
 					to: 'v.kokovin@gmail.com', // list of receivers
 					subject: 'reset_password', // Subject line
@@ -95,7 +96,7 @@ authRouter.post('/signup', (req,res)=>{
 
 	});
 	authRouter.use((err,req,res,next)=>{
-		var output = {
+		const output = {
 			error: {
 				name: err.name,
 				message: err.message,
@@ -103,7 +104,7 @@ authRouter.post('/signup', (req,res)=>{
 			}
 		};
 		console.log("Поймали ошибку ------------------------------------------------", output);
-		var statusCode = err.status || 500;
+		const statusCode = err.status || 500;
 		res.status(statusCode).json(output);
 	});
 

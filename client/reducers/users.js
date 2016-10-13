@@ -1,4 +1,4 @@
-import types from '../actions/common/types';
+import type from '../actions/common/types';
 import merge from 'lodash/merge';
 
 const initialState = {
@@ -13,7 +13,7 @@ export const users = (state = initialState, action) => {
             items:merge({},state.items, action.payload.entities.users)
         };
 
-        case types.FETCH_MESSAGES_SUCCESS:
+        case type.FETCH_MESSAGES_SUCCESS:
         return {...state,
             items:merge({},state.items, action.payload.entities.users)
         };

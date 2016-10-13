@@ -1,4 +1,0 @@
-id,name,password,avatar,email,resetPasswordToken,resetPasswordExpires,createdAt,updatedAt
-1,admin,$2a$10$sVC4sU9AYN9TE6ycJxChN.BtLhQgzf1g8Q.tcqJdezUyhZKwLBSBy,/images/avatars/defavatar.jpg,test@test.test,NULL,"2016-10-03 10:24:05","2016-10-03 10:24:05","2016-10-03 10:24:05"
-2,utro,$2a$10$dDv0qJQNlzPJ4V7ubVid5uMMzlbPdx1APBqJ.EkP/x0drOwuyhyR2,/images/avatars/defavatar.jpg,v.kokovin@gmail.com,NULL,"2016-10-03 10:24:05","2016-10-03 10:24:05","2016-10-03 10:24:05"
-3,superchel,$2a$10$P.eT3.G6/vFTO0hwz9ZTl.Ms79gFg/EixOH26VPO2PbbPakOibMTC,/images/avatars/defavatar.jpg,test2@test.test,NULL,"2016-10-03 10:24:05","2016-10-03 10:24:05","2016-10-03 10:24:05"

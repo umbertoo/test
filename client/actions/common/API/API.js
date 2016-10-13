@@ -8,6 +8,7 @@ console.log(localStorage.getItem('token'));
 // const Message = {};
 const Channel = {};
 const Message = {};
+const Server = {};
 const User = {};
 const auth={};
 
@@ -53,6 +54,10 @@ Message.getByChannel = (channelId, limit, offset)=>
 fetch(`/api/channels/${channelId}/messages?limit=${limit}&offset=${offset}`,
   {headers}
 ).then(checkStatus).then(res=> res.json());
+Message.getCount = (channelId, id, date)=>
+fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`,
+  {headers}
+).then(checkStatus).then(res=> res.json());
 
 Channel.getByServer = server =>
 fetch('/api/servers/'+server+'/channels', {headers})
@@ -62,11 +67,11 @@ Channel.sendTyping = channelId =>
 fetch(`/api/channels/${channelId}/typing`, {method: 'POST',headers})
 .then(checkStatus).then(res=> res.json());
 
-Message.getCount = (channelId, id, date)=>
-fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`,
+
+Server.get = (limit, offset)=>
+fetch(`/api/servers?limit=${limit}&offset=${offset}`,
   {headers}
 ).then(checkStatus).then(res=> res.json());
-
 
 // fetch('/api/notes/' + id, {
 //     method: 'PUT',
@@ -83,5 +88,5 @@ fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`,
 //
 //
 //
-const API = {Channel,Message,auth , User};
+const API = {Channel,Message,auth , User, Server};
 export default API;

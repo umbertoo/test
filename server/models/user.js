@@ -47,29 +47,26 @@ const User = db.define('user', {
             return bcrypt.compare(password, this.password, (err, res)=> {
                 return done(err, res);
             });
-        }
+        },
+      toJSON () {
+        const values = this.get();
+
+        delete values.password;
+        delete values.resetPasswordToken;
+        delete values.resetPasswordExpires;
+        return values;
+      }
     }
 });
 User.beforeCreate((user, options, done) => {
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return done(err);
-        console.log('Salt: ' + 'getting ' + salt);
         bcrypt.hash(user.password, salt, null, (err, hash) => {
             if (err) return done(err);
-
-            console.log('Info: ' + 'getting ' + hash);
-
             user.password = hash;
-
-            console.log('Info: ' + 'password now is: ' + user.password);
-
             return done(null,user);
         });
     });
 });
-User.sync(
-    // {force: true}
-).then( () =>{
 
-});
 export default User;

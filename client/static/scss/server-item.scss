@@ -1,0 +1,10 @@
+.server-item{
+  width: 80px;
+  height: 80px;
+  border: 1px solid #111;
+  cursor: pointer;
+  &.-active{
+    background: #111;
+    color: #fff;
+  }
+}

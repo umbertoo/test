@@ -7,6 +7,7 @@ import TypingIndicator from '../components/TypingIndicator';
 import UserListContainer from '../containers/UserListContainer';
 import MessageListContainer from '../containers/MessageListContainer';
 import ChatHeaderContainer from '../containers/ChatHeaderContainer';
+import ServersListContainer from '../containers/ServersListContainer';
 import '../static/scss/chat.scss';
 import '../static/scss/server-menu.scss';
 import autoBind from 'react-autobind';
@@ -29,6 +30,7 @@ class Chat extends Component {
   componentWillMount(){
     this.props.fetchChannels(this.props.params.server_id);
     this.props.fetchCurrentUser();
+    this.props.fetchServers();
   }
   sendMessage(text){
     if(text){
@@ -63,49 +65,53 @@ class Chat extends Component {
     },()=> {
       localStorage.setItem('sidePanelIsOpen',this.state.sidePanelIsOpen);
     });
-
   }
   render(){
     const { params:{channel_id} , user} = this.props,
-    { message_input_height, sidePanelIsOpen } = this.state;
-    const paddingRight = sidePanelIsOpen ? 200+'px' : 0;
+    { message_input_height, sidePanelIsOpen } = this.state,
+    paddingRight = sidePanelIsOpen ? 200+'px' : 0;
     return (
-        <div className="chat">
-            <div className="chat__col-left">
-                <div className="server-menu">
-                    Server <br/>
-                    <span>user.name {user.name}</span> <br/>
-                    <span>user.id {user.id}</span> <br/>
-                    <img src={user.avatar}/>
-                </div>
-                <br/><br/><br/>
-                <ChannelListContainer />
+      <div className="chat">
+        <div className="chat__col-left">
+          <div className="chat__servers-list-place">
+            <ServersListContainer />
+          </div>
+          <div className="chat__channels-list-place">
+            <div className="server-menu">
+              Server <br/>
+              <span>user.name {user.name}</span> <br/>
+              <span>user.id {user.id}</span> <br/>
+              <img src={user.avatar}/>
             </div>
-            <div className="chat__col-right">
-                <ChatHeaderContainer onClickSidePanel={this.onClickSidePanel}/>
-                <div className="chat__body" style={{paddingRight}}>
+            <br/><br/><br/>
+            <ChannelListContainer />
+          </div>
 
-                    <div className="chat__body-top"
-                      style={{paddingBottom:message_input_height+'px'}}>
-                        <MessageListContainer onMount={c=>this.messageList=c} />
-                    </div>
-                    <div ref="messageForm" className="chat__body-bottom" style={{paddingRight}}>
-
-                        <MessageForm
-                          onTypingMessage={this.onTypingMessage}
-                          onChangeHeight={this.handleChangeHeightMessageForm}
-                          onSubmit={this.sendMessage} />
-                        <TypingIndicator channelId={channel_id} />
-                    </div>
-                    {sidePanelIsOpen &&
-                        <div className="chat__side-panel">
-                            <UserListContainer />
-                        </div>
-                    }
-                </div>
-
-            </div>
         </div>
+        <div className="chat__col-right">
+          <ChatHeaderContainer onClickSidePanel={this.onClickSidePanel}/>
+          <div className="chat__body" style={{paddingRight}}>
+
+            <div className="chat__body-top"
+              style={{paddingBottom:message_input_height+'px'}}>
+              <MessageListContainer onMount={c=>this.messageList=c} />
+            </div>
+            <div ref="messageForm" className="chat__body-bottom" style={{paddingRight}}>
+              <MessageForm
+                onTypingMessage={this.onTypingMessage}
+                onChangeHeight={this.handleChangeHeightMessageForm}
+                onSubmit={this.sendMessage} />
+              <TypingIndicator channelId={channel_id} />
+            </div>
+            {sidePanelIsOpen &&
+              <div className="chat__side-panel">
+                <UserListContainer />
+              </div>
+            }
+          </div>
+
+        </div>
+      </div>
     );
   }
 }

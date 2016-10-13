@@ -1,3 +1,4 @@
+import colors from 'colors';
 import express from 'express';
 import path from 'path';
 import logger from 'morgan';
@@ -15,7 +16,7 @@ import webpackConfig from '../webpack.config.js';
 
 //routers
 import auth from './routes/auth';
-import api from './routes/api';
+import api from './API';
 
 const compiler = webpack(webpackConfig);
 
@@ -51,8 +52,8 @@ app.get('/*', (req, res)=> {
     res.sendFile('views/index.html', {root: './server/' });
 });
 const server = Server(app);
-server.listen(3000,()=>{
-    console.log('start Server at localhost:8080');
+server.listen(8090,()=>{
+    console.log('start Server at http://localhost:8090/'.cyan);
 });
 
 export const io = socketServer(server);

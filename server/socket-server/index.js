@@ -8,7 +8,7 @@ import Channel from '../models/channel';
 import Message from '../models/message';
 import User from '../models/user';
 
-let exclude = ['password','resetPasswordExpires','resetPasswordToken'];
+const exclude = ['password','resetPasswordExpires','resetPasswordToken'];
 
 // export default function (server) {
  // let io;
@@ -25,7 +25,7 @@ export default function createSocketServer(server){
         }));
 
         io.on('connection', socket => {
-            const {user} = socket.decoded_token;
+            const {user} =socket.decoded_token;
             socket.user = {...user};
             delete socket.user.password;
 
@@ -39,7 +39,7 @@ export default function createSocketServer(server){
                 // socket.broadcast.emit('message',socket.user.name+' was disconnect');
             });
             socket.on('switchServer', (serverId) => {
-                let oldServer = socket.server;
+                const oldServer = socket.server;
                 socket.server = serverId;
                 socket.leave(oldServer);
                 socket.join(socket.server);

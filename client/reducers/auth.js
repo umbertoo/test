@@ -1,4 +1,4 @@
-import types from '../actions/common/types';
+import type from '../actions/common/types';
 
 const initialState = {
     isFetching: false,
@@ -10,14 +10,14 @@ export const auth = (state = initialState, action) => {
 
     switch (action.type) {
 
-        case types.FETCH_CURRENT_USER_REQUEST:
-        case types.FETCH_CURRENT_USER_FAILURE:
+        case type.FETCH_CURRENT_USER_REQUEST:
+        case type.FETCH_CURRENT_USER_FAILURE:
         return {...state,
             isFetching:action.isFetching,
             error:action.error
         };
-    
-        case types.FETCH_CURRENT_USER_SUCCESS:
+
+        case type.FETCH_CURRENT_USER_SUCCESS:
         return {...state,
             user:action.user,
             isFetching:action.isFetching,
@@ -25,20 +25,20 @@ export const auth = (state = initialState, action) => {
         };
 
         // login-----------------------
-        case types.LOGIN_REQUEST:
+        case type.LOGIN_REQUEST:
         return { ...state,
             isFetching: true,
             isAuthenticated: false,
             errors: action.errors
         };
-        case types.LOGIN_SUCCESS:
+        case type.LOGIN_SUCCESS:
         return { ...state,
             isFetching: false,
             isAuthenticated: true,
             errors: ''
         };
 
-        case types.LOGIN_FAILURE:
+        case type.LOGIN_FAILURE:
         return { ...state,
             isFetching: false,
             isAuthenticated: false,
@@ -46,14 +46,14 @@ export const auth = (state = initialState, action) => {
         };
 
         // logout------------------------
-        case types.LOGOUT_SUCCESS:
+        case type.LOGOUT_SUCCESS:
         return { ...state,
             isFetching: false,
             isAuthenticated: false
         };
 
         // signup------------------------
-        case types.SIGNUP_REQUEST:
+        case type.SIGNUP_REQUEST:
         return { ...state,
             isFetching: true,
             isAuthenticated: false,
@@ -61,14 +61,14 @@ export const auth = (state = initialState, action) => {
             errors: ''
         };
 
-        case types.SIGNUP_SUCCESS:
+        case type.SIGNUP_SUCCESS:
         return { ...state,
             isFetching: false,
             isAuthenticated: true,
             errors: ''
         };
 
-        case types.SIGNUP_FAILURE:
+        case type.SIGNUP_FAILURE:
         return { ...state,
             isFetching: false,
             isAuthenticated: false,

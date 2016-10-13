@@ -1,4 +1,4 @@
-import types from '../actions/common/types';
+import type from '../actions/common/types';
 
 const initialState = {
     ids:{}
@@ -7,7 +7,7 @@ const initialState = {
 export const usersOnline = (state = initialState, action) => {
     switch (action.type) {
 
-        case types.UPDATE_USERS_ONLINE:
+        case type.UPDATE_USERS_ONLINE:
         return {ids: action.payload.result};
 
         default: return state;

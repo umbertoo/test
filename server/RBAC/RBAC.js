@@ -1,16 +1,23 @@
-
-
-
+  
 class RBAC {
   constructor(opts) {
+    if(typeof opts === 'function') {
+      this.getRoles = opts;
+    }
+    this.isInited = false;
     this.init(opts);
   }
-
+  update(){
+    this.init(this.getRoles);
+  }
   init(roles) {
+    if(typeof roles === 'function') {
+      this._init = this.getRoles().then(data => this.init(data));
+      return;
+    }
     if(typeof roles !== 'object') {
       throw new TypeError('Expected an object as input');
     }
-
     this.roles = roles;
     const map = {};
     Object.keys(roles).forEach(role => {
@@ -34,16 +41,21 @@ class RBAC {
     });
 
     this.roles = map;
+    this.isInited = true;
   }
 
   can(role, operation, params, cb) {
+
+    if (!this.isInited){
+      return this._init.then(()=>can(role, operation, params, cb));
+    }
 
     if(typeof params === 'function') {
       cb = params;
       params = undefined;
     }
 
-    let callback = cb || (()=>{});
+    const callback = cb || (()=>{});
 
     return new Promise((resolve, reject) => {
 
@@ -55,7 +67,7 @@ class RBAC {
         throw new TypeError('Expected second parameter to be string : operation');
       }
 
-      let $role = this.roles[role];
+      const $role = this.roles[role];
 
       if (!$role) {
         throw new Error('Undefined role');
@@ -94,7 +106,7 @@ class RBAC {
       // No operation reject as false
       reject(false);
     });
-  };
+  }
 }
 
 export default RBAC;

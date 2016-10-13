@@ -9,8 +9,17 @@ $side-panel-width:200px;
     *{
         box-sizing: border-box;
     }
+    &__servers-list-place{
+      background-color: #1e2124;
+      height: 100%;
+      width: 80px;
+      float: left;
+    }
+    &__channels-list-place{
+      overflow: hidden;
+    }
     &__col-left{
-        width: 240px;
+        width: 320px;
         height: 100%;
         float: left;
         background-color: #2E3136;

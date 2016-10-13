@@ -1,27 +1,15 @@
+import Sequelize from 'sequelize';
+import db from '../db';
+
+const Permission = db.define('permission', {
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
+});
 
 
-export default {
-  admin: {
-    can:['server:delete'],
-    inherits: ['manager']
-  },
-  manager: {
-    can:['server:update'],
-    inherits: ['user']
-  },
-  user: {
-    can: [
-      'server:create',
-      'server:read',
-      {name: 'message:edit', when:params => params.message.userId === params.user.id},
-      {name: 'message:delete', when:params => params.message.userId === params.user.id}
-    ]
-  },
-  banned: {
-    can: []
-  }
-};
-
+export default Permission;
 
 // {
 //   name: 'edit',
