@@ -3,6 +3,42 @@ import API from "./common/API/API";
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "./common/schemas";
 
+//------------------------------------------------------------------------
+
+export const editServersOrderRequest = () =>({
+  type:type.EDIT_SERVERS_ORDER_REQUEST,
+  isFetching:true,
+  error:null
+});
+export const editServersOrderFailure = (error) =>({
+  type:type.EDIT_SERVERS_ORDER_FAILURE,
+  isFetching:false,
+  error
+});
+export const editServersOrderSuccess = (payload) =>({
+  type:type.EDIT_SERVERS_ORDER_SUCCESS,
+  isFetching:false,
+  payload
+});
+
+export const editServersOrder = (orderData, newOrder) => async dispatch =>{
+  try {
+    dispatch(editServersOrderSuccess(newOrder));
+
+    dispatch(editServersOrderRequest());
+    const servers = await API.Server.editOrder(orderData);
+    // const result = normalize(servers, arrayOf(schemas.server));
+    console.log('editServersOrder', servers);
+
+  } catch (e) {
+    console.error(e);
+    dispatch(editServersOrderFailure('create server error'));
+  }
+};
+
+//------------------------------------------------------------------------
+
+
 export const selectServer = (id) =>({
     type:type.SELECT_SERVER,
     id

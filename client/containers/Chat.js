@@ -8,6 +8,7 @@ import UserListContainer from '../containers/UserListContainer';
 import MessageListContainer from '../containers/MessageListContainer';
 import ChatHeaderContainer from '../containers/ChatHeaderContainer';
 import ServersListContainer from '../containers/ServersListContainer';
+import ServerMenuContainer from '../containers/ServerMenuContainer';
 import '../static/scss/chat.scss';
 import '../static/scss/server-menu.scss';
 import autoBind from 'react-autobind';
@@ -16,6 +17,8 @@ import { socket } from '../actions/common/socketEvents';
 import { withRouter } from 'react-router';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
+import UserBlock from '../components/UserBlock';
+
 
 class Chat extends Component {
   constructor(props){
@@ -28,13 +31,12 @@ class Chat extends Component {
     this.onTypingMessage = throttle(this.onTypingMessage, 8000, {trailing :false});
   }
   componentWillMount(){
-    this.props.fetchChannels(this.props.params.server_id);
-    this.props.fetchCurrentUser();
     this.props.fetchServers();
+    this.props.fetchCurrentUser();
   }
   sendMessage(text){
     if(text){
-      const {channel_id:channelId, server_id:serverId} = this.props.params;
+      const {channelId, serverId} = this.props.params;
       console.log(serverId,'serverId');
       this.props.createMessage({text,channelId,serverId })
       .then(msg => {
@@ -56,7 +58,7 @@ class Chat extends Component {
     }, callback);
   }
   onTypingMessage(){
-    this.props.sendTyping(this.props.params.channel_id);
+    this.props.sendTyping(this.props.params.channelId);
     console.log('onTypingMessage...');
   }
   onClickSidePanel(){
@@ -67,7 +69,7 @@ class Chat extends Component {
     });
   }
   render(){
-    const { params:{channel_id} , user} = this.props,
+    const { params:{channelId} , user} = this.props,
     { message_input_height, sidePanelIsOpen } = this.state,
     paddingRight = sidePanelIsOpen ? 200+'px' : 0;
     return (
@@ -77,21 +79,14 @@ class Chat extends Component {
             <ServersListContainer />
           </div>
           <div className="chat__channels-list-place">
-            <div className="server-menu">
-              Server <br/>
-              <span>user.name {user.name}</span> <br/>
-              <span>user.id {user.id}</span> <br/>
-              <img src={user.avatar}/>
-            </div>
-            <br/><br/><br/>
+            <ServerMenuContainer />
             <ChannelListContainer />
+            <UserBlock user={user}/>
           </div>
-
         </div>
         <div className="chat__col-right">
           <ChatHeaderContainer onClickSidePanel={this.onClickSidePanel}/>
           <div className="chat__body" style={{paddingRight}}>
-
             <div className="chat__body-top"
               style={{paddingBottom:message_input_height+'px'}}>
               <MessageListContainer onMount={c=>this.messageList=c} />
@@ -101,7 +96,7 @@ class Chat extends Component {
                 onTypingMessage={this.onTypingMessage}
                 onChangeHeight={this.handleChangeHeightMessageForm}
                 onSubmit={this.sendMessage} />
-              <TypingIndicator channelId={channel_id} />
+              <TypingIndicator channelId={channelId} />
             </div>
             {sidePanelIsOpen &&
               <div className="chat__side-panel">

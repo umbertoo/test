@@ -3,3 +3,4 @@ export * from './users_actions';
 export * from './messages_actions';
 export * from './channels_actions';
 export * from './servers_actions';
+export * from './roles_actions';

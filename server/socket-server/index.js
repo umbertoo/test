@@ -3,15 +3,7 @@ import socketioJwt from 'socketio-jwt';
 
 import uniq from 'lodash/uniq';
 import config from '../config/main';
-//models
-import Channel from '../models/channel';
-import Message from '../models/message';
-import User from '../models/user';
 
-const exclude = ['password','resetPasswordExpires','resetPasswordToken'];
-
-// export default function (server) {
- // let io;
 export default function createSocketServer(server){
 
     if(server) {
@@ -38,11 +30,12 @@ export default function createSocketServer(server){
                 socket.broadcast.emit('updateUsersOnline',usersOnline);
                 // socket.broadcast.emit('message',socket.user.name+' was disconnect');
             });
-            socket.on('switchServer', (serverId) => {
-                const oldServer = socket.server;
-                socket.server = serverId;
-                socket.leave(oldServer);
-                socket.join(socket.server);
+            socket.on('connectServer', (serverId) => {
+                // const oldServer = socket.server;
+                socket.servers=[...socket.servers||[], serverId];
+                // socket.server = serverId;
+                // socket.leave(oldServer);
+                socket.join(serverId);
             });
         });
         return io;
@@ -50,4 +43,3 @@ export default function createSocketServer(server){
         console.error('socket-sever error: server has not been passed');
     }
 }
-// }

@@ -70,7 +70,53 @@ export const updateSlice = (ids, channelId) =>({
     ids,
     channelId
 });
+export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) =>{
+    try {
+        if(!channelId) return;
+        const {
+            ids=[], pageCount=0, slice=[]
+        } = getState().pagination.idsByChannel[channelId]||{};
 
+        const offset = pageCount ? ids.length : 0;
+        if(nextPage || pageCount===0){
+            console.warn('грузим с сервера');
+
+            dispatch(fetchMessagesRequest());
+            const res = await API.Message.getByChannel(channelId, LIMIT_PAGINATION, offset);
+            if(res.length===0) return;
+            const payload = normalize(res, arrayOf(schemas.message));
+
+            dispatch(fetchMessagesSuccess(payload,channelId));
+
+            const {
+                ids=[], slice=[]
+            } = getState().pagination.idsByChannel[channelId]||{};
+
+            //if channel is opened for the first time.
+            if (pageCount===0) dispatch(updateSlice(payload.result, channelId));
+
+            //if nextPage true
+            else {
+                const index = ids.indexOf(slice[0]);
+                dispatch(updateSlice([...ids.slice(0, index-1),...slice], channelId));
+            }
+            //if nextPage false and pageCount!==0
+        } else {
+            console.info('загружаем кусок запомненый из загруженых');
+            const {
+                ids=[], slice=[], firstVisibleId
+            } = getState().pagination.idsByChannel[channelId] || {};
+            const index = ids.indexOf(firstVisibleId);
+
+            dispatch(updateSlice(ids.slice(index, index+LIMIT_PAGINATION), channelId));
+        }
+
+        // return payload;
+    } catch (e) {
+        dispatch(fetchMessagesFailure(e));
+        console.error('error',e);
+    }
+};
 export const addMessageToSlice = (message) => (dispatch, getState) =>{
     const {
         ids=[], pageCount=0, slice=[]
@@ -119,52 +165,7 @@ export const loadMoreBefore = (channelId) => async (dispatch, getState) =>{
 
 
 
-export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) =>{
-    try {
-        const {
-            ids=[], pageCount=0, slice=[]
-        } = getState().pagination.idsByChannel[channelId]||{};
 
-        const offset = pageCount ? ids.length : 0;
-        if(nextPage || pageCount===0){
-            console.warn('грузим с сервера');
-
-            dispatch(fetchMessagesRequest());
-            const res = await API.Message.getByChannel(channelId, LIMIT_PAGINATION, offset);
-            if(res.length===0) return;
-            const payload = normalize(res, arrayOf(schemas.message));
-
-            dispatch(fetchMessagesSuccess(payload,channelId));
-
-            const {
-                ids=[], slice=[]
-            } = getState().pagination.idsByChannel[channelId]||{};
-
-            //if channel is opened for the first time.
-            if (pageCount===0) dispatch(updateSlice(payload.result, channelId));
-
-            //if nextPage true
-            else {
-                const index = ids.indexOf(slice[0]);
-                dispatch(updateSlice([...ids.slice(0, index-1),...slice], channelId));
-            }
-            //if nextPage false and pageCount!==0
-        } else {
-            console.info('загружаем кусок запомненый из загруженых');
-            const {
-                ids=[], slice=[], firstVisibleId
-            } = getState().pagination.idsByChannel[channelId] || {};
-            const index = ids.indexOf(firstVisibleId);
-
-            dispatch(updateSlice(ids.slice(index, index+LIMIT_PAGINATION), channelId));
-        }
-
-        // return payload;
-    } catch (e) {
-        dispatch(fetchMessagesFailure(e));
-        console.error('error',e);
-    }
-};
 
 //_____________________________________________________________________________
 export const editMessageRequest = () =>({

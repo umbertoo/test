@@ -2,61 +2,73 @@ $header-height: 56px;
 $body-bottom-height:97px;
 $side-panel-width:200px;
 .chat{
-    width: 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  font-family: 'open sans';
+  *{
+    box-sizing: border-box;
+  }
+  &__servers-list-place{
+    background-color: #1e2124;
     height: 100%;
+    width: 80px;
+    float: left;
+
+  }
+  &__channels-list-place{
+    padding: 56px  0 80px;
+
+    height: 100%;
+
+    overflow: hidden;
+    position: relative;
+    & .server-menu{
+      position: absolute;
+      top: 0;
+      left: 0;
+
+    }
+  }
+  &__col-left{
+    width: 320px;
+    height: 100%;
+    float: left;
+    background-color: #2E3136;
+  }
+  &__col-right{
+    width: auto;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    padding-top: $header-height;
+    background-color: #36393E;
+  }
+
+  &__body{
+    height: 100%;
+    position: relative;
+    padding-right: $side-panel-width;
+  }
+  &__body-top{
+    height: 100%;
+    padding-bottom: $body-bottom-height;
+  }
+
+  &__body-bottom{
+    width: 100%;
     position: absolute;
-    font-family: 'open sans';
-    *{
-        box-sizing: border-box;
-    }
-    &__servers-list-place{
-      background-color: #1e2124;
-      height: 100%;
-      width: 80px;
-      float: left;
-    }
-    &__channels-list-place{
-      overflow: hidden;
-    }
-    &__col-left{
-        width: 320px;
-        height: 100%;
-        float: left;
-        background-color: #2E3136;
-    }
-    &__col-right{
-        width: auto;
-        height: 100%;
-        overflow: hidden;
-        position: relative;
-        padding-top: $header-height;
-        background-color: #36393E;
-    }
-
-    &__body{
-        height: 100%;
-        position: relative;
-        padding-right: $side-panel-width;
-    }
-    &__body-top{
-        height: 100%;
-        padding-bottom: $body-bottom-height;
-    }
-
-    &__body-bottom{
-        width: 100%;
-        position: absolute;
-        bottom: 0;
-        padding-right: $side-panel-width;
-        background-color:  #36393E;
-    }
-    &__side-panel{
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 66;
-        width: $side-panel-width;
-        height: 100%;
-        background-color: #2E3136;
-    }
+    bottom: 0;
+    padding-right: $side-panel-width;
+    background-color:  #36393E;
+  }
+  &__side-panel{
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    width: $side-panel-width;
+    height: 100%;
+    background-color: #2E3136;
+  }
 }

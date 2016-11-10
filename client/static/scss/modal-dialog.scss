@@ -1,0 +1,42 @@
+.modal-dialog{
+  & * {
+    box-sizing: border-box;
+  }
+  &__window{
+
+  }
+  &__overlay{
+
+  }
+  &__title{
+    width: 100%;
+    padding: 20px 90px 20px 30px;
+
+    h1 {
+      margin: 0;
+      font-weight: 400;
+      font-size: 23px;
+    }
+  }
+  &__header{
+    position: relative;
+    border-bottom: 1px solid #ccc;
+  }
+  &__close-btn{
+    cursor: pointer;
+    position: absolute;
+    right:10px;
+    text-align: center;
+    top:10px;
+    height: 40px;
+    line-height: 40px;
+    width: 40px;
+    font-size: 30px;
+    &:hover{
+      color:#0096cf;
+    }
+  }
+  &__body{
+    // padding: 30px;
+  }
+}

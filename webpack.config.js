@@ -1,13 +1,13 @@
-var path = require('path');
-var webpack = require('webpack');
-//var CompressionPlugin = require("compression-webpack-plugin");
-var devFlagPlugin = new webpack.DefinePlugin({
+import webpack from 'webpack';
+import path from 'path';
+//const CompressionPlugin = require("compression-webpack-plugin");
+const devFlagPlugin = new webpack.DefinePlugin({
     __DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || 'false'))
 });
-// var devFlagPlugin = new webpack.DefinePlugin({
+// const devFlagPlugin = new webpack.DefinePlugin({
 //     'process.env.NODE_ENV': '"production"'
 // });
-module.exports = {
+export default {
     devtool: '#eval',
     entry: [
         'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
@@ -26,7 +26,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'babel',
+                loaders: ['react-hot', 'babel'],
                 include: path.join(__dirname, 'client')
             },
             {
@@ -46,7 +46,11 @@ module.exports = {
     resolve: {
         extensions: ['', '.js', '.jsx']
     },
-
+    externals: {
+      'react/addons': true,
+      'react/lib/ExecutionEnvironment': true,
+      'react/lib/ReactContext': true
+    },
     plugins: [
 
         new webpack.optimize.OccurenceOrderPlugin(),

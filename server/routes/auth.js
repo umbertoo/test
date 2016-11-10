@@ -3,7 +3,7 @@ import {Router} from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 //models
-import User from '../models/user';
+import {User} from '../models/';
 //configs
 import transporter from '../config/nodemailer';
 import config from '../config/main';

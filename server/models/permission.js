@@ -1,19 +1,39 @@
 import Sequelize from 'sequelize';
-import db from '../db';
+import db from './db';
+// import Role from './role';
+// import Action from './action';
+// import Resource from './resource';
 
-const Permission = db.define('permission', {
+export const Permission = db.define('permission', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     name: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    resourceId:{
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique:'idsComposition'
+    },
+    actionId:{
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique:'idsComposition'
+    },
+    attributeId:{
+      type: Sequelize.INTEGER,
+      unique:'idsComposition'
+    },
+    order:{
+      type: Sequelize.INTEGER
     }
 });
-
-
-export default Permission;
-
-// {
-//   name: 'edit',
-//   when(params) {
-//     return params.user.id === params.post.owner;
-//   }
-// }
+console.log('Permission'.cyan);
+// Permission.belongsToMany(Role, {through: 'role_permissions'});
+//
+// Resource.belongsToMany(Action, {through:Permission,foreignKey: {name:'resourceId', allowNull:false}});
+// Action.belongsToMany(Resource, {through:Permission,foreignKey: {name:'actionId', allowNull:false}});

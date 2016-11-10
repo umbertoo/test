@@ -21,85 +21,88 @@ const res = sortedData.map(({category,sheet_x,sheet_y,short_name})=>({category,s
 const categoriesOrder = ["People", "Nature", "Foods",  "Activity", "Places", "Objects", "Symbols",  "Flags"   /*,  "Skin Tones"*/];
 
 const tabsIcons= {
-    People:{
-        icon:'icon-smile'
-    }, Nature:{
-        icon:'icon-leaf-1'
-    }, Foods:{
-        icon:'icon-coffee'
-    }, Activity:{
-        icon:'icon-soccer-ball'
-    }, Places:{
-        icon:'icon-flight'
-    }, Objects:{
-        icon:'icon-lamp'
-    }, Symbols:{
-        icon:'icon-heart'
-    },  Flags:{
-        icon:'icon-flag-1'
-    }   /*,  "Skin Tones"*/
+  People:{
+    icon:'icon-smile'
+  }, Nature:{
+    icon:'icon-leaf-1'
+  }, Foods:{
+    icon:'icon-coffee'
+  }, Activity:{
+    icon:'icon-soccer-ball'
+  }, Places:{
+    icon:'icon-flight'
+  }, Objects:{
+    icon:'icon-lamp'
+  }, Symbols:{
+    icon:'icon-heart'
+  },  Flags:{
+    icon:'icon-flag-1'
+  }   /*,  "Skin Tones"*/
 };
 let categories ={};
 
 categoriesOrder.forEach(c=> categories[c] = res.filter(e=>e.category==c));
 
 class EmojiPicker extends Component {
-    constructor(props){
-        super(props);
-        autoBind(this);
-        this.state={
-            serch_text:"",
-            cats:categories,
-            active_tab:'People',
-            hover:false
-        };
+  constructor(props){
+    super(props);
+    autoBind(this);
+    this.state={
+      serch_text:"",
+      cats:categories,
+      active_tab:'People',
+      hover:false
+    };
+  }
+  handleInputChange({target:{value}}){
+    let cats = {};
+    forEach(categories,(cat,key)=>
+    cats[key]= cat.filter(e=>e.short_name.match(value)));
+    this.setState({
+      serch_text:value,
+      cats
+    });
+  }
+  handleTabClick(key){
+    this.list.scrollTo(key);
+    // this.setState({
+    //     active_tab:key
+    // });
+  }
+  onScrollCategory(key){
+    this.setState({
+      active_tab:key
+    });
+  }
+  render(){
+    const {itemSize}=this.props;
+    const {serch_text,cats}=this.state;
+    return (
+      <div className="emoji-picker">
+        <div className="emoji-picker__search">
+          <input
+            placeholder="search"
+            className="emoji-picker__input"
+            onChange={this.handleInputChange}
+            value={serch_text}/>
+        </div>
+        <List onScrollCategory={this.onScrollCategory}
+          ref={c=>this.list=c}
+          categories={cats}
+          categoriesOrder={categoriesOrder}
+          onSelect={this.props.onSelect}/>
+        <div className="emoji-picker__tabs">
+          {map(tabsIcons,(cat,key)=>{
+            const active = this.state.active_tab==key?' -active ':'';
+            return (
+              <span
+                onClick={this.handleTabClick.bind(this,key)}
+                key={key}
+                className={"emoji-picker__tab "+cat.icon +active}/>);
+          })}
+        </div>
+      </div>
+      );
     }
-    handleInputChange({target:{value}}){
-        let cats = {};
-        forEach(categories,(cat,key)=>
-        cats[key]= cat.filter(e=>e.short_name.match(value)));
-        this.setState({
-            serch_text:value,
-            cats
-        });
-    }
-    handleTabClick(key){
-        this.list.scrollTo(key);
-        // this.setState({
-        //     active_tab:key
-        // });
-    }
-    onScrollCategory(key){
-        this.setState({
-            active_tab:key
-        });
-    }
-    render(){
-        const {itemSize}=this.props;
-        const {serch_text,cats}=this.state;
-        return (
-            <div className="emoji-picker">
-                <div className="emoji-picker__search">
-                    <input
-                      placeholder="search"
-                      className="emoji-picker__input"
-                      onChange={this.handleInputChange}
-                      value={serch_text}/>
-                </div>
-                <List  onScrollCategory={this.onScrollCategory}
-                  ref={c=>this.list=c} categories={cats} categoriesOrder={categoriesOrder} onSelect={this.props.onSelect}/>
-                <div className="emoji-picker__tabs">
-                    {map(tabsIcons,(cat,key)=>{
-                        const active = this.state.active_tab==key?' -active ':'';
-                        return (
-                            <span
-                              onClick={this.handleTabClick.bind(this,key)}
-                              key={key}
-                              className={"emoji-picker__tab "+cat.icon +active}/>);
-                    })}
-                </div>
-            </div>
-            );
-        }
-    }
-    export default EmojiPicker;
+  }
+  export default EmojiPicker;

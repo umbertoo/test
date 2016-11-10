@@ -1,0 +1,21 @@
+.xtabs {
+  width: 500px;
+  &__bar{
+
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    float: left;
+    background-color:#2e3136;
+  }
+  &__tab{
+    padding: 20px;
+    cursor: pointer;
+  }
+  &__tab.-active{
+    color:red;
+  }
+  &__tab-pane{
+    overflow: hidden;
+  }
+}

@@ -9,88 +9,28 @@ import union from 'lodash/union';
 import without from 'lodash/without';
 // import { idsByLabel } from './idsBylabel';
 
+import {idsByChannel} from './idsByChannel';
+import {idsByServer} from './idsByServer';
+
+
 const initialState = {
-  idsByChannel: {}
+  idsByChannel: {},
+  idsByServer: {}
+};
+
+
+const getReducer= (reducer, id, state, action)=>{
+  if(!id) return state;
+  return {
+    ...state,
+    [id]:reducer(state[id], action)
+  };
 };
 
 export const pagination = (state = initialState, action) => {
-  if(action.channelId)
   return {
-    idsByChannel: {
-      ...state.idsByChannel,
-      [action.channelId]:idsByChannel(state.idsByChannel[action.channelId], action)
-    }
+    // idsByServer: getReducer(idsByServer, action.serverId,  state.idsByServer, action),
+    idsByChannel: getReducer(idsByChannel, action.channelId, state.idsByChannel, action),
+
   };
-  else return state;
-
-};
-const initState = {
-  ids:[],
-  slice:[],
-  pageCount:0,
-  scrollPosition:null,
-  newMessages:false,
-  typingUsers:[]
-};
-
-const idsByChannel = (state = initState, action) => {
-  switch (action.type) {
-    case type.START_TYPING:
-    return {...state, typingUsers: [...state.typingUsers, action.userId]};
-
-    case type.STOP_TYPING:
-    return {...state, typingUsers: pull([...state.typingUsers], action.userId)};
-
-    case type.DELETE_MESSAGE_SUCCESS:
-    return {...state,
-      ids: pull([...state.ids], action.message.id),
-      slice: pull([...state.slice], action.message.id),
-    };
-    case type.FETCH_MESSAGES_SUCCESS:
-    return {...state,
-      ids: union(action.payload.result,state.ids ),
-      pageCount:state.pageCount+1
-    };
-    //------------------------------------------------------------------
-    case type.RECEIVE_MESSAGE:
-    case type.CREATE_MESSAGE_SUCCESS:
-    return {...state,
-      ids: [...state.ids, action.message.id]
-    };
-    //------------------------------------------------------------------
-    case type.SAVE_SCROLL_POSITION:
-    return {...state,
-      scrollPosition: action.scrollPosition,
-      firstVisibleId:action.firstVisibleId
-    };
-    //------------------------------------------------------------------
-    case type.SAVE_LAST_VISIBLE_MESSAGE:
-    return {...state, lastVisibleMessage: action.lastVisibleMessage};
-    //------------------------------------------------------------------
-
-    case 'UPDATE_SLICE':
-    console.log('UPDATE_SLICE',action.ids);
-    return {...state, slice: action.ids};
-    //------------------------------------------------------------------
-
-
-    // case type.FETCH_NOTES_SUCCESS:
-    // return {...state,
-    //     ids: union(state.ids, action.payload.result),
-    //     pageCount:state.pageCount+1,
-    //     nextPageUrl:action.nextPageUrl,
-    //     isFetching:action.isFetching
-    // };
-    // case type.DELETE_NOTE:
-    // return {...state, ids: without(state.ids, action.note.id) };
-    //
-    // case type.UPDATE_PAGINATION :
-    // if(action.deleted){
-    //     return {...state, ids: without(state.ids, action.noteId) };
-    // }else if(action.added){
-    //     return {...state, ids: [action.noteId,...state.ids] };
-    // }
-    default:
-    return state;
-  }
 };

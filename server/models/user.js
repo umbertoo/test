@@ -1,8 +1,12 @@
 import Sequelize from 'sequelize';
-import db from '../db';
+import db from './db';
 import bcrypt from 'bcrypt-nodejs';
 import path from 'path';
-const User = db.define('user', {
+// import {ServerMembers} from './server';
+// import Message from './message';
+// import Role,{UserRolesPerServer} from './role';
+
+export const User = db.define('user', {
     name: {
         type: Sequelize.STRING,
         allowNull: false
@@ -37,7 +41,7 @@ const User = db.define('user', {
         setPassword(password, done) {
             return bcrypt.genSalt(10, (err, salt) =>  {
                 return bcrypt.hash(password, salt, (error, encrypted)=> {
-                    this.password = encrypted;
+                    this.password = encrypted ;
                     this.salt = salt;
                     return done();
                 });
@@ -58,6 +62,15 @@ const User = db.define('user', {
       }
     }
 });
+console.log('User'.cyan);
+
+// User.belongsToMany(Server, {through: ServerMembers});
+// User.belongsToMany(Server, {as:'OwnServers', through: 'server_owners', foreignKey:'ownerId'});
+// User.hasMany(Message, {as: 'Messages',foreignKey: {name:'userId', allowNull:false}});
+// User.hasMany(UserRolesPerServer,{as: 'UserRoles', foreignKey:'userId'});
+
+
+
 User.beforeCreate((user, options, done) => {
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return done(err);
@@ -68,5 +81,3 @@ User.beforeCreate((user, options, done) => {
         });
     });
 });
-
-export default User;

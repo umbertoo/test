@@ -1,10 +1,25 @@
 .channel-list{
     color:rgba(255,255,255,.7);
+    height: 100%;
+    width: 100%;
     &__item {
         cursor: pointer;
         padding: 15px 20px;
+        position: relative;
+
+    }
+    &__body{
+      
     }
     &__item.-active {
         background-color: #25282c;
+    }
+    &__settings-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
     }
 }

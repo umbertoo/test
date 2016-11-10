@@ -9,6 +9,7 @@ console.log(localStorage.getItem('token'));
 const Channel = {};
 const Message = {};
 const Server = {};
+const Role = {};
 const User = {};
 const auth={};
 
@@ -59,19 +60,71 @@ fetch(`/api/channels/${channelId}/messages/count?id=${id}&date=${date}`,
   {headers}
 ).then(checkStatus).then(res=> res.json());
 
-Channel.getByServer = server =>
-fetch('/api/servers/'+server+'/channels', {headers})
+Channel.getByServer = serverId =>
+fetch('/api/servers/'+serverId+'/channels', {headers})
 .then(checkStatus).then(res=> res.json());
 
 Channel.sendTyping = channelId =>
 fetch(`/api/channels/${channelId}/typing`, {method: 'POST',headers})
 .then(checkStatus).then(res=> res.json());
 
+Channel.create = channel =>
+fetch('/api/channels',{
+    method: 'POST',
+    headers,
+    body: JSON.stringify(channel)
+}).then(checkStatus).then(res=> res.json());
+
+Channel.delete = (id) =>
+fetch(`/api/channels/${id}`,{
+    method: 'DELETE',
+    headers
+}).then(checkStatus).then(res=> res.json());
+
+Channel.edit = ({id, name, description}) =>
+fetch(`/api/channels/${id}`,{
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({name, description})
+}).then(checkStatus).then(res=> res.json());
+
+Channel.editOrder = (order) =>
+fetch('/api/channels/order',{
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({order})
+}).then(checkStatus).then(res=> res.json());
+
 
 Server.get = (limit, offset)=>
 fetch(`/api/servers?limit=${limit}&offset=${offset}`,
   {headers}
 ).then(checkStatus).then(res=> res.json());
+
+
+Server.editOrder = (order) =>
+fetch('/api/servers/order',{
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({order})
+}).then(checkStatus).then(res=> res.json());
+
+Server.delete = (id) =>
+fetch(`/api/servers/${id}`,{
+    method: 'DELETE',
+    headers
+}).then(checkStatus).then(res=> res.json());
+
+Server.edit = ({id, name, description}) =>
+fetch(`/api/servers/${id}`,{
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({name, description})
+}).then(checkStatus).then(res=> res.json());
+
+Role.getByServer = serverId =>
+fetch('/api/servers/'+serverId+'/roles', {headers})
+.then(checkStatus).then(res=> res.json());
 
 // fetch('/api/notes/' + id, {
 //     method: 'PUT',
@@ -88,5 +141,5 @@ fetch(`/api/servers?limit=${limit}&offset=${offset}`,
 //
 //
 //
-const API = {Channel,Message,auth , User, Server};
+const API = {Channel, Message, auth , User, Server, Role};
 export default API;

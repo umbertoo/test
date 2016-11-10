@@ -14,17 +14,17 @@ class ChatHeaderContainer extends Component {
     console.log('onClickSidePanel');
   }
   render(){
-    const {channels, params:{channel_id}} = this.props;
+    const {channels, params:{channelId}} = this.props;
     return (
-        <div className="chat-header">
-            {channels[channel_id] &&
-                <h1 className="chat-header__title">{channels[channel_id].name}</h1>
-            }
-            <div className="chat-header__sidepanel-btn"
-              onClick={this.props.onClickSidePanel}>
-                side panel
-            </div>
+      <div className="chat-header">
+        {channels[channelId] &&
+          <h1 className="chat-header__title">{channels[channelId].name}</h1>
+        }
+        <div className="chat-header__sidepanel-btn"
+          onClick={this.props.onClickSidePanel}>
+          side panel
         </div>
+      </div>
     );
   }
 }

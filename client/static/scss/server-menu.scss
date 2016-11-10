@@ -1,6 +1,39 @@
 .server-menu{
-    height: 56px;
-    color: #fff;
+  height: 56px;
+  color: #fff;
+  box-sizing: border-box;
+  width: 100%;
+
+  &__btn{
+    height: 100%;
+    width: 100%;
     box-sizing: border-box;
-    padding: 20px
+  }
+  &__arrow{
+    border-color: #999 transparent transparent;
+    border-style: solid;
+    border-width: 5px 5px 2.5px;
+    display: inline-block;
+    height: 0;
+    width: 0;
+  }
+  &__arrow-place{
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 6px;
+  }
+  &__drop{
+    border-radius: 4px;
+
+    background-color: #fff;
+    width: 216px;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+  }
+  &__option{
+    cursor: pointer;
+    padding: 10px 20px;
+  }
 }

@@ -1,36 +1,46 @@
-  import Sequelize from 'sequelize';
-import db from '../db';
-import User from './user';
-import Server from './server';
-import Permission from './permission';
+import Sequelize from 'sequelize';
+import db from './db';
 
-const Role = db.define('role', {
+export const Role = db.define('role', {
   name: {
     type: Sequelize.STRING,
     allowNull: false
   }
 });
-export const UserRolesPerServer = db.define('user_roles_per_server', {
-  serverId: {
+
+
+
+
+export const ServerRole = db.define('serverRole', {
+  id: {
     type: Sequelize.INTEGER,
-    allowNull: false,
-    unique:'idsComposition'
-  },
-  userId: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    unique:'idsComposition'
-  },
-  roleId: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-    // unique:'idsComposition'
+    primaryKey: true,
+    autoIncrement: true
   }
+},{ tableName : 'server_roles'});
+
+export const UserServerRoles = db.define('userServerRole', {
+},{
+  tableName:'user_server_roles'
 });
-Permission.belongsToMany(Role, {through: 'role_permissions'});
-Role.belongsToMany(Permission, {through: 'role_permissions'});
 
-// User.belongsToMany(Role, {through: UserRolesPerServer,constraints: false});
-// Role.belongsToMany(User, {through: UserRolesPerServer,constraints: false});
-
-export default Role;
+// export const UserServerRoles = db.define('userServerRole', {
+//   serverId: {
+//     type: Sequelize.INTEGER,
+//     allowNull: false,
+//     unique:'idsComposition'
+//   },
+//   userId: {
+//     type: Sequelize.INTEGER,
+//     allowNull: false,
+//     unique:'idsComposition'
+//   },
+//   roleId: {
+//     type: Sequelize.INTEGER,
+//     allowNull: false
+//     // unique:'idsComposition'
+//   }
+// },{
+//   tableName:'user_server_roles'
+// });
+console.log('role'.cyan);

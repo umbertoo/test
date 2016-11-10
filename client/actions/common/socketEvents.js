@@ -4,7 +4,11 @@ import {
     updateUsers, updateUsersOnline,
     loadMessages, receiveMessage , setChannelHasNewMessages,
     addMessageToSlice, updateMessage, deleteMessageSuccess,
-    startTyping, stopTyping
+    startTyping, stopTyping,
+    createChannelSuccess,
+    editChannelSuccess,
+    deleteChannelSuccess,
+    fetchChannels
 } from '../index';
 import io from 'socket.io-client';
 import { normalize, arrayOf } from "normalizr";
@@ -13,6 +17,7 @@ import * as schemas from "../common/schemas";
 export const socket = io.connect('http://localhost:8090/',{
     'query': 'token=' + localStorage.getItem('token')
 });
+
 
 const socketEvents =  ({dispatch, getState}) => {
     socket.on('message', message=>{
@@ -59,13 +64,37 @@ const socketEvents =  ({dispatch, getState}) => {
       }
       console.log('deleteMessage',message);
     });
+
+    socket.on('createChannel', channel=>{
+      const payload = normalize(channel, schemas.channel);
+      dispatch(createChannelSuccess(payload, channel.serverId));
+    });
+    socket.on('editChannel', channel=>{
+      const payload = normalize(channel, schemas.channel);
+      dispatch(editChannelSuccess(payload, channel.serverId));
+    });
+    socket.on('deleteChannel', channel=>{
+      const payload = normalize(channel, schemas.channel);
+      dispatch(deleteChannelSuccess(payload, channel.serverId));
+    });
+
+    socket.on('editChannelsOrder', (channels,serverId)=>{
+        const payload = normalize(channels, arrayOf(schemas.channel));
+      console.log('socket editChannelsOrder',payload);
+      dispatch(fetchChannels(serverId));
+
+      // const payload = normalize(channel, schemas.channel);
+      // dispatch(deleteChannelSuccess(payload));
+    });
+
+
     socket.on('updateUsers', users => {
-        let payload = normalize(users, arrayOf(schemas.user));
+        const payload = normalize(users, arrayOf(schemas.user));
         dispatch(updateUsers(payload));
     });
 
     socket.on('updateUsersOnline',usersOnline=>{
-        let payload = normalize(usersOnline, arrayOf(schemas.user));
+        const payload = normalize(usersOnline, arrayOf(schemas.user));
         dispatch(updateUsersOnline(payload));
         // this.setState({ usersOnline, users:merge({},usersOnline,this.state.users) });
     });

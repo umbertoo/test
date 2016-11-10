@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
-import ServersList from '../components/ServersList';
+import SortableServersList from '../components/ServersList';
 import {withRouter} from 'react-router';
 import autoBind from 'react-autobind';
+import { arrayMove } from 'react-sortable-hoc';
+import { socket } from '../actions/common/socketEvents';
 
 class ServersListContainer extends Component {
   constructor(props){
@@ -11,11 +13,14 @@ class ServersListContainer extends Component {
     autoBind(this);
   }
   componentWillMount(){
-    this.props.selectServer(this.props.params.server_id);
+    const {serverId}=this.props.params;
+    this.props.selectServer(serverId);
+    this.props.fetchChannels(serverId);
+    socket.emit('connectServer', serverId);
   }
   componentWillReceiveProps(nextProps){
-    const {channel_id:prevChannelId, server_id:prevServerId} = this.props.params;
-    const {channel_id:nextChannelId, server_id:nextServerId} = nextProps.params;
+    const {channelId:prevChannelId, serverId:prevServerId} = this.props.params;
+    const {channelId:nextChannelId, serverId:nextServerId} = nextProps.params;
     if (prevServerId!==nextServerId) this.handleSwitchServer(prevServerId, nextServerId);
   }
   handleSwitchServer(prevId, nextId){
@@ -28,23 +33,45 @@ class ServersListContainer extends Component {
     Если так то тогда нужно дожидаться подгрузки сервера с
     каналами и только потом переходить
     или подгрузить каналы серверов заранее, что в принципе логично*/
-    this.props.router.push(`/channels/${serverId}/`);
+    this.props.fetchChannels(serverId).then(()=>{
+      this.props.router.push('/channels/'+serverId+'/'+this.props.channelFirstId);
+      socket.emit('connectServer', serverId);
+    });
+
+  }
+  onSortEnd({oldIndex, newIndex,...rest}) {
+    const newOrder = arrayMove(this.props.order, oldIndex, newIndex);
+
+    const piece = oldIndex < newIndex
+    ? newOrder.slice(oldIndex, newIndex+1)
+    : newOrder.slice(newIndex, oldIndex+1);
+
+    let index = oldIndex < newIndex
+    ? oldIndex
+    : newIndex;
+
+    const orderData = piece.map(e=>({serverId:e, order: ++index}));
+    console.log('orderData',orderData);
+    this.props.editServersOrder(orderData,newOrder);
   }
   render(){
-    const {servers, ids, params:{server_id}} = this.props;
+    const {servers, order, params:{serverId}} = this.props;
     return (
-      <div>
-        <ServersList
-          onSelectServer={this.selectServer}
-          selectedItem={server_id}
-          order={ids}
-          servers={servers}/>
-      </div>
+      <SortableServersList
+        distance={4}
+        // pressDelay={50}
+        onSortEnd={this.onSortEnd}
+        lockAxis="y"
+        onSelectServer={this.selectServer}
+        selectedItem={serverId}
+        order={order}
+        servers={servers}/>
     );
   }
 }
 const mapStateToProps = (state) =>({
-  ids:state.entities.servers.ids,
+  order:state.entities.servers.ids,
+  channelFirstId:state.entities.channels.ids[0],
   servers:state.entities.servers.items
 });
 

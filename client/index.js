@@ -18,26 +18,26 @@ import routes from './routes';
 const store = Store();
 socketEventsListeners(store);
 render(
-    <Provider store={store} >
-        <Router history={browserHistory}>
-            {routes}
-        </Router>
-    </Provider>,
-    document.getElementById('root')
+  <Provider store={store} >
+    <Router history={browserHistory}>
+      {routes}
+    </Router>
+  </Provider>,
+  document.getElementById('root')
 );
 
 
 
 
 //_______________________________________________________
-    /*
-    const ws = new WebSocket("ws://localhost:8082");
-    var sub = document.querySelector('#sub');
-    var msg = document.querySelector('#msg');
-    sub.onclick = function(e){
-    e.preventDefault();
-    console.log('sendmessage');
-    ws.send(msg.value);
+/*
+const ws = new WebSocket("ws://localhost:8082");
+var sub = document.querySelector('#sub');
+var msg = document.querySelector('#msg');
+sub.onclick = function(e){
+e.preventDefault();
+console.log('sendmessage');
+ws.send(msg.value);
 };
 
 ws.onmessage=function(e){

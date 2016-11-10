@@ -19,16 +19,16 @@ class MessageListContainer extends Component {
     this.registeredElements={};
   }
   componentWillMount(){
-    this.props.fetchMessages(this.props.params.channel_id)
+    this.props.fetchMessages(this.props.params.channelId)
     .then(()=> this.messageList.scrollView.scrollToBottom() );
-    this.props.selectChannel(this.props.params.channel_id);
+    this.props.selectChannel(this.props.params.channelId);
   }
   componentDidMount(){
     this.props.onMount(this.messageList);
   }
   componentWillReceiveProps(nextProps){
-    const {channel_id:prevId} = this.props.params;
-    const {channel_id:nextId} = nextProps.params;
+    const {channelId:prevId} = this.props.params;
+    const {channelId:nextId} = nextProps.params;
 
     if (prevId !== nextId) {
       this.handleSwitchChannel(prevId,nextId);
@@ -60,7 +60,6 @@ class MessageListContainer extends Component {
     this.props.saveScrollPosition(channelInfo);
     // this.props.saveLastVisibleMessage(prevId);
     this.props.selectChannel(nextId);
-
     this.props.fetchMessages(nextId).then(()=>{
 
       this.props.unsetChannelHasNewMessages(nextId);
@@ -77,12 +76,12 @@ class MessageListContainer extends Component {
 
   loadMoreBefore(oldScrollHeight){
     const view = this.messageList.scrollView;
-    this.props.loadMoreBefore(this.props.params.channel_id)
+    this.props.loadMoreBefore(this.props.params.channelId)
     .then(()=> view.scrollTop(view.getScrollHeight() - oldScrollHeight));
   }
 
   loadMoreAfter(){
-    this.props.loadMoreAfter(this.props.params.channel_id);
+    this.props.loadMoreAfter(this.props.params.channelId);
   }
   regElem(element){
     this.registeredElements[element.id] = element;
