@@ -6,9 +6,9 @@ $side-panel-width:200px;
   height: 100%;
   position: absolute;
   font-family: 'open sans';
-  *{
-    box-sizing: border-box;
-  }
+  // *{
+  //   box-sizing: border-box;
+  // }
   &__servers-list-place{
     background-color: #1e2124;
     height: 100%;
@@ -17,7 +17,8 @@ $side-panel-width:200px;
 
   }
   &__channels-list-place{
-    padding: 56px  0 80px;
+    padding: 56px  0 67px;
+    box-sizing: border-box;
 
     height: 100%;
 
@@ -43,16 +44,23 @@ $side-panel-width:200px;
     position: relative;
     padding-top: $header-height;
     background-color: #36393E;
+    box-sizing: border-box;
+
   }
 
   &__body{
     height: 100%;
     position: relative;
+    box-sizing: border-box;
     padding-right: $side-panel-width;
   }
   &__body-top{
     height: 100%;
     padding-bottom: $body-bottom-height;
+    box-sizing: border-box;
+    box-sizing: border-box;
+
+
   }
 
   &__body-bottom{
@@ -61,6 +69,8 @@ $side-panel-width:200px;
     bottom: 0;
     padding-right: $side-panel-width;
     background-color:  #36393E;
+    box-sizing: border-box;
+
   }
   &__side-panel{
     position: absolute;

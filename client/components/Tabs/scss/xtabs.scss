@@ -9,11 +9,17 @@
     background-color:#2e3136;
   }
   &__tab{
+        box-sizing: border-box;
     padding: 20px;
     cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    &:hover{
+      color:#fff;
+    }
   }
   &__tab.-active{
-    color:red;
+    color: #fff;
+    background-color: #25282c;
   }
   &__tab-pane{
     overflow: hidden;

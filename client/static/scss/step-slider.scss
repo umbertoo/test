@@ -1,0 +1,14 @@
+$form-width:500px;
+$form-height:500px;
+
+.step-slider{
+
+  &__body{
+    position: absolute;;
+  }
+  &__step{
+    display: inline-block;
+    width: $form-width;
+    height: $form-height;
+  }
+}

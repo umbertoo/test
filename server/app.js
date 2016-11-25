@@ -11,6 +11,7 @@ import socketServer from './socket-server';
 import helmet from 'helmet';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+
 //configs
 import passportCFG from './config/passport';
 import webpackConfig from '../webpack.config.js';
@@ -48,6 +49,8 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// console.log(multer);
+// app.use(multer({dest:'./uploads/'}));
 
 // app.use(session({
 //     store: new RedisStore({logErrors:true}),
@@ -56,6 +59,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 passportCFG(passport);
 app.use(passport.initialize());
+
 app.use('/', auth);
 app.use('/api', api);
 

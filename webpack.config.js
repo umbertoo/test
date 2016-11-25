@@ -10,6 +10,7 @@ const devFlagPlugin = new webpack.DefinePlugin({
 export default {
     devtool: '#eval',
     entry: [
+      "react-hot-loader/patch",
         'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
         './client/index.js'
     ],
@@ -26,7 +27,7 @@ export default {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loaders: ['react-hot', 'babel'],
+                loaders: ['babel'],
                 include: path.join(__dirname, 'client')
             },
             {

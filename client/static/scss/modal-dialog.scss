@@ -1,9 +1,18 @@
 .modal-dialog{
-  & * {
-    box-sizing: border-box;
-  }
-  &__window{
+  // & * {
+  //   box-sizing: border-box;
+  // }
 
+
+  &__window{
+    transition: all .3s;
+    transform: translate(-50%, -50%) scale(0.6,0.6);
+    opacity: 0.5;
+
+    &.-open{
+      opacity: 1 ;
+        // transform: scale(1,1);
+    }
   }
   &__overlay{
 

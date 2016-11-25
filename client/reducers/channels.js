@@ -2,29 +2,13 @@ import type from '../actions/common/types';
 import merge from 'lodash/merge';
 import without from 'lodash/without';
 import union from 'lodash/union';
+import unionIds from '../utils/unionIds.js';
 const initialState = {
   items: {},
   ids:[],
   isFetching: true,
   channelsWithNewMessages:[],
 };
-
-// case type.FETCH_CHANNELS_SUCCESS:
-// return {...state,
-//   ids: union(action.payload.result, state.ids)
-// };
-// case type.EDIT_CHANNELS_ORDER_SUCCESS:
-// return {...state,
-//   ids: action.payload
-// };
-// case type.CREATE_CHANNEL_SUCCESS:
-// return {...state,
-//   ids: [action.payload.result, ...state.ids]
-// };
-// case type.DELETE_CHANNEL_SUCCESS:
-// return {...state,
-//   ids: without(state.ids, action.channelId)
-// };
 
 export const channels = (state = initialState, action) => {
 
@@ -50,7 +34,12 @@ export const channels = (state = initialState, action) => {
     };
     case type.DELETE_CHANNEL_SUCCESS:
     return {...state,
-      // ids: without(state.ids, action.channelId),
+      items: {
+        ...state.items, [action.channelId]:{
+          ...state.items[action.channelId],
+          deleted:true
+        }
+      },
       isFetching:false
     };
     //------------------------------------------------------------------------------
@@ -86,24 +75,24 @@ export const channels = (state = initialState, action) => {
       error:action.error
     };
     case type.FETCH_CHANNELS_SUCCESS:
+    case type.FETCH_SERVERS_SUCCESS:
+    case type.CREATE_SERVER_SUCCESS:
     return {...state,
       items: merge({}, state.items, action.payload.entities.channels),
-      ids: union(action.payload.result, state.ids),
+      ids: unionIds(action.payload.result, state.ids),
       isFetching:false
-    };
-    case type.FETCH_SERVERS_SUCCESS:
-    return {...state,
-      items:merge({}, state.items, action.payload.entities.channels)
     };
 
     //------------------------------------------------------------------------------
     case type.SET_CHANNEL_HAS_NEW_MESSAGES:
     return {...state,
-      channelsWithNewMessages:union(state.channelsWithNewMessages,[action.channelId])};
-      case type.UNSET_CHANNEL_HAS_NEW_MESSAGES:
-      return {...state,
-        channelsWithNewMessages:without(state.channelsWithNewMessages, action.channelId)};
-
-        default: return state;
-      }
+      channelsWithNewMessages:union(state.channelsWithNewMessages,[action.channelId])
     };
+    case type.UNSET_CHANNEL_HAS_NEW_MESSAGES:
+    return {...state,
+      channelsWithNewMessages:without(state.channelsWithNewMessages, action.channelId)
+    };
+
+    default: return state;
+  }
+};

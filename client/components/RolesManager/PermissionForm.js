@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PermissionItem from './PermissionItem';
 import autoBind from 'react-autobind';
-import './scss/permission-item.scss';
+import './scss/xpermission-item.scss';
 
 class PermissionForm extends Component {
   constructor(props){
@@ -30,7 +30,7 @@ class PermissionForm extends Component {
   }
   render(){
     const { actions, resources, attributes } = this.props;
-    return (<div className="permission-form">
+    return (<div className="xpermission-form">
       <PermissionItem
         isDeletable={false}
 
@@ -48,10 +48,10 @@ class PermissionForm extends Component {
         resources={resources}
         attributes={attributes}
     />
-      <input className="permission-form__save-btn" type="button"
+      <input className="xpermission-form__save-btn" type="button"
         value="save"
         onClick={this.onSave}/>
-      <input className="permission-form__cancel-btn" type="button"
+      <input className="xpermission-form__cancel-btn" type="button"
         value="cancel"
         onClick={this.props.onCancel}/>
 

@@ -1,6 +1,42 @@
+$user-block-heigth: 67px;
+
 .user-block{
   color: #fff;
-  &__{
+  box-sizing: border-box;
+  padding-right: 50px;
+  padding-left: 20px;
+  position: relative;
+  border-top: 1px solid rgba(0,0,0,0.23);
+  height: $user-block-heigth;
+  &__avatar{
+    height: 100%;
+    float: left;
+    line-height:  $user-block-heigth;
 
+    & .avatar{
+      vertical-align: middle;
+      display: inline-block;
+      height: 36px;
+      width: 36px;
+    }
+  }
+  &__name{
+    height: 100%;
+    width:114px;
+    padding-left: 20px;
+    float: left;
+    line-height:  $user-block-heigth;
+
+  }
+  &__settings-btn{
+    cursor: pointer;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    right:0;
+    width: 40px;
+    height: 100%;
+    line-height:  $user-block-heigth;
+    text-align: center;
   }
 }

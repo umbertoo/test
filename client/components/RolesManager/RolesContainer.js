@@ -7,7 +7,11 @@ import RoleForm from './RoleForm';
 import autoBind from 'react-autobind';
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "../../actions/common/schemas";
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import {
+  SortableContainer,
+   SortableElement,
+    arrayMove
+  } from 'react-sortable-hoc';
 
 const headers = {
   'Accept': 'application/json',

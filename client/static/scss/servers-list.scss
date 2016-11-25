@@ -1,2 +1,20 @@
 .servers-list{
+  &__add-btn{
+    background-color: rgba(0,0,0,0);
+    font-size: 40px;
+    color: rgba(255,255,255,0.3);
+    width: 80px;
+    height: 80px;
+    box-sizing: border-box;
+    border: 0px solid #111;
+    font-family: 'open sans';
+    font-weight: 300;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    transition: color .2s;
+    &:hover{
+      color:#fff
+    }
+  }
 }

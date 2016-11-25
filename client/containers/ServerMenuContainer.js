@@ -2,26 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
 import ServerMenu from '../components/ServerMenu';
-import {withRouter} from 'react-router';
-import autoBind from 'react-autobind';
 import ModalDialog from '../components/ModalDialog';
 import ServerSettings from '../components/ServerSettings';
-
+import Link from 'react-router/Link';
 class ServerMenuContainer extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-    this.state={
-      openServerSettings:false
-    };
-  }
-  toggleServerSettings(){
+  state = {
+    openServerSettings:false
+  };
+  toggleServerSettings=()=>{
     this.setState({
       openServerSettings:!this.state.openServerSettings
     });
   }
-
-  onSelect(e){
+  onSelect=(e)=>{
     switch (e) {
       case 'settings':
       this.toggleServerSettings();
@@ -32,10 +25,15 @@ class ServerMenuContainer extends Component {
     }
   }
   render(){
-    const {server}= this.props;
+    const {server} = this.props;
     const {openServerSettings }=this.state;
     return (
       <div>
+        {server
+          ? <ServerMenu onSelect={this.onSelect} server={server}/>
+          : null
+        }
+        <Link to={'/channels/8'}> SERVER 8</Link>
         {openServerSettings &&
           <ModalDialog
             showHeader={false}
@@ -45,14 +43,13 @@ class ServerMenuContainer extends Component {
             <ServerSettings server={server}/>
           </ModalDialog>
         }
-        {server ? <ServerMenu onSelect={this.onSelect} server={server}/>  : null}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state,props) =>({
-  server:state.entities.servers.items[props.params.serverId]
+  server:state.entities.servers.items[state.ui.params.serverId]
 });
 
-export default withRouter(connect(mapStateToProps, Actions)(ServerMenuContainer));
+export default connect(mapStateToProps, Actions)(ServerMenuContainer);

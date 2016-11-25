@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import * as actions from '../actions';
+
 import MessageList from '../components/MessageList';
 import ChannelListContainer from '../containers/ChannelListContainer';
 import MessageForm from '../components/MessageForm';
@@ -9,44 +11,36 @@ import MessageListContainer from '../containers/MessageListContainer';
 import ChatHeaderContainer from '../containers/ChatHeaderContainer';
 import ServersListContainer from '../containers/ServersListContainer';
 import ServerMenuContainer from '../containers/ServerMenuContainer';
+import UserBlockContainer from '../containers/UserBlockContainer';
 import '../static/scss/chat.scss';
-import '../static/scss/server-menu.scss';
-import autoBind from 'react-autobind';
-import * as actions from '../actions';
 import { socket } from '../actions/common/socketEvents';
-import { withRouter } from 'react-router';
-import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
-import UserBlock from '../components/UserBlock';
-
+import syncParamsWithStore from '../utils/syncParamsWithStore';
 
 class Chat extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-    this.state={
-      message_input_height:66,
-      sidePanelIsOpen:JSON.parse(localStorage.getItem('sidePanelIsOpen'))
-    };
-    this.onTypingMessage = throttle(this.onTypingMessage, 8000, {trailing :false});
+  state={
+    message_input_height:66,
+    sidePanelIsOpen:JSON.parse(localStorage.sidePanelIsOpen)
   }
+  onTypingMessage=()=>{
+    this.props.sendTyping(this.props.params.channelId);
+  }
+  onTypingMessage = throttle(this.onTypingMessage, 8000, {trailing :false})
   componentWillMount(){
     this.props.fetchServers();
     this.props.fetchCurrentUser();
   }
-  sendMessage(text){
+  sendMessage=(text)=>{
     if(text){
       const {channelId, serverId} = this.props.params;
-      console.log(serverId,'serverId');
       this.props.createMessage({text,channelId,serverId })
       .then(msg => {
         this.messageList.scrollView.scrollToBottom();
         this.onTypingMessage.cancel();
-
       });
     }
   }
-  handleChangeHeightMessageForm(height){
+  handleChangeHeightMessageForm=(height)=>{
     const view =this.messageList.scrollView;
     let callback = ()=>{};
     //if scrollOnBottom
@@ -57,11 +51,8 @@ class Chat extends Component {
       message_input_height:this.refs.messageForm.offsetHeight
     }, callback);
   }
-  onTypingMessage(){
-    this.props.sendTyping(this.props.params.channelId);
-    console.log('onTypingMessage...');
-  }
-  onClickSidePanel(){
+
+  onClickSidePanel=()=>{
     this.setState({
       sidePanelIsOpen:!this.state.sidePanelIsOpen
     },()=> {
@@ -69,8 +60,7 @@ class Chat extends Component {
     });
   }
   render(){
-    const { params:{channelId} , user} = this.props,
-    { message_input_height, sidePanelIsOpen } = this.state,
+    const { message_input_height, sidePanelIsOpen } = this.state,
     paddingRight = sidePanelIsOpen ? 200+'px' : 0;
     return (
       <div className="chat">
@@ -81,7 +71,7 @@ class Chat extends Component {
           <div className="chat__channels-list-place">
             <ServerMenuContainer />
             <ChannelListContainer />
-            <UserBlock user={user}/>
+            <UserBlockContainer />
           </div>
         </div>
         <div className="chat__col-right">
@@ -89,14 +79,15 @@ class Chat extends Component {
           <div className="chat__body" style={{paddingRight}}>
             <div className="chat__body-top"
               style={{paddingBottom:message_input_height+'px'}}>
-              <MessageListContainer onMount={c=>this.messageList=c} />
+              <MessageListContainer
+                onMount={c=>this.messageList=c} />
             </div>
             <div ref="messageForm" className="chat__body-bottom" style={{paddingRight}}>
               <MessageForm
                 onTypingMessage={this.onTypingMessage}
                 onChangeHeight={this.handleChangeHeightMessageForm}
                 onSubmit={this.sendMessage} />
-              <TypingIndicator channelId={channelId} />
+              <TypingIndicator />
             </div>
             {sidePanelIsOpen &&
               <div className="chat__side-panel">
@@ -104,13 +95,10 @@ class Chat extends Component {
               </div>
             }
           </div>
-
         </div>
       </div>
     );
   }
 }
-const mapStateToProps = (state)=>({
-  user:state.auth.user
-});
-export default connect(mapStateToProps,actions)(withRouter(Chat));
+
+export default syncParamsWithStore(connect(null,actions)(Chat));

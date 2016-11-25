@@ -1,7 +1,11 @@
 import { checkStatus } from "../check_status_response";
-const headers = {
+export const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
+    'Authorization': 'JWT '+localStorage.getItem('token')
+};
+export const imageHeaders = {
+    'Accept': 'application/json',
     'Authorization': 'JWT '+localStorage.getItem('token')
 };
 console.log(localStorage.getItem('token'));
@@ -10,6 +14,7 @@ const Channel = {};
 const Message = {};
 const Server = {};
 const Role = {};
+const Permission = {};
 const User = {};
 const auth={};
 
@@ -30,6 +35,13 @@ fetch('/signup',{
 
 User.get = () =>
 fetch('/api/user',{headers}).then(checkStatus).then(res=> res.json());
+
+User.edit = (user) =>
+fetch('/api/user',{
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(user)
+}).then(checkStatus).then(res=> res.json());
 
 Message.create = message =>
 fetch('/api/messages',{
@@ -101,6 +113,13 @@ fetch(`/api/servers?limit=${limit}&offset=${offset}`,
   {headers}
 ).then(checkStatus).then(res=> res.json());
 
+Server.create = server =>
+fetch('/api/servers',{
+    method: 'POST',
+    headers,
+    body: JSON.stringify(server)
+}).then(checkStatus).then(res=> res.json());
+
 
 Server.editOrder = (order) =>
 fetch('/api/servers/order',{
@@ -126,6 +145,30 @@ Role.getByServer = serverId =>
 fetch('/api/servers/'+serverId+'/roles', {headers})
 .then(checkStatus).then(res=> res.json());
 
+Role.create = (name, serverId) =>
+fetch('/api/servers/'+serverId+'/roles',{
+    method: 'POST',
+    headers,
+    body: JSON.stringify({name})
+}).then(checkStatus).then(res=> res.json());
+
+Role.delete = (roleId, serverId) =>
+fetch('/api/servers/'+serverId+'/roles/'+roleId,{
+    method: 'DELETE',
+    headers
+}).then(checkStatus).then(res=> res.json());
+
+Role.edit = (role, serverId) =>
+fetch('/api/servers/'+serverId+'/roles/'+role.id,{
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(role)
+}).then(checkStatus).then(res=> res.json());
+
+Permission.get = () =>
+fetch('/api/permissions', {headers})
+.then(checkStatus).then(res=> res.json());
+
 // fetch('/api/notes/' + id, {
 //     method: 'PUT',
 //     headers,
@@ -141,5 +184,5 @@ fetch('/api/servers/'+serverId+'/roles', {headers})
 //
 //
 //
-const API = {Channel, Message, auth , User, Server, Role};
+const API = {Channel, Message, auth , User, Server, Role, Permission};
 export default API;

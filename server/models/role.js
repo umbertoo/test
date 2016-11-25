@@ -5,11 +5,12 @@ export const Role = db.define('role', {
   name: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  color:{
+    type: Sequelize.STRING,
+    defaultValue: "99aab5"
   }
 });
-
-
-
 
 export const ServerRole = db.define('serverRole', {
   id: {

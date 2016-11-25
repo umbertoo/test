@@ -22,7 +22,10 @@ router.get('/roles/:roleId/permissions',async(req, res, next)=>{
   try {
     const { roleId } = req.params;
     const role = await Role.findOne({
-      where:{id:roleId}, nclude:[{model:Permission}]
+      where:{id:roleId},
+      include:[{model:Permission}],
+
+      order:[[Permission, 'order']]
     });
     if (!role) return next(404);
 

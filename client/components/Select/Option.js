@@ -1,16 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import autoBind from 'react-autobind';
 
 class Option extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-  }
-  onClick(){
+  onClick=()=>{
     const {option} = this.props;
     this.props.onClick(option);
   }
-  onDelete(){
+  onDelete=()=>{
     const {option} = this.props;
     this.props.onDelete(option);
   }

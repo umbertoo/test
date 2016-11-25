@@ -74,6 +74,8 @@ router.delete('/channels/:channelId', async(req, res, next)=>{
     const channel = await Channel.findById(channelId);
     if(!channel) return next(404);
 
+    if(channel.isGeneral) return next(403);
+
     if(await rbac.can(roles[channel.serverId], 'channel:delete')) {
       await channel.destroy();
       res.json(channel);

@@ -6,7 +6,6 @@ import Message from './Message';
 import TimeDivider from './TimeDivider';
 import { Scrollbars } from 'react-custom-scrollbars';
 import '../static/scss/message-list.scss';
-import autoBind from 'react-autobind';
 
 import { socket } from '../actions/common/socketEvents';
 import shallowEqual from 'shallowequal';
@@ -14,15 +13,11 @@ import EmojiPicker from './EmojiPicker';
 
 
 class MessageList extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-  }
-  isScrollOnBottom(){
+  isScrollOnBottom=()=>{
     const view = this.scrollView;
     return view.getScrollTop()+view.getClientHeight()==view.getScrollHeight();
   }
-  onScrollStop(){
+  onScrollStop=()=>{
     this.props.onScrollStop();
     const view = this.scrollView;
     if(view.getScrollTop()==0){
@@ -38,7 +33,7 @@ class MessageList extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !shallowEqual(this.props,nextProps);
   }
-  renderMessages(){
+  renderMessages=()=>{
     let prevDate;
     let userId;
     const yesterday = moment().add(-1,'days');
@@ -74,8 +69,8 @@ class MessageList extends Component {
       list.push (
         <Message
           isEdited={msg.createdAt!==msg.updatedAt}
-          isEditable={this.props.editableMessage==msg.id}
-          canBeEditable={this.props.currentUser.id==msg.userId}
+          isEditable={this.props.editableMessageId==msg.id}
+          canBeEditable={this.props.currentUser==msg.userId}
 
           minimaized={minimaized}
 
@@ -97,6 +92,7 @@ class MessageList extends Component {
     }
   );
 
+
   return list;
 }
 render(){
@@ -116,4 +112,4 @@ render(){
 }
 }
 
-export default MessageList;
+ export default MessageList;

@@ -3,11 +3,28 @@
   color: #fff;
   box-sizing: border-box;
   width: 100%;
-
+  border-bottom: 1px solid rgba(0,0,0,0.2);
   &__btn{
     height: 100%;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    font-family:'open sans';
+    transition: background-color .2s;
+
+    &:hover{
+      background-color: rgba(0,0,0,0.16);
+    }
+  }
+  &__title{
+    margin: 0 20px;
+    width: 180px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 56px;
+    
   }
   &__arrow{
     border-color: #999 transparent transparent;
@@ -19,8 +36,8 @@
   }
   &__arrow-place{
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 10px;
+    top: 10px;
     padding: 6px;
   }
   &__drop{

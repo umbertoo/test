@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 //configs
 import config from './main';
 //models
-import { User, Role, ServerRole } from '../models/';
+import { User, Role, ServerRole, Server } from '../models/';
 
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeader(),
@@ -19,19 +19,19 @@ export default passport => {
       const user = await User.findOne({
         where:{ id: jwt_payload.user.id },
         include:[{
-          model:ServerRole, attributes:['serverId'],
-          include:[Role]
+          model:Role, include:[{model:Server}]
         }]
       });
       if(!user) return done(null, false); // or you could create a new account;
 
       const roles = {};
-      user.serverRoles.forEach(e=>{
-        roles[e.serverId] = [...roles[e.serverId] || [], e.role.name];
-      });
+      user.roles.forEach(role=>
+        role.servers.forEach(server=>
+            roles[server.id] = [...roles[server.id] || [], role.name]
+        )
+      );
       const {name, id, email, avatar} = user;
       const newUser = {id, name , email, roles};
-      console.log(newUser.roles);
       done(null, newUser);
 
     } catch (e) {

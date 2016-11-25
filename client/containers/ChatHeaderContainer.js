@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
-import {withRouter} from 'react-router';
 import '../static/scss/chat-header.scss';
 import autoBind from 'react-autobind';
 
 class ChatHeaderContainer extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-  }
-  onClickSidePanel(){
+  onClickSidePanel=()=>{
     console.log('onClickSidePanel');
   }
   render(){
-    const {channels, params:{channelId}} = this.props;
+    const {channels, channelId} = this.props;
     return (
       <div className="chat-header">
         {channels[channelId] &&
@@ -30,7 +25,8 @@ class ChatHeaderContainer extends Component {
 }
 
 const mapStateToProps = (state) =>({
+  channelId:state.ui.params.channelId,
   channels:state.entities.channels.items,
 });
 
-export default connect(mapStateToProps, Actions)(withRouter(ChatHeaderContainer));
+export default connect(mapStateToProps, Actions)(ChatHeaderContainer);

@@ -11,6 +11,8 @@ $header-height: 56px;
         display: inline-block;
         height: $header-height;
         padding: 18px 10px 10px 20px;
+        box-sizing: border-box;
+        
         color:#fff;
         margin: 0;
         font-size: 18px;

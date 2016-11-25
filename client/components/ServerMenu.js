@@ -6,7 +6,9 @@ const ServerMenu = ({server, onSelect}) => {
   return (
     <DropDown className="server-menu" position="left">
       <div className="server-menu__btn">
-        {server.name}
+        <div className="server-menu__title">
+          {server.name}
+        </div>
         <div className="server-menu__arrow-place">
           <div className="server-menu__arrow"/>
         </div>

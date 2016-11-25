@@ -1,0 +1,14 @@
+.roles-list {
+  width: 200px;
+  height: 100%;
+  float: left;
+  border-right: 1px solid #eaeaea;
+  box-sizing: border-box;
+  &__item {
+      padding: 10px 30px;
+    cursor: pointer;
+  }
+  &__item.-active {
+    background-color: #f1f1f1
+  }
+}

@@ -1,0 +1,2 @@
+createdAt,updatedAt,serverId,ownerId
+"2016-10-14 19:30:33","2016-10-14 19:30:33",1,1

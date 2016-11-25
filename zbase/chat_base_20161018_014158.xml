@@ -1,0 +1,1477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tables>
+
+<table name="actions">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">edit</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">create</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+	</record>
+	<record>
+		<field name="id">3</field>
+		<field name="name">delete</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+	</record>
+</table>
+<table name="channels">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="description" type="VarChar" length="255"/>
+		<field name="order" type="Long" length="11"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="serverId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">channel2</field>
+		<field name="description">second channel</field>
+		<field name="order">1</field>
+		<field name="createdAt">2016-10-14 19:26:51</field>
+		<field name="updatedAt">2016-10-14 19:26:51</field>
+		<field name="serverId">1</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">channel1</field>
+		<field name="description">first channel</field>
+		<field name="order">1</field>
+		<field name="createdAt">2016-10-14 19:26:51</field>
+		<field name="updatedAt">2016-10-14 19:26:51</field>
+		<field name="serverId">1</field>
+	</record>
+	<record>
+		<field name="id">3</field>
+		<field name="name">channel3</field>
+		<field name="description">third channel</field>
+		<field name="order">1</field>
+		<field name="createdAt">2016-10-14 19:26:51</field>
+		<field name="updatedAt">2016-10-14 19:26:51</field>
+		<field name="serverId">1</field>
+	</record>
+</table>
+<table name="messages">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="text" type="VarChar" length="255"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="channelId" type="Long" length="11"/>
+		<field name="serverId" type="Long" length="11"/>
+		<field name="userId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="id">2</field>
+		<field name="text">m@@essaa!!!!qqqqqqqqqqqqrrraerrdddd2222edge 222 :innocent: </field>
+		<field name="createdAt">2016-09-24 22:45:51</field>
+		<field name="updatedAt">2016-10-15 20:19:46</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">5</field>
+		<field name="text">Businesses of all swwwewizes use GitHuaaab to support their aaaa development process adfdnd securely build software.  :thinking_face: www</field>
+		<field name="createdAt">2016-09-25 13:06:40</field>
+		<field name="updatedAt">2016-10-15 19:30:42</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">1</field>
+	</record>
+	<record>
+		<field name="id">6</field>
+		<field name="text"> hobbyists to professionals, GitHub helps developers simplify the way they build software.  :sunglasses:   :money_mouth_face: </field>
+		<field name="createdAt">2016-09-25 13:08:46</field>
+		<field name="updatedAt">2016-09-25 13:08:46</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">1</field>
+	</record>
+	<record>
+		<field name="id">7</field>
+		<field name="text">GitHub fosters a fast,   :hugging_face: flexible, and collaborative development process that lets you work on your own or with others</field>
+		<field name="createdAt">2016-09-25 13:12:26</field>
+		<field name="updatedAt">2016-09-25 13:12:26</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">1</field>
+	</record>
+	<record>
+		<field name="id">8</field>
+		<field name="text">One platform, from staddrt to finish  :+1: </field>
+		<field name="createdAt">2016-09-25 13:13:05</field>
+		<field name="updatedAt">2016-10-15 17:20:03</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">1</field>
+	</record>
+	<record>
+		<field name="id">9</field>
+		<field name="text">Use GitHub to create a personal pr  :baby_chick: oject, whether you want to experiment with a new programming language or host your life’s work.   :expressionless: </field>
+		<field name="createdAt">2016-09-25 13:13:32</field>
+		<field name="updatedAt">2016-09-25 13:13:32</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">1</field>
+	</record>
+	<record>
+		<field name="id">10</field>
+		<field name="text">hello people  :raised_hands: </field>
+		<field name="createdAt">2016-09-25 13:14:59</field>
+		<field name="updatedAt">2016-09-25 13:14:59</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">11</field>
+		<field name="text">what are you going to do?  :snowboarder: </field>
+		<field name="createdAt">2016-09-25 13:19:00</field>
+		<field name="updatedAt">2016-09-25 13:19:00</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">12</field>
+		<field name="text"> :timer_clock:  time </field>
+		<field name="createdAt">2016-09-25 13:21:31</field>
+		<field name="updatedAt">2016-09-25 13:21:31</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">13</field>
+		<field name="text">Millions of developers use GitHub to build personal projects, support their businesses, and work together on open source technologies.</field>
+		<field name="createdAt">2016-09-25 13:24:11</field>
+		<field name="updatedAt">2016-09-25 13:24:11</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">14</field>
+		<field name="text"> :upside_down_face:  How people build software</field>
+		<field name="createdAt">2016-09-25 13:24:20</field>
+		<field name="updatedAt">2016-09-25 13:24:20</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">15</field>
+		<field name="text"> :no_mouth:  :pear: </field>
+		<field name="createdAt">2016-09-25 13:28:32</field>
+		<field name="updatedAt">2016-09-25 13:28:32</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">16</field>
+		<field name="text">See what people are working on</field>
+		<field name="createdAt">2016-09-25 13:29:04</field>
+		<field name="updatedAt">2016-09-25 13:29:04</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">17</field>
+		<field name="text">Learn how developers build software</field>
+		<field name="createdAt">2016-09-25 13:29:08</field>
+		<field name="updatedAt">2016-09-25 13:29:08</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">18</field>
+		<field name="text">Share your work with the world</field>
+		<field name="createdAt">2016-09-25 13:29:12</field>
+		<field name="updatedAt">2016-09-25 13:29:12</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">19</field>
+		<field name="text">Share your project so others can use it or to get feedback from the GitHub community.    :sunglasses: :earth_africa:  :earth_africa: :earth_africa: </field>
+		<field name="createdAt">2016-09-25 13:29:41</field>
+		<field name="updatedAt">2016-09-25 13:29:41</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">20</field>
+		<field name="text">There is a lot happening on GitHub. Here are a few ways to get started.</field>
+		<field name="createdAt">2016-09-25 13:29:52</field>
+		<field name="updatedAt">2016-09-25 13:29:52</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">21</field>
+		<field name="text">1wewq :sunglasses: </field>
+		<field name="createdAt">2016-09-25 13:31:11</field>
+		<field name="updatedAt">2016-09-26 16:27:20</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">22</field>
+		<field name="text">2</field>
+		<field name="createdAt">2016-09-25 13:31:13</field>
+		<field name="updatedAt">2016-09-25 13:31:13</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">23</field>
+		<field name="text">3we wqe  :face_with_rolling_eyes:  </field>
+		<field name="createdAt">2016-09-25 13:31:13</field>
+		<field name="updatedAt">2016-09-26 16:27:30</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">24</field>
+		<field name="text">4</field>
+		<field name="createdAt">2016-09-25 13:31:14</field>
+		<field name="updatedAt">2016-09-25 13:31:14</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">25</field>
+		<field name="text">5</field>
+		<field name="createdAt">2016-09-25 13:31:15</field>
+		<field name="updatedAt">2016-09-25 13:31:15</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">26</field>
+		<field name="text">6</field>
+		<field name="createdAt">2016-09-25 13:31:16</field>
+		<field name="updatedAt">2016-09-25 13:31:16</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">27</field>
+		<field name="text">7</field>
+		<field name="createdAt">2016-09-25 13:31:16</field>
+		<field name="updatedAt">2016-09-25 13:31:16</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">28</field>
+		<field name="text">8</field>
+		<field name="createdAt">2016-09-25 13:31:17</field>
+		<field name="updatedAt">2016-09-25 13:31:17</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">29</field>
+		<field name="text">9</field>
+		<field name="createdAt">2016-09-25 13:31:17</field>
+		<field name="updatedAt">2016-09-25 13:31:17</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">30</field>
+		<field name="text">0</field>
+		<field name="createdAt">2016-09-25 13:31:19</field>
+		<field name="updatedAt">2016-09-25 13:31:19</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">31</field>
+		<field name="text">1</field>
+		<field name="createdAt">2016-09-25 13:31:21</field>
+		<field name="updatedAt">2016-09-25 13:31:21</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">32</field>
+		<field name="text">2</field>
+		<field name="createdAt">2016-09-25 13:31:22</field>
+		<field name="updatedAt">2016-09-25 13:31:22</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">33</field>
+		<field name="text">3</field>
+		<field name="createdAt">2016-09-25 13:31:23</field>
+		<field name="updatedAt">2016-09-25 13:31:23</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">34</field>
+		<field name="text">4</field>
+		<field name="createdAt">2016-09-25 13:31:24</field>
+		<field name="updatedAt">2016-09-25 13:31:24</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">35</field>
+		<field name="text">5</field>
+		<field name="createdAt">2016-09-25 13:31:24</field>
+		<field name="updatedAt">2016-09-25 13:31:24</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">36</field>
+		<field name="text">6</field>
+		<field name="createdAt">2016-09-25 13:31:25</field>
+		<field name="updatedAt">2016-09-25 13:31:25</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">37</field>
+		<field name="text">7</field>
+		<field name="createdAt">2016-09-25 13:31:26</field>
+		<field name="updatedAt">2016-09-25 13:31:26</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">38</field>
+		<field name="text">8</field>
+		<field name="createdAt">2016-09-25 13:31:26</field>
+		<field name="updatedAt">2016-09-25 13:31:26</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">39</field>
+		<field name="text">9</field>
+		<field name="createdAt">2016-09-25 13:31:27</field>
+		<field name="updatedAt">2016-09-25 13:31:27</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">40</field>
+		<field name="text">1</field>
+		<field name="createdAt">2016-09-25 13:31:30</field>
+		<field name="updatedAt">2016-09-25 13:31:30</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">41</field>
+		<field name="text">2</field>
+		<field name="createdAt">2016-09-25 13:31:31</field>
+		<field name="updatedAt">2016-09-25 13:31:31</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">42</field>
+		<field name="text">3yuy</field>
+		<field name="createdAt">2016-09-25 13:31:32</field>
+		<field name="updatedAt">2016-09-26 19:54:39</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">43</field>
+		<field name="text">4</field>
+		<field name="createdAt">2016-09-25 13:31:32</field>
+		<field name="updatedAt">2016-09-25 13:31:32</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">44</field>
+		<field name="text">5</field>
+		<field name="createdAt">2016-09-25 13:31:33</field>
+		<field name="updatedAt">2016-09-25 13:31:33</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">45</field>
+		<field name="text">6asda :unamused: e</field>
+		<field name="createdAt">2016-09-25 13:31:34</field>
+		<field name="updatedAt">2016-09-26 17:52:20</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">46</field>
+		<field name="text">731512  :heart_eyes: </field>
+		<field name="createdAt">2016-09-25 13:31:35</field>
+		<field name="updatedAt">2016-09-26 17:54:55</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">47</field>
+		<field name="text"> :pray:  sssasda</field>
+		<field name="createdAt">2016-09-25 13:31:36</field>
+		<field name="updatedAt">2016-09-26 19:56:07</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">48</field>
+		<field name="text">9ssdf</field>
+		<field name="createdAt">2016-09-25 13:31:37</field>
+		<field name="updatedAt">2016-09-26 18:05:07</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">49</field>
+		<field name="text">0</field>
+		<field name="createdAt">2016-09-25 13:31:38</field>
+		<field name="updatedAt">2016-09-25 13:31:38</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">50</field>
+		<field name="text">30------</field>
+		<field name="createdAt">2016-09-25 13:32:23</field>
+		<field name="updatedAt">2016-09-25 13:32:23</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">51</field>
+		<field name="text">1</field>
+		<field name="createdAt">2016-09-25 13:32:52</field>
+		<field name="updatedAt">2016-09-25 13:32:52</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">52</field>
+		<field name="text">2</field>
+		<field name="createdAt">2016-09-25 13:32:53</field>
+		<field name="updatedAt">2016-09-25 13:32:53</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">53</field>
+		<field name="text">3</field>
+		<field name="createdAt">2016-09-25 13:32:54</field>
+		<field name="updatedAt">2016-09-25 13:32:54</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">54</field>
+		<field name="text">4</field>
+		<field name="createdAt">2016-09-25 13:32:55</field>
+		<field name="updatedAt">2016-09-25 13:32:55</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">55</field>
+		<field name="text">5r</field>
+		<field name="createdAt">2016-09-25 13:32:55</field>
+		<field name="updatedAt">2016-09-26 16:06:26</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">56</field>
+		<field name="text">6d</field>
+		<field name="createdAt">2016-09-25 13:32:56</field>
+		<field name="updatedAt">2016-09-26 15:51:42</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">57</field>
+		<field name="text">7</field>
+		<field name="createdAt">2016-09-25 13:32:57</field>
+		<field name="updatedAt">2016-09-25 13:32:57</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">58</field>
+		<field name="text">8 алоха</field>
+		<field name="createdAt">2016-09-25 13:32:58</field>
+		<field name="updatedAt">2016-09-26 16:10:42</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">59</field>
+		<field name="text">9</field>
+		<field name="createdAt">2016-09-25 13:32:59</field>
+		<field name="updatedAt">2016-09-25 13:32:59</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">60</field>
+		<field name="text">0</field>
+		<field name="createdAt">2016-09-25 13:33:00</field>
+		<field name="updatedAt">2016-09-25 13:33:00</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">61</field>
+		<field name="text">41</field>
+		<field name="createdAt">2016-09-25 13:33:40</field>
+		<field name="updatedAt">2016-09-25 13:33:40</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">62</field>
+		<field name="text">42</field>
+		<field name="createdAt">2016-09-25 13:33:42</field>
+		<field name="updatedAt">2016-09-25 13:33:42</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">63</field>
+		<field name="text">43</field>
+		<field name="createdAt">2016-09-25 13:33:44</field>
+		<field name="updatedAt">2016-09-25 13:33:44</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">64</field>
+		<field name="text">44</field>
+		<field name="createdAt">2016-09-25 13:33:45</field>
+		<field name="updatedAt">2016-09-25 13:33:45</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">65</field>
+		<field name="text">45</field>
+		<field name="createdAt">2016-09-25 13:33:46</field>
+		<field name="updatedAt">2016-09-25 13:33:46</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">66</field>
+		<field name="text">46</field>
+		<field name="createdAt">2016-09-25 13:33:48</field>
+		<field name="updatedAt">2016-09-25 13:33:48</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">67</field>
+		<field name="text">47</field>
+		<field name="createdAt">2016-09-25 13:33:49</field>
+		<field name="updatedAt">2016-09-25 13:33:49</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">68</field>
+		<field name="text">провекаewrew</field>
+		<field name="createdAt">2016-09-25 14:27:57</field>
+		<field name="updatedAt">2016-10-03 18:35:59</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">69</field>
+		<field name="text"> :face_with_rolling_eyes: </field>
+		<field name="createdAt">2016-09-25 14:28:07</field>
+		<field name="updatedAt">2016-09-25 14:28:07</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">70</field>
+		<field name="text"> :sunglasses: 123wwwjjj оп оп</field>
+		<field name="createdAt">2016-09-26 11:29:20</field>
+		<field name="updatedAt">2016-09-26 16:10:28</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">71</field>
+		<field name="text">werewr456</field>
+		<field name="createdAt">2016-09-26 15:41:43</field>
+		<field name="updatedAt">2016-09-26 15:53:58</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">72</field>
+		<field name="text">kjkl</field>
+		<field name="createdAt">2016-09-27 08:00:05</field>
+		<field name="updatedAt">2016-09-27 08:00:05</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">73</field>
+		<field name="text">34\</field>
+		<field name="createdAt">2016-09-27 08:02:06</field>
+		<field name="updatedAt">2016-09-27 08:02:06</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">74</field>
+		<field name="text">rwerJ</field>
+		<field name="createdAt">2016-09-27 08:08:57</field>
+		<field name="updatedAt">2016-10-03 18:59:36</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">75</field>
+		<field name="text">wqew :kissing_heart: </field>
+		<field name="createdAt">2016-09-27 08:14:32</field>
+		<field name="updatedAt">2016-09-27 08:14:32</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">76</field>
+		<field name="text">привет)</field>
+		<field name="createdAt">2016-09-27 08:17:39</field>
+		<field name="updatedAt">2016-09-27 08:17:39</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">78</field>
+		<field name="text">234</field>
+		<field name="createdAt">2016-09-27 09:37:54</field>
+		<field name="updatedAt">2016-09-27 09:37:54</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">79</field>
+		<field name="text">ewew :thinking_face: &#10;</field>
+		<field name="createdAt">2016-09-27 10:01:43</field>
+		<field name="updatedAt">2016-09-27 10:01:43</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">80</field>
+		<field name="text">привет  :face_with_rolling_eyes: </field>
+		<field name="createdAt">2016-09-27 12:23:25</field>
+		<field name="updatedAt">2016-09-27 12:23:25</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">81</field>
+		<field name="text"> :kissing_closed_eyes:  попытка 2</field>
+		<field name="createdAt">2016-09-27 12:23:53</field>
+		<field name="updatedAt">2016-09-27 12:23:53</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">82</field>
+		<field name="text">попытка 3  :thinking_face: </field>
+		<field name="createdAt">2016-09-27 12:24:52</field>
+		<field name="updatedAt">2016-09-27 12:24:52</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">83</field>
+		<field name="text">trying 4</field>
+		<field name="createdAt">2016-09-27 12:25:31</field>
+		<field name="updatedAt">2016-09-27 12:25:31</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">84</field>
+		<field name="text">&#10;22</field>
+		<field name="createdAt">2016-09-27 12:26:06</field>
+		<field name="updatedAt">2016-09-27 12:26:06</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">85</field>
+		<field name="text">&#10;342</field>
+		<field name="createdAt">2016-09-27 12:26:18</field>
+		<field name="updatedAt">2016-09-27 12:26:18</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">86</field>
+		<field name="text">wewer</field>
+		<field name="createdAt">2016-09-27 12:27:05</field>
+		<field name="updatedAt">2016-09-27 12:27:05</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">87</field>
+		<field name="text">234retrereert</field>
+		<field name="createdAt">2016-09-27 12:27:28</field>
+		<field name="updatedAt">2016-09-28 16:15:44</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">88</field>
+		<field name="text">ewr</field>
+		<field name="createdAt">2016-09-27 12:29:09</field>
+		<field name="updatedAt">2016-09-27 12:29:09</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">89</field>
+		<field name="text">check</field>
+		<field name="createdAt">2016-09-27 12:30:06</field>
+		<field name="updatedAt">2016-09-27 12:30:06</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">90</field>
+		<field name="text">234</field>
+		<field name="createdAt">2016-09-27 12:31:46</field>
+		<field name="updatedAt">2016-09-27 12:31:46</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">91</field>
+		<field name="text">now </field>
+		<field name="createdAt">2016-09-27 12:32:34</field>
+		<field name="updatedAt">2016-09-27 12:32:34</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">92</field>
+		<field name="text">hhh</field>
+		<field name="createdAt">2016-09-27 12:34:55</field>
+		<field name="updatedAt">2016-09-27 12:41:35</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">93</field>
+		<field name="text">yes</field>
+		<field name="createdAt">2016-09-27 12:39:08</field>
+		<field name="updatedAt">2016-09-27 12:39:08</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">94</field>
+		<field name="text">zzz</field>
+		<field name="createdAt">2016-09-27 12:39:21</field>
+		<field name="updatedAt">2016-09-27 12:39:21</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">95</field>
+		<field name="text">aasd</field>
+		<field name="createdAt">2016-09-27 12:40:57</field>
+		<field name="updatedAt">2016-09-27 12:40:57</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">96</field>
+		<field name="text">&#10;wqewwqewqe</field>
+		<field name="createdAt">2016-09-27 12:41:03</field>
+		<field name="updatedAt">2016-09-27 12:41:03</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">97</field>
+		<field name="text">iouyiy&#10;</field>
+		<field name="createdAt">2016-09-27 12:41:09</field>
+		<field name="updatedAt">2016-09-27 13:07:18</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">99</field>
+		<field name="text">wqewq</field>
+		<field name="createdAt">2016-09-27 13:07:21</field>
+		<field name="updatedAt">2016-09-27 13:17:24</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">100</field>
+		<field name="text">sd</field>
+		<field name="createdAt">2016-09-27 13:12:35</field>
+		<field name="updatedAt">2016-09-27 13:12:35</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">101</field>
+		<field name="text">df</field>
+		<field name="createdAt">2016-09-27 13:12:46</field>
+		<field name="updatedAt">2016-09-27 13:12:46</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">102</field>
+		<field name="text">sdf</field>
+		<field name="createdAt">2016-09-27 13:13:31</field>
+		<field name="updatedAt">2016-09-27 13:13:31</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">103</field>
+		<field name="text">dsfds</field>
+		<field name="createdAt">2016-09-27 13:14:08</field>
+		<field name="updatedAt">2016-09-27 13:14:08</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">104</field>
+		<field name="text">привет !!!!  :open_mouth:  :thinking_face: hmm</field>
+		<field name="createdAt">2016-09-27 13:18:20</field>
+		<field name="updatedAt">2016-09-27 14:03:48</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">105</field>
+		<field name="text">whats up  :hugging_face: </field>
+		<field name="createdAt">2016-09-27 14:04:03</field>
+		<field name="updatedAt">2016-09-27 14:04:20</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">113</field>
+		<field name="text">45</field>
+		<field name="createdAt">2016-09-27 14:15:35</field>
+		<field name="updatedAt">2016-09-27 14:15:35</field>
+		<field name="channelId">1</field>
+		<field name="serverId">3</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">114</field>
+		<field name="text">4324324  :sunglasses:</field>
+		<field name="createdAt">2016-09-27 14:17:20</field>
+		<field name="updatedAt">2016-09-27 14:17:20</field>
+		<field name="channelId">1</field>
+		<field name="serverId">1</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">115</field>
+		<field name="text">234</field>
+		<field name="createdAt">2016-09-27 14:17:52</field>
+		<field name="updatedAt">2016-09-27 14:17:52</field>
+		<field name="channelId">1</field>
+		<field name="serverId">1</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">116</field>
+		<field name="text">342</field>
+		<field name="createdAt">2016-09-27 14:19:06</field>
+		<field name="updatedAt">2016-09-27 14:19:06</field>
+		<field name="channelId">1</field>
+		<field name="serverId">1</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">117</field>
+		<field name="text">123123</field>
+		<field name="createdAt">2016-09-27 14:33:53</field>
+		<field name="updatedAt">2016-09-27 14:33:53</field>
+		<field name="channelId">1</field>
+		<field name="serverId">1</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">118</field>
+		<field name="text">:eyes:</field>
+		<field name="createdAt">2016-09-27 14:34:03</field>
+		<field name="updatedAt">2016-09-27 14:34:03</field>
+		<field name="channelId">1</field>
+		<field name="serverId">1</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">120</field>
+		<field name="text">uuuuu</field>
+		<field name="createdAt">2016-09-28 13:13:35</field>
+		<field name="updatedAt">2016-09-28 13:13:35</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">121</field>
+		<field name="text">werewewrwe</field>
+		<field name="createdAt">2016-09-28 13:19:55</field>
+		<field name="updatedAt">2016-09-28 13:19:55</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">122</field>
+		<field name="text">ertreertert</field>
+		<field name="createdAt">2016-09-28 13:20:07</field>
+		<field name="updatedAt">2016-09-28 13:20:07</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">123</field>
+		<field name="text">224</field>
+		<field name="createdAt">2016-09-28 13:20:13</field>
+		<field name="updatedAt">2016-09-28 13:20:13</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">124</field>
+		<field name="text">sdfsdsfsd :money_mouth_face: </field>
+		<field name="createdAt">2016-09-28 13:20:53</field>
+		<field name="updatedAt">2016-10-05 09:01:47</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">125</field>
+		<field name="text">sdfdsfewewr</field>
+		<field name="createdAt">2016-09-28 13:20:58</field>
+		<field name="updatedAt">2016-09-28 13:20:58</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">126</field>
+		<field name="text">dsdsdfs</field>
+		<field name="createdAt">2016-09-28 13:21:07</field>
+		<field name="updatedAt">2016-09-28 13:21:07</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">127</field>
+		<field name="text">dsdfdsfsdewewr</field>
+		<field name="createdAt">2016-09-28 13:25:41</field>
+		<field name="updatedAt">2016-10-04 10:25:40</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">128</field>
+		<field name="text">dsdsfsd</field>
+		<field name="createdAt">2016-09-28 13:25:46</field>
+		<field name="updatedAt">2016-09-28 13:25:46</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">129</field>
+		<field name="text">sdfds</field>
+		<field name="createdAt">2016-09-28 13:25:48</field>
+		<field name="updatedAt">2016-09-28 13:25:48</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">130</field>
+		<field name="text">sdfdsdsadassadsad</field>
+		<field name="createdAt">2016-09-28 13:25:50</field>
+		<field name="updatedAt">2016-09-28 16:02:36</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">131</field>
+		<field name="text">dddfdsdsdfsdfdferew</field>
+		<field name="createdAt">2016-09-28 14:04:27</field>
+		<field name="updatedAt">2016-10-03 20:11:35</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+	<record>
+		<field name="id">132</field>
+		<field name="text">dfsdsfsd</field>
+		<field name="createdAt">2016-09-28 14:05:16</field>
+		<field name="updatedAt">2016-09-28 14:05:16</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">133</field>
+		<field name="text">dsfsdsf</field>
+		<field name="createdAt">2016-09-28 14:05:25</field>
+		<field name="updatedAt">2016-09-28 14:05:25</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">134</field>
+		<field name="text">ewew :kissing_heart:</field>
+		<field name="createdAt">2016-10-04 10:44:58</field>
+		<field name="updatedAt">2016-10-04 10:44:58</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">2</field>
+	</record>
+	<record>
+		<field name="id">135</field>
+		<field name="text">ewrwwerwerewewewr</field>
+		<field name="createdAt">2016-10-04 10:45:34</field>
+		<field name="updatedAt">2016-10-04 10:45:34</field>
+		<field name="channelId">1</field>
+		<field name="serverId">2</field>
+		<field name="userId">3</field>
+	</record>
+</table>
+<table name="permissions">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="resourceId" type="Long" length="11"/>
+		<field name="actionId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">edit server</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="resourceId">1</field>
+		<field name="actionId">1</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">create server</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="resourceId">1</field>
+		<field name="actionId">2</field>
+	</record>
+	<record>
+		<field name="id">3</field>
+		<field name="name">delete server</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="resourceId">1</field>
+		<field name="actionId">3</field>
+	</record>
+	<record>
+		<field name="id">4</field>
+		<field name="name">edit message</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="resourceId">2</field>
+		<field name="actionId">1</field>
+	</record>
+	<record>
+		<field name="id">5</field>
+		<field name="name">create message</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="resourceId">2</field>
+		<field name="actionId">2</field>
+	</record>
+	<record>
+		<field name="id">6</field>
+		<field name="name">delete message</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="resourceId">2</field>
+		<field name="actionId">3</field>
+	</record>
+</table>
+<table name="resources">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">server</field>
+		<field name="createdAt">2016-10-14 19:26:35</field>
+		<field name="updatedAt">2016-10-14 19:26:35</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">message</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+	</record>
+</table>
+<table name="role_permissions">
+	<fields>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="roleId" type="Long" length="11"/>
+		<field name="permissionId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="roleId">1</field>
+		<field name="permissionId">1</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="roleId">1</field>
+		<field name="permissionId">2</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="roleId">1</field>
+		<field name="permissionId">3</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="roleId">1</field>
+		<field name="permissionId">4</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="roleId">1</field>
+		<field name="permissionId">5</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="roleId">1</field>
+		<field name="permissionId">6</field>
+	</record>
+</table>
+<table name="roles">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">admin</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">manager</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+	</record>
+</table>
+<table name="server_members">
+	<fields>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="userId" type="Long" length="11"/>
+		<field name="serverId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="createdAt">2016-10-14 19:52:01</field>
+		<field name="updatedAt">2016-10-14 19:52:01</field>
+		<field name="userId">1</field>
+		<field name="serverId">1</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 19:52:01</field>
+		<field name="updatedAt">2016-10-14 19:52:01</field>
+		<field name="userId">2</field>
+		<field name="serverId">1</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 19:52:01</field>
+		<field name="updatedAt">2016-10-14 19:52:01</field>
+		<field name="userId">3</field>
+		<field name="serverId">1</field>
+	</record>
+</table>
+<table name="server_owners">
+	<fields>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="serverId" type="Long" length="11"/>
+		<field name="ownerId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="createdAt">2016-10-14 19:30:33</field>
+		<field name="updatedAt">2016-10-14 19:30:33</field>
+		<field name="serverId">1</field>
+		<field name="ownerId">1</field>
+	</record>
+</table>
+<table name="server_roles">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="serverId" type="Long" length="11"/>
+		<field name="roleId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="serverId">1</field>
+		<field name="roleId">1</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="serverId">1</field>
+		<field name="roleId">2</field>
+	</record>
+</table>
+<table name="servers">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="description" type="VarChar" length="255"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">server1</field>
+		<field name="description">first server</field>
+		<field name="createdAt">2016-10-14 19:26:50</field>
+		<field name="updatedAt">2016-10-14 19:26:50</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">server2</field>
+		<field name="description">second server</field>
+		<field name="createdAt">2016-10-14 19:26:50</field>
+		<field name="updatedAt">2016-10-14 19:26:50</field>
+	</record>
+	<record>
+		<field name="id">3</field>
+		<field name="name">server3</field>
+		<field name="description">third server</field>
+		<field name="createdAt">2016-10-14 19:26:50</field>
+		<field name="updatedAt">2016-10-14 19:26:50</field>
+	</record>
+</table>
+<table name="user_server_roles">
+	<fields>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+		<field name="userId" type="Long" length="11"/>
+		<field name="serverRoleId" type="Long" length="11"/>
+	</fields>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="userId">1</field>
+		<field name="serverRoleId">1</field>
+	</record>
+	<record>
+		<field name="createdAt">2016-10-14 20:01:41</field>
+		<field name="updatedAt">2016-10-14 20:01:41</field>
+		<field name="userId">1</field>
+		<field name="serverRoleId">2</field>
+	</record>
+</table>
+<table name="users">
+	<fields>
+		<field name="id" type="Long" length="11"/>
+		<field name="name" type="VarChar" length="255"/>
+		<field name="password" type="VarChar" length="255"/>
+		<field name="avatar" type="VarChar" length="255"/>
+		<field name="email" type="VarChar" length="255"/>
+		<field name="resetPasswordToken" type="VarChar" length="255"/>
+		<field name="resetPasswordExpires" type="DateTime"/>
+		<field name="createdAt" type="DateTime"/>
+		<field name="updatedAt" type="DateTime"/>
+	</fields>
+	<record>
+		<field name="id">1</field>
+		<field name="name">utro</field>
+		<field name="password">$2a$10$GfoZaSN5k78A9MvotLH3IulqUR2X.DgLme9SBCcpq1NkLLtGzRZfW</field>
+		<field name="avatar">/images/avatars/defavatar.jpg</field>
+		<field name="email">v.kokovin@gmail.com</field>
+		<field name="resetPasswordToken">NULL</field>
+		<field name="resetPasswordExpires">NULL</field>
+		<field name="createdAt">2016-10-14 19:26:51</field>
+		<field name="updatedAt">2016-10-14 19:26:51</field>
+	</record>
+	<record>
+		<field name="id">2</field>
+		<field name="name">admin</field>
+		<field name="password">$2a$10$nrOPJdXA7SLC59eFPJMyIui3Ug4lhlOD2TRblgudmsXXHLe/r5Jti</field>
+		<field name="avatar">/images/avatars/defavatar.jpg</field>
+		<field name="email">test@test.test</field>
+		<field name="resetPasswordToken">NULL</field>
+		<field name="resetPasswordExpires">NULL</field>
+		<field name="createdAt">2016-10-14 19:26:51</field>
+		<field name="updatedAt">2016-10-14 19:26:51</field>
+	</record>
+	<record>
+		<field name="id">3</field>
+		<field name="name">superchel</field>
+		<field name="password">$2a$10$3VZwO0gz4wd34N4OY96wOur59DHMcsrY1igfjrF2D4IK9Bj2Jo5Y2</field>
+		<field name="avatar">/images/avatars/defavatar.jpg</field>
+		<field name="email">test2@test.test</field>
+		<field name="resetPasswordToken">NULL</field>
+		<field name="resetPasswordExpires">NULL</field>
+		<field name="createdAt">2016-10-14 19:26:51</field>
+		<field name="updatedAt">2016-10-14 19:26:51</field>
+	</record>
+</table></tables>

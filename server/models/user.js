@@ -19,7 +19,7 @@ export const User = db.define('user', {
     },
     avatar: {
         type: Sequelize.STRING,
-        defaultValue:'/images/avatars/defavatar.jpg'
+        defaultValue:'defavatar.jpg'
     },
     email: {
         type: Sequelize.STRING,

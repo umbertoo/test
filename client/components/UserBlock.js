@@ -1,18 +1,29 @@
 import React, { PropTypes } from 'react';
+import Avatar from './Avatar';
 import '../static/scss/user-block.scss';
 
 const UserBlock = ({
-  user
+  name, id, avatar, onClickSettings
 }) => {
   return (
     <div className="user-block">
-      <span>user.name {user.name}</span> <br/>
-      <span>user.id {user.id}</span> <br/>
-      <img src={user.avatar}/>
+      <div className="user-block__avatar" >
+        <Avatar src={avatar}/>
+      </div>
+      <div className="user-block__name">
+        {name} | {id}
+      </div>
+      <div onClick={onClickSettings}
+        className="user-block__settings-btn">
+        S
+      </div>
     </div>
   );
 };
 UserBlock.propTypes = {
-  user:PropTypes.object
+  name:PropTypes.string,
+  id:PropTypes.number,
+  avatar:PropTypes.string,
+  onClickSettings:PropTypes.func,
 };
 export default UserBlock;

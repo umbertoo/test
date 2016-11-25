@@ -54,27 +54,10 @@ export const idsByChannel = (state = initState, action) => {
     //------------------------------------------------------------------
 
     case 'UPDATE_SLICE':
-    console.log('UPDATE_SLICE',action.ids);
+    // console.log('UPDATE_SLICE',action.ids);
     return {...state, slice: action.ids};
     //------------------------------------------------------------------
 
-
-    // case type.FETCH_NOTES_SUCCESS:
-    // return {...state,
-    //     ids: union(state.ids, action.payload.result),
-    //     pageCount:state.pageCount+1,
-    //     nextPageUrl:action.nextPageUrl,
-    //     isFetching:action.isFetching
-    // };
-    // case type.DELETE_NOTE:
-    // return {...state, ids: without(state.ids, action.note.id) };
-    //
-    // case type.UPDATE_PAGINATION :
-    // if(action.deleted){
-    //     return {...state, ids: without(state.ids, action.noteId) };
-    // }else if(action.added){
-    //     return {...state, ids: [action.noteId,...state.ids] };
-    // }
     default:
     return state;
   }

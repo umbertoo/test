@@ -1,48 +1,37 @@
 import React, { Component } from 'react';
-import ModalDialog from '../components/ModalDialog';
-import autoBind from 'react-autobind';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
+
+import ServerRolesContainer from '../containers/ServerRolesContainer';
+import ServerFormContainer from '../containers/ServerFormContainer';
+import ModalDialog from '../components/ModalDialog';
 import Tab from '../components/Tabs/Tab';
 import Tabs from '../components/Tabs';
-import ServerRolesContainer from '../containers/ServerRolesContainer';
+import Input from '../components/Input';
 
 class ServerSettings extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-    this.state={
-    };
-  }
-  onChange(data){
+  onChange=(data)=>{
     console.log('onChangeTab',data);
-  }
-  onClickDelete(){
-
   }
   render(){
     const {server}= this.props;
-    // console.log('ServerSettings',channel);
     const tabPaneStyle={
       backgroundColor:'#fff',
-      height:'400px'
+      height:'100%'
+    };
+    const tabStyle={
+      width:'200px'
     };
     return (
-      <Tabs onChange={this.onChange} >
-        <Tab label="Обзор" style={tabPaneStyle}>
-          <h1>{server.name}</h1>
-          <span>{server.description}</span>
-          {/* <input type="text" name="name" value={channel.name}/>
-            <input type="text" name="description" value={channel.description}/>
-            <input type="button" value="Готово"/>
-          <input onClick={onDeleteChannel} type="button" value="Удалить"/> */}
+      <Tabs onChange={this.onChange}
+        style={{width:'900px', height:'650px'}}
+        tabStyle={tabStyle}
+        tabPaneStyle={tabPaneStyle}>
+        <Tab label="Обзор">
+          <ServerFormContainer/>
         </Tab>
-        <Tab label="Роли" style={tabPaneStyle}>
+        <Tab label="Роли">
           <ServerRolesContainer/>
-          {/* <input type="text" name="name" value={channel.name}/>
-            <input type="text" name="description" value={channel.description}/>
-            <input type="button" value="Готово"/>
-          <input onClick={onDeleteChannel} type="button" value="Удалить"/> */}
         </Tab>
       </Tabs>
     );

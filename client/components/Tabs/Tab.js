@@ -4,7 +4,7 @@ const Tab = ({
   label, value, children, style
 }) => {
   return (
-    <div style={style}>{children}</div>
+    <div className="xtabs__tab-pane" style={style}>{children}</div>
   );
 };
 Tab.propTypes  = {

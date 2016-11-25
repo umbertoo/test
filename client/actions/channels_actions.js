@@ -4,6 +4,7 @@ import { normalize, arrayOf } from "normalizr";
 import * as schemas from "./common/schemas";
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
+import { getChangedItemsFromOrder } from "../utils/getChangedItemsFromOrder";
 
 export const selectChannel = (id) =>({
   type:type.SELECT_CHANNEL,
@@ -152,21 +153,27 @@ export const editChannelsOrderFailure = (error) =>({
   isFetching:false,
   error
 });
-export const editChannelsOrderSuccess = (payload,serverId) =>({
+export const editChannelsOrderSuccess = (oldIndex, newIndex,serverId) =>({
   type:type.EDIT_CHANNELS_ORDER_SUCCESS,
   isFetching:false,
   serverId,
-  payload
+  oldIndex, newIndex
 });
 
-export const editChannelsOrder = (orderData, newOrder, serverId) => async dispatch =>{
-  try {
-    dispatch(editChannelsOrderSuccess(newOrder, serverId));
 
+
+
+export const editChannelsOrder = (oldIndex, newIndex, serverId) =>
+async (dispatch, getState) =>{
+  try {
     dispatch(editChannelsOrderRequest());
+    dispatch(editChannelsOrderSuccess(oldIndex, newIndex, serverId));
+
+    const {channels:order} = getState().entities.servers.items[serverId]||{};
+    const orderData = getChangedItemsFromOrder(oldIndex, newIndex, order);
+
     const channels = await API.Channel.editOrder(orderData);
     const result = normalize(channels, arrayOf(schemas.channel));
-    console.log('editChannelsOrder', result);
 
   } catch (e) {
     console.error(e);
@@ -188,6 +195,7 @@ export const saveLastVisibleMessage = (channelId) => async (dispatch,getState) =
     const last_messages_by_channel = JSON.parse(localStorage.getItem('last_messages_by_channel'))||{};
     last_messages_by_channel[channelId] = last_id;
     localStorage.setItem('last_messages_by_channel',JSON.stringify(last_messages_by_channel));
+
     dispatch({
       type:type.SAVE_LAST_VISIBLE_MESSAGE,
       lastVisibleMessage:{date:message.createdAt, id:message.id},
@@ -211,7 +219,8 @@ export const setChannelHasNewMessages = (channelId) =>({
 
 export const unsetChannelHasNewMessages = (channelId) =>(dispatch, getState)=>{
   const { channelsWithNewMessages } = getState().entities.channels;
-  if (channelsWithNewMessages.indexOf(channelId)>-1){
+
+  if (channelsWithNewMessages.indexOf(channelId) > -1){
     dispatch({
       type:type.UNSET_CHANNEL_HAS_NEW_MESSAGES,
       channelId
@@ -235,7 +244,6 @@ export const sendTypingFailure = (error) =>({
 });
 
 export const sendTyping = (channelId) => async dispatch =>{
-  console.log('sendTyping');
   try {
     dispatch(sendTypingRequest());
     const res = await API.Channel.sendTyping(channelId);

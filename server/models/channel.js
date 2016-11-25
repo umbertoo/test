@@ -15,8 +15,12 @@ export const Channel = db.define('channel', {
   },
   order:{
     type:Sequelize.INTEGER,
-    allowNull:false
+    // allowNull:false
+  },
+  isGeneral:{
+    type:Sequelize.BOOLEAN,
   }
+
 });
 
 // Channel.beforeValidate((channel, options)=> {

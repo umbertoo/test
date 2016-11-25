@@ -16,55 +16,45 @@ import {
 } from './index';
 
 
-console.log('OOOOOOO'.green);
+
+///Message
 Channel.hasMany(Message, {as: 'Messages',foreignKey: {name:'channelId', allowNull:false}});
 Message.belongsTo(Channel,{foreignKey: {name:'channelId', allowNull:false}});
 
 Server.hasMany(Message, {as: 'Messages',foreignKey: {name:'serverId', allowNull:false}});
 Message.belongsTo(Server, {foreignKey: {name:'serverId', allowNull:false}});
 
-Server.hasMany(Channel, {foreignKey: {name:'serverId', allowNull:false}});
-Channel.belongsTo(Server, {foreignKey: {name:'serverId', allowNull:false}});
-
-// Server.hasMany(UserServerRoles,{foreignKey:'serverId'});
-// UserServerRoles.belongsTo(Server,{foreignKey:'serverId'});
-//
-// Role.hasMany(UserServerRoles,{foreignKey:'roleId'});
-// UserServerRoles.belongsTo(Role,{foreignKey:'roleId'});
-//
-// User.hasMany(UserServerRoles,{foreignKey:'userId'});
-// UserServerRoles.belongsTo(User,{foreignKey:'userId'});
-//
 User.hasMany(Message, {as: 'Messages',foreignKey: {name:'userId', allowNull:false}});
 Message.belongsTo(User, {foreignKey: {name:'userId', allowNull:false}});
 
-Role.belongsToMany(Permission, {through: 'role_permissions'});
-Permission.belongsToMany(Role, {through: 'role_permissions'});
 
+
+//Channel
+Server.hasMany(Channel, {foreignKey: {name:'serverId', allowNull:false}});
+Channel.belongsTo(Server, {foreignKey: {name:'serverId', allowNull:false}});
+
+// Server.belongsTo(Channel , {as:'GeneralChannel',foreignKey: {name:'generalChannelId'}});
+
+
+//User
 User.belongsToMany(Server, {through: ServerMembers});
 Server.belongsToMany(User, {as:'Members',through: ServerMembers});
 
 Server.belongsToMany(User, {as:'ServerOwners', through: 'server_owners', foreignKey:'serverId'});
 User.belongsToMany(Server, {as:'OwnServers', through: 'server_owners', foreignKey:'ownerId'});
 
+User.belongsToMany(Role, {through:'user_roles'});
+Role.belongsToMany(User, {through:'user_roles'});
 
-Server.hasMany(ServerRole, { foreignKey: {name:'serverId'} } );
-ServerRole.belongsTo(Server, { foreignKey: {name:'serverId'} } );
+/// ROLES
+Server.belongsToMany(Role, {through:'server_roles'});
+Role.belongsToMany(Server, {through:'server_roles'});
 
-// Role.belongsTo(Role,{as:'Inherits',foreignKey:'inherits'})
 Role.belongsToMany(Role,{as:'inherits',through:'inherited_roles', foreignKey:'roleId', otherKey:'inheritedRoleId'});
 
-
-Role.hasMany(ServerRole, { foreignKey: {name:'roleId'} } );
-ServerRole.belongsTo(Role, { foreignKey: {name:'roleId'} } );
-
-User.belongsToMany(ServerRole, {through:UserServerRoles});
-ServerRole.belongsToMany(User, {through:UserServerRoles});
-
-ServerRole.hasMany(UserServerRoles,{foreignKey:'serverRoleId'});
-UserServerRoles.belongsTo(ServerRole,{foreignKey:'serverRoleId'});
-
-
+/// Permission
+Role.belongsToMany(Permission, {through: 'role_permissions'});
+Permission.belongsToMany(Role, {through: 'role_permissions'});
 
 Resource.hasMany(Permission, { foreignKey: {name:'resourceId'} } );
 Permission.belongsTo(Resource, { foreignKey: {name:'resourceId'} } );

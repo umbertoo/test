@@ -1,0 +1,29 @@
+.xinput {
+
+  &__input{
+    border-color: #bbb;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+width: 100%;
+font-size: 16px;
+font-weight: 400;
+color: #2e3136;
+outline: 0;
+line-height: 34px;
+margin-top: 18px;
+box-sizing: border-box;
+  }
+  &__input:focus{
+    border-color: #7289da;
+    border-width: 0 0 2px 0;
+    margin-bottom: -1px;
+
+  }
+  &__label{
+    font-size: 11px;
+color: #87909c;
+display: block;
+font-weight: 700;
+text-transform: uppercase;
+  }
+}

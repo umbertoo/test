@@ -5,8 +5,7 @@ import autoBind from 'react-autobind';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
-import 'react-select/dist/react-select.css';
-import './scss/permission-item.scss';
+import './scss/xpermission-item.scss';
 import Select from '../Select';
 
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
@@ -54,10 +53,10 @@ class PermissionItem extends Component {
     const selectStyle = { width:'200px', display:'inline-block' };
 
     return (
-      <div className="permission-item">
+      <div className="xpermission-item">
 
         {/* name: */}
-        <input className="permission-item__name" onChange={this.onChangeName} value={name}  type="text" />
+        <input className="xpermission-item__name" onChange={this.onChangeName} value={name}  type="text" />
         <span style={selectStyle}>
           <Select
             value={actionId}

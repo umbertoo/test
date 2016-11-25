@@ -1,0 +1,30 @@
+.xbutton{
+  border: none;
+  border-radius: 4px;
+  font-family: 'open sans';
+  font-weight: 700;
+  font-size: 14px;
+  cursor:pointer;
+  padding: 15px 20px;
+  position: relative;
+  background-color: red;
+  color: #fff;
+  display: inline-block;
+  outline: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  &__shaddow{
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left:0;
+    height: 100%;
+    background-color: rgba(0,0,0,0);
+    transition: all .2s;
+    z-index: 0;
+  }
+  &:hover &__shaddow{
+    background-color: rgba(0,0,0,0.1)
+
+  }
+}

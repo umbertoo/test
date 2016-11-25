@@ -9,12 +9,15 @@ export const Server = db.define('server', {
   },
   description:{
     type: Sequelize.STRING
+  },
+  icon:{
+    type: Sequelize.STRING
   }
 });
 export const ServerMembers = db.define('server_members',{
   order:{
     type: Sequelize.INTEGER,
-    allowNull:false
+    // allowNull:false
   }
 });
 // ServerMembers.beforeValidate((serverMember, options) => {

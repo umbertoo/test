@@ -17,17 +17,21 @@ export default function createSocketServer(server){
         }));
 
         io.on('connection', socket => {
-            const {user} =socket.decoded_token;
+            const {user} = socket.decoded_token;
             socket.user = {...user};
             delete socket.user.password;
 
             usersOnline[socket.user.id] = socket.user;
 
-            io.sockets.emit('updateUsersOnline',usersOnline);
+            io.sockets.emit('updateUsersOnline',Object.keys(usersOnline));
+
+            io.emit('userConnect',socket.user.id);
 
             socket.on('disconnect', () => {
-                delete usersOnline[socket.user.id];
-                socket.broadcast.emit('updateUsersOnline',usersOnline);
+                delete usersOnline[socket.user.id]; 
+                socket.broadcast.emit('updateUsersOnline',Object.keys(usersOnline));
+                socket.broadcast.emit('userDisconnect',socket.user.id);
+
                 // socket.broadcast.emit('message',socket.user.name+' was disconnect');
             });
             socket.on('connectServer', (serverId) => {

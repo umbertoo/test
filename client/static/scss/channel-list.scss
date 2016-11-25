@@ -1,25 +1,60 @@
 .channel-list{
-    color:rgba(255,255,255,.7);
-    height: 100%;
-    width: 100%;
-    &__item {
-        cursor: pointer;
-        padding: 15px 20px;
-        position: relative;
+  color:rgba(255,255,255,.7);
+  height: 100%;
+  width: 100%;
+  &__item {
+    cursor: pointer;
+    padding: 15px 20px;
+    position: relative;
+    color:rgba(255,255,255,0.5);
+    font-family: 'open sans';
+    font-size: 15px;
+  }
+  &__item.-active {
+    color:rgba(255,255,255,1);
 
+    background-color: rgba(0,0,0,0.16);
+  }
+  &__header {
+    font-family: 'open sans';
+    padding: 20px;
+    position: relative;
+  }
+  &__title {
+    font-size: 13px;
+    // letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  &__add-btn {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 23px;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    transition: color .2s;
+    &:hover{
+      color: rgba(255,255,255,1);
     }
-    &__body{
-      
-    }
-    &__item.-active {
-        background-color: #25282c;
-    }
-    &__settings-btn {
-      position: absolute;
-      right: 0;
-      top: 0;
-      color: #fff;
-      padding: 10px;
-      cursor: pointer;
-    }
+  }
+  &__body{
+
+  }
+
+  &__settings-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+  }
 }

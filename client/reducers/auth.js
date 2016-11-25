@@ -3,7 +3,7 @@ import type from '../actions/common/types';
 const initialState = {
     isFetching: false,
     isAuthenticated: localStorage.getItem('token') ? true : false,
-    user:{}
+    user:null
 };
 
 export const auth = (state = initialState, action) => {
@@ -19,7 +19,7 @@ export const auth = (state = initialState, action) => {
 
         case type.FETCH_CURRENT_USER_SUCCESS:
         return {...state,
-            user:action.user,
+            user:action.payload.result,
             isFetching:action.isFetching,
             error:action.error
         };

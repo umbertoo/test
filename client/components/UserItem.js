@@ -1,19 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import '../static/scss/user-item.scss';
+import Avatar from './Avatar';
 
-class UserItem extends Component {
-    render(){
-        return(
-            <div className="user-item">
-                <div
-                  style={{backgroundImage:`url(${this.props.avatar})`}}
-                  className="user-item__avatar">
-                </div>
-                <div className="user-item__name">{this.props.name}</div>
-                <div className="user-item__indicator">{this.props.isOnline}</div>
-            </div>
-        );
-    }
-}
-
+const UserItem = ({
+  avatar, name, isOnline
+}) => {
+  return(
+    <div className="user-item">
+      <div className="user-item__avatar">
+        <Avatar src={avatar}/>
+      </div>
+      <div className="user-item__name">{name}</div>
+      <div className="user-item__indicator">{isOnline}</div>
+    </div>
+  );
+};
+UserItem.propTypes = {
+  name:PropTypes.string,
+  avatar:PropTypes.string,
+  isOnline:PropTypes.bool
+};
 export default UserItem;

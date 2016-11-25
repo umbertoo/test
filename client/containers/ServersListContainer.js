@@ -1,78 +1,78 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes as PT } from 'react';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
 import SortableServersList from '../components/ServersList';
-import {withRouter} from 'react-router';
-import autoBind from 'react-autobind';
-import { arrayMove } from 'react-sortable-hoc';
 import { socket } from '../actions/common/socketEvents';
 
+import AddServerButtonContainer from '../containers/AddServerButtonContainer';
+import {getGeneralChannelId} from '../selectors/selectors.js';
+import RedirectServer from '../containers/RedirectServer';
+
+
+import history from 'history';
 class ServersListContainer extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-  }
+  static contextTypes = { router: PT.object.isRequired }
+
   componentWillMount(){
-    const {serverId}=this.props.params;
-    this.props.selectServer(serverId);
+    const {serverId}=this.props;
+    // this.props.selectServer(serverId);
     this.props.fetchChannels(serverId);
     socket.emit('connectServer', serverId);
   }
-  componentWillReceiveProps(nextProps){
-    const {channelId:prevChannelId, serverId:prevServerId} = this.props.params;
-    const {channelId:nextChannelId, serverId:nextServerId} = nextProps.params;
-    if (prevServerId!==nextServerId) this.handleSwitchServer(prevServerId, nextServerId);
+  componentDidUpdate(prevProps, prevState){
+    const {serverId, channelId} = this.props;
+    const {generalChannelId} = this.props;
+    // if(!channelId && generalChannelId) this.context.router.transitionTo('/channels/'+serverId+'/'+generalChannelId);
   }
-  handleSwitchServer(prevId, nextId){
-    this.props.selectServer(nextId);
-  }
-  selectServer(serverId){
-    console.log('selectServer! serverId:', serverId);
-    /* где я могу взять channelId
-    его можно взять в : когда подгрузится сервер с каналами.
-    Если так то тогда нужно дожидаться подгрузки сервера с
-    каналами и только потом переходить
-    или подгрузить каналы серверов заранее, что в принципе логично*/
+  // componentWillReceiveProps(nextProps){
+  //   const {serverId:prevServerId} = this.props;
+  //   const {serverId:nextServerId} = nextProps;
+  //   if (prevServerId!==nextServerId) this.handleSwitchServer(prevServerId, nextServerId);
+  // }
+  // handleSwitchServer=(prevId, nextId)=>{
+  // }
+  selectServer=(serverId)=>{
+    // this.props.selectServer(serverId);
     this.props.fetchChannels(serverId).then(()=>{
-      this.props.router.push('/channels/'+serverId+'/'+this.props.channelFirstId);
+      const {generalChannelId} = this.props;
+      this.context.router.transitionTo('/channels/'+serverId+'/'+generalChannelId);
       socket.emit('connectServer', serverId);
     });
-
   }
-  onSortEnd({oldIndex, newIndex,...rest}) {
-    const newOrder = arrayMove(this.props.order, oldIndex, newIndex);
-
-    const piece = oldIndex < newIndex
-    ? newOrder.slice(oldIndex, newIndex+1)
-    : newOrder.slice(newIndex, oldIndex+1);
-
-    let index = oldIndex < newIndex
-    ? oldIndex
-    : newIndex;
-
-    const orderData = piece.map(e=>({serverId:e, order: ++index}));
-    console.log('orderData',orderData);
-    this.props.editServersOrder(orderData,newOrder);
+  onSortEnd=({oldIndex, newIndex})=> {
+    this.props.editServersOrder(oldIndex, newIndex);
   }
+
   render(){
-    const {servers, order, params:{serverId}} = this.props;
+    const {servers, order, serverId, channelId} = this.props;
     return (
       <SortableServersList
         distance={4}
-        // pressDelay={50}
         onSortEnd={this.onSortEnd}
         lockAxis="y"
         onSelectServer={this.selectServer}
         selectedItem={serverId}
         order={order}
-        servers={servers}/>
+        servers={servers}>
+        {!channelId && <RedirectServer />}
+
+        <AddServerButtonContainer />
+      </SortableServersList>
     );
   }
 }
-const mapStateToProps = (state) =>({
-  order:state.entities.servers.ids,
-  channelFirstId:state.entities.channels.ids[0],
-  servers:state.entities.servers.items
-});
+const mapStateToProps = (state) =>{
+  const { params: {serverId, channelId} } = state.ui;
+  const { channels:channelsIds=[] } = state.entities.servers.items[serverId]||{};
+  const channels = channelsIds.map(id=>state.entities.channels.items[id]);
+  // const generalChannelId =getGeneralChannelId(channels);
+  return {
+    order: state.entities.servers.ids,
+    serverId,
+    channelId,
+    // generalChannelId,
+    servers: state.entities.servers.items
+  };
+};
 
-export default withRouter(connect(mapStateToProps, Actions)(ServersListContainer));
+export default connect(mapStateToProps, Actions)(ServersListContainer);

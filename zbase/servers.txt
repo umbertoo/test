@@ -1,0 +1,4 @@
+id,name,description,createdAt,updatedAt
+1,server1,"first server","2016-10-14 19:26:50","2016-10-14 19:26:50"
+2,server2,"second server","2016-10-14 19:26:50","2016-10-14 19:26:50"
+3,server3,"third server","2016-10-14 19:26:50","2016-10-14 19:26:50"

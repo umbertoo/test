@@ -18,7 +18,6 @@ import {
 import { io } from '../app';
 import find from 'lodash/find';
 import RBAC from '../RBAC/RBAC';
-
 import serverApi from './server';
 import messageApi from './message';
 import channelApi from './channel';
@@ -30,16 +29,22 @@ import actionApi from './action';
 import attributeApi from './attribute';
 import resourceApi from './resource';
 
+
 const checkJWT = passport.authenticate('jwt', { session: false });
 const router = Router();
 
 router.use(checkJWT);
+
+router.get('/test1', (req,res)=>{
+  res.json(req.user);
+});
 
 router.use((req,res,next)=>{
   const socket = find(io.sockets.sockets,s => s.user.id==req.user.id);
   req.user.socket = socket ? socket.broadcast : io;
   next();
 });
+
 router.use(
   serverApi, messageApi, channelApi, uiApi,
    userApi, rolesApi, permissionApi, actionApi, attributeApi, resourceApi
@@ -69,6 +74,7 @@ const getRolesData = async() =>{
     console.error(e);
   }
 };
+
 
 export const rbac = new RBAC(getRolesData);
 

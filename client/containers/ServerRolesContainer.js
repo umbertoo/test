@@ -3,59 +3,101 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
 import autoBind from 'react-autobind';
 import Tabs from '../components/Tabs';
+import SortableRolesList from '../components/RolesList';
 import Tab from '../components/Tabs/Tab';
-import {withRouter} from 'react-router';
+import RoleForm from '../components/RoleForm';
 
 class ServerRolesContainer extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-    this.state={
-    };
+  componentDidMount(){
+    this.props.fetchPermissions();
   }
-  componentWillMount(){
-    console.log('ServerRolesContainer');
-      this.props.fetchRoles(this.props.params.serverId);
+  onClickRole = (role) => {
+    this.props.selectRole(role.id);
   }
-  onChange(e){
-    console.log(e,'onChange');
+  onSortEnd = ({oldIndex, newIndex})=> {
+    const {serverId} = this.props;
+    this.props.editRolesOrder(oldIndex, newIndex, serverId);
+  }
+  onClickAddRole = () =>{
+    const {serverId} = this.props;
+    this.props.createRole('new role', serverId);
+  }
+  onClickDeleteRole = (roleId) =>{
+    const {serverId} = this.props;
+    this.props.deleteRole(roleId,serverId)
+    .then(()=>{
+      this.props.selectRole(null);
+    });
+  }
+  onRoleFormChange=(role)=>{
+    console.log('onRoleFormChange',role);
+    const {serverId} = this.props;
+    this.props.editRole(role, serverId);
   }
   render(){
     const tabPaneStyle={
       backgroundColor:'#fff',
       height:'400px'
     };
-    return (<div>  <h1>Роли12</h1>
-      <Tabs onChange={this.onChange} >
-
-
-        <Tab label="1" style={tabPaneStyle}>
-          <h1>1</h1>
-
-        </Tab>
-        <Tab label="2" style={tabPaneStyle}>
-          <h1>2</h1>
-        </Tab>
-      </Tabs>
-    </div>);
+    const {
+      roles, selectedRole, permissions, rolePermissions
+    } = this.props;
+    const disableSorting = false;
+    return (
+      <div style={{height:'100%'}} className="roles-block">
+        <SortableRolesList
+          shouldCancelStart={()=>disableSorting?true:undefined}
+          distance={4}
+          // pressDelay={50}
+          onSortEnd={this.onSortEnd}
+          lockAxis="y"
+          roles={roles}
+          selectedItem={selectedRole.id}
+          onClickRole={this.onClickRole} >
+          <div className="roles-block__header">
+            <div className="roles-block__title">
+              roles-block
+            </div>
+            <div onClick={this.onClickAddRole}
+              className="roles-block__add-btn">
+              +
+            </div>
+          </div>
+        </SortableRolesList>
+        {selectedRole &&
+          <RoleForm
+            onClickDeleteRole={this.onClickDeleteRole}
+            onChange={this.onRoleFormChange}
+            role={selectedRole}
+            style = {{height:'100%' }}
+            permissions={permissions}/>
+        }
+      </div>
+      );
+    }
   }
-}
 
-const mapStateToProps = (state) =>({
-roles:state.entities.channels.items,
-});
-// const mapStateToProps = (state) =>{
-//   console.log(state.ui.selectedServer,'state.ui.selectedServer');
-//   const server  = state.pagination.idsByServer[state.ui.selectedServer];
-//   const {
-//     ids = []
-//   } = server||{};
-//   console.log(server,'server');
-//   console.log(ids,'ids');
-//   return {
-//     channelsWithNewMessages:state.entities.channels.channelsWithNewMessages,
-//     channels:state.entities.channels.items,
-//     order:ids
-//   };
-// };
-export default withRouter(connect(mapStateToProps, Actions)(ServerRolesContainer));
+  const mapStateToProps = (state) =>{
+    const {
+      roles:order=[]
+    } = state.entities.servers.items[state.ui.params.serverId] || {};
+    const { items } = state.entities.roles;
+    const roles = order.map(id => items[id]);
+
+    const {
+      ids=[]
+    } = state.entities.permissions || {};
+    const permissions = ids.map(id => state.entities.permissions.items[id]);
+
+    const {selectedRole} = state.ui;
+
+    const selectedRoleId = selectedRole || order[0];
+    return {
+      serverId:state.ui.params.serverId,
+      roles,
+      permissions,
+      selectedRole: items[selectedRoleId]
+    };
+  };
+
+  export default connect(mapStateToProps, Actions)(ServerRolesContainer);
