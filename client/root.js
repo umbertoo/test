@@ -23,8 +23,8 @@ class Root extends Component {
       <BrowserRouter >
         <App>
           <Match exactly pattern="/" component={StartPage}/>
-          <Match pattern="/channels/:serverId" component={Chat}/>
-          <Match pattern="/channels/:serverId/:channelId" component={Chat} />
+          <Match exactly pattern="/channels/:serverId" component={Chat}/>
+          <Match exactly pattern="/channels/:serverId/:channelId" component={Chat} />
           <Match pattern="/roles" component={RolesContainer} />
           <Match pattern="/login" component={LoginPage} />
           <Match pattern="/signup" component={SignUpPage}/>

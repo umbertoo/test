@@ -14,12 +14,19 @@ const initState = {
   slice:[],
   pageCount:0,
   scrollPosition:null,
+  scrollIsBottom:null,
   newMessages:false,
   typingUsers:[]
 };
 
 export const idsByChannel = (state = initState, action) => {
   switch (action.type) {
+
+    case type.SET_SCROLL_POSITION:
+    return {...state, scrollPosition:action.position};
+    case type.SET_SCROLL_IS_BOTTOM:
+    return {...state, scrollIsBottom:action.scrollIsBottom};
+
     case type.START_TYPING:
     return {...state, typingUsers: [...state.typingUsers, action.userId]};
 
@@ -43,7 +50,7 @@ export const idsByChannel = (state = initState, action) => {
       ids: [...state.ids, action.message.id]
     };
     //------------------------------------------------------------------
-    case type.SAVE_SCROLL_POSITION:
+    case type.SAVE_CHANNEL_INFO:
     return {...state,
       scrollPosition: action.scrollPosition,
       firstVisibleId:action.firstVisibleId
@@ -53,7 +60,7 @@ export const idsByChannel = (state = initState, action) => {
     return {...state, lastVisibleMessage: action.lastVisibleMessage};
     //------------------------------------------------------------------
 
-    case 'UPDATE_SLICE':
+    case type.UPDATE_SLICE:
     // console.log('UPDATE_SLICE',action.ids);
     return {...state, slice: action.ids};
     //------------------------------------------------------------------

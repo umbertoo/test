@@ -100,7 +100,6 @@ class Message extends Component {
             }
             render(){
               const {user, minimaized, isEditable, canBeEditable} = this.props;
-
               return (
                 <div ref="message" className={"message-block "+ (minimaized?'-minimaized':'')}>
                   {!minimaized  &&  <div className="message-block__avatar">

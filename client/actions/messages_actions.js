@@ -4,16 +4,12 @@ import { normalize, arrayOf } from "normalizr";
 import * as schemas from "./common/schemas";
 import { socket } from './common/socketEvents';
 
-
+import union from 'lodash/union';
 const LIMIT_PAGINATION = 45;
 
 
 //_____________________________________________________________________________
-export const receiveMessage = (message) =>({
-    type:type.RECEIVE_MESSAGE,
-    message,
-    channelId:message.channelId
-});
+
 
 export const createMessageRequest = () =>({
     type:type.CREATE_MESSAGE_REQUEST,
@@ -31,15 +27,25 @@ export const createMessageFailure = (error) =>({
     error
 });
 
+//------------------------------
+export const updateSlice = (ids, channelId) =>({
+    type:type.UPDATE_SLICE,
+    ids,
+    channelId
+});
+
 export const createMessage = (message) => async (dispatch, getState) =>{
     try {
         dispatch(createMessageRequest());
         const res = await API.Message.create(message);
         dispatch(createMessageSuccess(res));
+
         const {
             ids=[]
         } = getState().pagination.idsByChannel[message.channelId]||{};
         const lastIndex = ids.length;
+        //get slice from end, in order to show last messages
+
         const slice = ids.slice(lastIndex-LIMIT_PAGINATION,lastIndex);
         dispatch(updateSlice(slice, message.channelId));
     } catch (e) {
@@ -65,58 +71,43 @@ export const fetchMessagesFailure = (error) =>({
     error
 });
 
-export const updateSlice = (ids, channelId) =>({
-    type:'UPDATE_SLICE',
-    ids,
-    channelId
-});
+
+
 export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) =>{
     try {
         if(!channelId) return;
         const {
-            ids=[], pageCount=0, slice=[]
+            ids=[], slice=[]
         } = getState().pagination.idsByChannel[channelId]||{};
 
-        const offset = pageCount ? ids.length : 0;
-        if(nextPage || pageCount===0){
-            console.warn('грузим с сервера');
+        const channelIsEmpty =  !ids.length;
+        const offset = channelIsEmpty ? 0 : ids.length;
 
+        if( channelIsEmpty || nextPage ){
+            console.warn('грузим с сервера');
             dispatch(fetchMessagesRequest());
+
             const res = await API.Message.getByChannel(channelId, LIMIT_PAGINATION, offset);
-            if(res.length===0) return;
             const payload = normalize(res, arrayOf(schemas.message));
 
             dispatch(fetchMessagesSuccess(payload,channelId));
-
-            const {
-                ids=[], slice=[]
-            } = getState().pagination.idsByChannel[channelId]||{};
-
-            //if channel is opened for the first time.
-            if (pageCount===0) dispatch(updateSlice(payload.result, channelId));
-
-            //if nextPage true
-            else {
-                const index = ids.indexOf(slice[0]);
-                dispatch(updateSlice([...ids.slice(0, index-1),...slice], channelId));
-            }
-            //if nextPage false and pageCount!==0
-        } else {
-            console.info('загружаем кусок запомненый из загруженых');
-            const {
-                ids=[], slice=[], firstVisibleId
-            } = getState().pagination.idsByChannel[channelId] || {};
-            const index = ids.indexOf(firstVisibleId);
-
-            dispatch(updateSlice(ids.slice(index, index+LIMIT_PAGINATION), channelId));
+            dispatch(updateSlice(union(payload.result, slice), channelId));
         }
-
-        // return payload;
     } catch (e) {
         dispatch(fetchMessagesFailure(e));
         console.error('error',e);
     }
 };
+
+export const setMinimumSliceForChannel=(channelId)=>(dispatch,getState)=>{
+  const {
+      ids=[], firstVisibleId
+  } = getState().pagination.idsByChannel[channelId] || {};
+  const index = ids.indexOf(firstVisibleId);
+
+  dispatch(updateSlice(ids.slice(index, index+LIMIT_PAGINATION), channelId));
+};
+
 export const addMessageToSlice = (message) => (dispatch, getState) =>{
     const {
         ids=[], pageCount=0, slice=[]
@@ -159,7 +150,7 @@ export const loadMoreBefore = (channelId) => async (dispatch, getState) =>{
 
         return dispatch(updateSlice([...ids.slice(start, index-1),...slice], channelId));
     }else{
-        return dispatch(fetchMessages(channelId,true));
+        return await dispatch(fetchMessages(channelId,true));
     }
 };
 

@@ -2,14 +2,15 @@
 // import * as actions from '../index';
 import {
   updateUsers, updateUsersOnline,
-  loadMessages, receiveMessage , setChannelHasNewMessages,
+  loadMessages, createMessageSuccess , setChannelHasNewMessages,
   addMessageToSlice, updateMessage, deleteMessageSuccess,
   startTyping, stopTyping,
   createChannelSuccess,
   editChannelSuccess,
   editUserSuccess,
   deleteChannelSuccess,
-  fetchChannels
+  fetchChannels,
+  setScrollIsBottom
 } from '../index';
 import io from 'socket.io-client';
 import { normalize, arrayOf } from "normalizr";
@@ -23,19 +24,22 @@ export const socket = io.connect('http://localhost:8090/',{
 const socketEvents =  ({dispatch, getState}) => {
   socket.on('message', message=>{
     //message from other users
-    dispatch(receiveMessage(message));
+    dispatch(createMessageSuccess(message));
     const {
-      ids=[], pageCount=0, slice=[]
+      ids=[], pageCount=0, slice=[], scrollIsBottom
     } = getState().pagination.idsByChannel[message.channelId]||{};
+
     //if message belongs to current slice of ids.
-    if(ids.slice(-2)[0] === slice.slice(-1)[0]){
+    if(ids.slice(-2)[0] == slice.slice(-1)[0]){
+
       dispatch(addMessageToSlice(message));
+      if(scrollIsBottom)  dispatch(setScrollIsBottom(true, message.channelId));
+
     }
     //clear typing user
     const {userId, channelId} = message;
     dispatch(stopTyping(userId, channelId));
 
-    //need id of active channel
     if(getState().ui.params.channelId != message.channelId){
       dispatch(setChannelHasNewMessages(message.channelId));
     }

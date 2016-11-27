@@ -8,7 +8,7 @@ import ChannelSettings from '../components/ChannelSettings';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Redirect from 'react-router/Redirect';
 import {getGeneralChannelId} from '../selectors/selectors.js';
-
+ 
 class ChannelListContainer extends Component {
   static contextTypes = { router: PT.object.isRequired }
   state = {
@@ -103,7 +103,6 @@ class ChannelListContainer extends Component {
               channel={channels[ChannelSettingId]}/>
           </ModalDialog>
         }
-
       </div>
           );
         }

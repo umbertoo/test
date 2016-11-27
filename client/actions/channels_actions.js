@@ -6,6 +6,30 @@ import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { getChangedItemsFromOrder } from "../utils/getChangedItemsFromOrder";
 
+export const setScrollIsBottom = (scrollIsBottom, channelId)=>(dispatch,getState)=>{
+  const {
+    scrollIsBottom:sib
+  } = getState().pagination.idsByChannel[channelId]||{};
+  // if (sib==scrollIsBottom) return;
+  dispatch({
+    type: type.SET_SCROLL_IS_BOTTOM,
+    scrollIsBottom,
+    channelId
+  });
+};
+export const setScrollPosition=(position,channelId)=>(dispatch,getState)=>{
+
+  const {
+    scrollPosition
+  } = getState().pagination.idsByChannel[channelId]||{};
+  if (position==scrollPosition) return;
+  dispatch({
+    type: type.SET_SCROLL_POSITION,
+    position,
+    channelId
+  });
+};
+
 export const selectChannel = (id) =>({
   type:type.SELECT_CHANNEL,
   id
@@ -161,8 +185,6 @@ export const editChannelsOrderSuccess = (oldIndex, newIndex,serverId) =>({
 });
 
 
-
-
 export const editChannelsOrder = (oldIndex, newIndex, serverId) =>
 async (dispatch, getState) =>{
   try {
@@ -205,8 +227,8 @@ export const saveLastVisibleMessage = (channelId) => async (dispatch,getState) =
     console.error(e);
   }
 };
-export const saveScrollPosition = ({channelId, scrollPosition, firstVisibleId}) =>({
-  type:type.SAVE_SCROLL_POSITION,
+export const saveChannelInfo = ({channelId, scrollPosition, firstVisibleId}) =>({
+  type:type.SAVE_CHANNEL_INFO,
   scrollPosition,
   firstVisibleId,
   channelId
@@ -227,7 +249,8 @@ export const unsetChannelHasNewMessages = (channelId) =>(dispatch, getState)=>{
     });
   }
 };
-
+//------------------------------------------------------------------------
+//Typing
 export const sendTypingRequest = () =>({
   type:type.SEND_TYPING_REQUEST,
   isFetching:true
@@ -262,4 +285,4 @@ export const startTyping = (userId, channelId) => dispatch =>{
   setTimeout(()=>{
     dispatch(stopTyping(userId, channelId));
   },7000);
-  };
+};

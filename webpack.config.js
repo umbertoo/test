@@ -10,6 +10,7 @@ const devFlagPlugin = new webpack.DefinePlugin({
 export default {
     devtool: '#eval',
     entry: [
+      // 'eventsource/lib/eventsource-polyfill',
       "react-hot-loader/patch",
         'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
         './client/index.js'

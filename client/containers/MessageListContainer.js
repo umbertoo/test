@@ -12,11 +12,9 @@ import findKey from 'lodash/findKey';
 import isEqual from 'lodash/isEqual';
 
 class MessageListContainer extends Component {
-  state = { currentIds:[], curChannel:null };
   registeredElements = {};
   shouldComponentUpdate(nextProps, nextState){
-      return !isEqual(this.props, nextProps)
-       || !isEqual(this.state, nextState);
+    return !isEqual(this.props, nextProps);
   }
   componentWillMount(){
     const {channelId} = this.props;
@@ -26,28 +24,31 @@ class MessageListContainer extends Component {
   componentDidMount(){
     this.props.onMount(this.messageList);
   }
-  componentDidUpdate(prevProps, prevState){
-    // const {channelId:prevId} = nextProps;
-    // const {channelId:nextId} = this.props;
-    // // console.info(prevId,nextId,prevId == nextId);
-    // if (prevId != nextId) {
-    //   this.handleSwitchChannel(prevId,nextId);
-    // }
-  }
-    componentWillReceiveProps(nextProps){
-    const {channelId:prevId} = this.props;
-    const {channelId:nextId} = nextProps;
-    console.info(prevId,nextId,this.state.curChannel,prevId == nextId);
+  componentWillReceiveProps(nextProps){
+    const {
+      slice, scrollPosition, channelId:prevId,
+      scrollIsBottom
+    } = this.props;
+    const {
+      slice:newSlice, scrollPosition:newScrollPosition, channelId:nextId,
+      scrollIsBottom:newScrollIsBottom
+    } = nextProps;
+
     if (prevId !== nextId ) {
-      // this.setState({curChannel :nextId });
       this.handleSwitchChannel(prevId,nextId);
     }
-
-    const {allMessagesIds:prevMsgIds} = this.props;
-    const {allMessagesIds:nextMsgIds} = nextProps;
-
-    const nextLastId = nextMsgIds.slice(-1)[0];
-    const prevLastId = prevMsgIds.slice(-1)[0];
+    if (scrollPosition != newScrollPosition ) {
+      this.syncScrollPosition(newScrollPosition);
+    }
+  }
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.scrollIsBottom != this.props.scrollIsBottom)
+    this.syncScrollOnBottom(this.props.scrollIsBottom);
+  }
+  syncScrollOnBottom=(isScrollOnBottom)=>{
+    if(isScrollOnBottom){
+      this.messageList.scrollView.scrollToBottom();
+    }
   }
   handleSwitchChannel=(prevId,nextId)=>{
     console.info('handleSwitchChannel');
@@ -56,32 +57,45 @@ class MessageListContainer extends Component {
       scrollPosition: this.messageList.scrollView.getScrollTop(),
       firstVisibleId: this.findFirstVisibleId()
     };
-    this.props.saveScrollPosition(channelInfo);
 
-    this.props.fetchMessages(nextId).then(()=>{
+    // console.log('isScrollOnBottom',isScrollOnBottom);
+    const { scrollPosition, firstVisibleId } = this.props;
+    if (scrollPosition && firstVisibleId){
+      this.messageList.scrollView.scrollTop(60);
+    } else {
+      // firstVisibleId is not saved,
+      // (it means that that channel was never opened)
+      this.messageList.scrollView.scrollToBottom();
+    }
 
-      const { scrollPosition, firstVisibleId } = this.props;
-      if (scrollPosition && firstVisibleId){
-        this.messageList.scrollView.scrollTop(60);
-      } else {
-        // firstVisibleId is not saved,
-        // (it means that that channel was never opened)
-        this.messageList.scrollView.scrollToBottom();
-      }
-    });
+    const { isScrollOnBottom } = this.props;
+
+    // if (!isScrollOnBottom){
+    //   // this.messageList.scrollView.scrollTop(60);
+    //   this.props.setScrollPosition(60, nextId);
+    // } else {
+    //   // firstVisibleId is not saved,
+    //   // (it means that that channel was never opened)
+    //   this.props.setScrollIsBottom(true, nextId);
+    //   // this.messageList.scrollView.scrollToBottom();
+    // }
+
+
+    this.props.saveChannelInfo(channelInfo);
     this.props.unsetChannelHasNewMessages(nextId);
+    this.props.setMinimumSliceForChannel(prevId);
+    // this.props.fetchMessages(nextId).then(()=>{
+    //
+    //
+    // });
 
   }
-
-  loadMoreBefore=(oldScrollHeight)=>{
-    const view = this.messageList.scrollView;
-    this.props.loadMoreBefore(this.props.channelId)
-    .then(()=> view.scrollTop(view.getScrollHeight() - oldScrollHeight));
-  }
-
-  loadMoreAfter=()=>{
-    this.props.loadMoreAfter(this.props.channelId);
-  }
+  // onChangeScrollHeight=()=>{
+  //   this.props.setScrollPosition(
+  //     this.messageList.scrollView.getScrollTop(), this.props.channelId
+  //   );
+  //   // this.props.setScrollIsBottom(true, this.props.channelId);
+  // }
   regElem=(element)=>{
     this.registeredElements[element.id] = element;
   }
@@ -109,13 +123,32 @@ class MessageListContainer extends Component {
     this.props.unsetEditableMessage();
   }
   onScrollStop=()=>{
+    console.log('');
+    this.props.setScrollPosition(this.messageList.scrollView.getScrollTop(), this.props.channelId);
+  }
+  syncScrollPosition=(position)=>{
+    this.messageList.scrollView.scrollTop(position);
+  }
+  onScrollBottom=()=>{
+    this.loadMoreAfter();
+    this.props.setScrollIsBottom(true, this.props.channelId);
+  }
+  onScrollNotBottom=()=>{
+    this.props.setScrollIsBottom(false, this.props.channelId);
+  }
+  loadMoreAfter=()=>{
+    this.props.loadMoreAfter(this.props.channelId);
+  }
+  loadMoreBefore=(oldScrollHeight)=>{
+    const view = this.messageList.scrollView;
+    this.props.loadMoreBefore(this.props.channelId)
+    .then(()=> view.scrollTop(view.getScrollHeight() - oldScrollHeight));
   }
   render(){
     const {
       messages, allMessagesIds, messagesIsFetching, users, slice,
-      editableMessageId,currentUser
+      editableMessageId,currentUserId
     } = this.props;
-    console.log('MessageListContainer');
     return (
       <MessageList
         onSaveMessageEdit={this.onSaveMessageEdit}
@@ -123,13 +156,16 @@ class MessageListContainer extends Component {
         onMessageEdit={this.onMessageEdit}
         onMessageDelete={this.onMessageDelete}
         editableMessageId={editableMessageId}
-        currentUser={currentUserId}
-        onScrollStop={this.onScrollStop}
+        currentUserId={currentUserId}
         onMountMessage={this.regElem}
         onUnmountMessage={this.unregElem}
         messagesIds={slice}
+        // onChangeScrollHeight={this.onChangeScrollHeight}
+        onScrollStop={this.onScrollStop}
+
         onScrollTop={this.loadMoreBefore}
-        onScrollBottom={this.loadMoreAfter}
+        onScrollBottom={this.onScrollBottom}
+        onScrollNotBottom={this.onScrollNotBottom}
         users={users}
         ref={c=>this.messageList=c}
         messages={messages}>
@@ -139,23 +175,24 @@ class MessageListContainer extends Component {
   }
 }
 const mapStateToProps = (state) =>{
-  const channel  = state.pagination.idsByChannel[state.ui.params.channelId];
+  const { channelId } = state.ui.params;
+  const channel  = state.pagination.idsByChannel[channelId];
   const {
-    ids:messagesIds = [], scrollPosition = null , lastVisibleMessage={},
+    scrollPosition = null , lastVisibleMessage={},scrollIsBottom,
     firstVisibleId , slice = []
   } = channel||{};
 
-  const messages = state.entities.messages.items;
+  const { items:messages, isFetching } = state.entities.messages;
   return {
-    channelId:state.ui.params.channelId,
+    channelId,
     currentUserId:state.auth.user,
     editableMessageId:state.ui.editableMessage,
     slice,
-    allMessagesIds: messagesIds,
     users: state.entities.users.items,
-    messages: messages,
-    messagesIsFetching: state.entities.messages.isFetching,
+    messages,
+    messagesIsFetching: isFetching,
     scrollPosition,
+    scrollIsBottom,
     firstVisibleId
   };
 };

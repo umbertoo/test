@@ -13,25 +13,51 @@ import EmojiPicker from './EmojiPicker';
 
 
 class MessageList extends Component {
+  state={
+    scrollHeight:null
+  }
+  scrollHeight=null
   isScrollOnBottom=()=>{
     const view = this.scrollView;
     return view.getScrollTop()+view.getClientHeight()==view.getScrollHeight();
   }
   onScrollStop=()=>{
+    console.log('onScrollStop<<<<<');
     this.props.onScrollStop();
     const view = this.scrollView;
+
     if(view.getScrollTop()==0){
       this.props.onScrollTop(view.getScrollHeight());
       console.log('грузим еще');
     }
     //if scrollOnBottom
-    if(this.isScrollOnBottom()){
-      console.log('вниз пришли');
-      this.props.onScrollBottom();
-    }
+    const isScrollOnBottom = this.isScrollOnBottom();
+      if(isScrollOnBottom){
+        console.log('вниз пришли');
+        this.props.onScrollBottom();
+      }else{
+        this.props.onScrollNotBottom();
+      }
+
   }
   shouldComponentUpdate(nextProps, nextState) {
     return !shallowEqual(this.props,nextProps);
+  }
+  onScrollFrame=(values)=>{
+// console.log('onScrollFrame', values);
+  }
+  onUpdate=({scrollHeight})=>{
+if (scrollHeight!=this.scrollHeight){
+  console.warn('onUpdate',scrollHeight);
+
+  // this.props.onChangeScrollHeight();
+  this.onScrollStop();
+  this.scrollHeight=scrollHeight;
+  //  this.setState({ scrollHeight });
+ }
+  }
+  onScroll=(v)=>{
+    // console.log('onScroll',v);
   }
   renderMessages=()=>{
     let prevDate;
@@ -70,7 +96,7 @@ class MessageList extends Component {
         <Message
           isEdited={msg.createdAt!==msg.updatedAt}
           isEditable={this.props.editableMessageId==msg.id}
-          canBeEditable={this.props.currentUser==msg.userId}
+          canBeEditable={this.props.currentUserId==msg.userId}
 
           minimaized={minimaized}
 
@@ -99,8 +125,11 @@ render(){
   const { messagesIsFetching }= this.props;
   return(
     <Scrollbars
+      onScroll={this.onScroll}
+      onUpdate={this.onUpdate}
       className="message-list"
       onScrollStop={this.onScrollStop}
+      onScrollFrame={this.onScrollFrame}
       renderThumbVertical={props => <div {...props} className="message-list__thumb-vertical"/>}
       ref={c=>this.scrollView=c}>
       {this.props.children}

@@ -20,7 +20,7 @@ import syncParamsWithStore from '../utils/syncParamsWithStore';
 class Chat extends Component {
   state={
     message_input_height:66,
-    sidePanelIsOpen:JSON.parse(localStorage.sidePanelIsOpen)
+    sidePanelIsOpen:JSON.parse(localStorage.getItem('sidePanelIsOpen'))
   }
   onTypingMessage=()=>{
     this.props.sendTyping(this.props.params.channelId);
@@ -30,16 +30,7 @@ class Chat extends Component {
     this.props.fetchServers();
     this.props.fetchCurrentUser();
   }
-  sendMessage=(text)=>{
-    if(text){
-      const {channelId, serverId} = this.props.params;
-      this.props.createMessage({text,channelId,serverId })
-      .then(msg => {
-        this.messageList.scrollView.scrollToBottom();
-        this.onTypingMessage.cancel();
-      });
-    }
-  }
+
   handleChangeHeightMessageForm=(height)=>{
     const view =this.messageList.scrollView;
     let callback = ()=>{};
@@ -59,6 +50,16 @@ class Chat extends Component {
       localStorage.setItem('sidePanelIsOpen',this.state.sidePanelIsOpen);
     });
   }
+  sendMessage=(text)=>{
+    if(text){
+      const {channelId, serverId} = this.props.params;
+      this.props.createMessage({text,channelId,serverId })
+      .then(msg => {
+        this.messageList.scrollView.scrollToBottom();
+        this.onTypingMessage.cancel();
+      });
+    }
+  }
   render(){
     const { message_input_height, sidePanelIsOpen } = this.state,
     paddingRight = sidePanelIsOpen ? 200+'px' : 0;
@@ -69,6 +70,8 @@ class Chat extends Component {
             <ServersListContainer />
           </div>
           <div className="chat__channels-list-place">
+            <button className="ac" onClick={()=>this.props.setScrollPosition(99999999,this.props.params.channelId)}>AAAAAAAAAAAAA</button>
+
             <ServerMenuContainer />
             <ChannelListContainer />
             <UserBlockContainer />

@@ -54,7 +54,7 @@ class ServersListContainer extends Component {
         selectedItem={serverId}
         order={order}
         servers={servers}>
-        {!channelId && <RedirectServer />}
+        {/* {!channelId && <RedirectServer />} */}
 
         <AddServerButtonContainer />
       </SortableServersList>
