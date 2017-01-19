@@ -3,6 +3,9 @@ import API from "./common/API/API";
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "./common/schemas";
 import { getChangedItemsFromOrder } from "../utils/getChangedItemsFromOrder";
+import {addConfirmation} from './ui_actions';
+
+
 
 export const selectRole = (id) =>({
     type:type.SELECT_ROLE,
@@ -109,11 +112,14 @@ export const deleteRole = (roleId, serverId) => async dispatch =>{
     console.log('roles',payload);
 
     dispatch(deleteRoleSuccess(payload, serverId));
+    dispatch(selectRole(null));
+
   } catch (e) {
     dispatch(deleteRoleFailure('delete role error'));
     console.error('error',e);
   }
 };
+export const deleteRoleWithConfirm = addConfirmation(deleteRole,'ARE YOU SHURE');
 ///////////////////////////////////////////////////////////
 export const editRoleRequest = () =>({
   type:type.EDIT_ROLE_REQUEST,

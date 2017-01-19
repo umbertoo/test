@@ -27,7 +27,7 @@ export const messages = (state = initialState, action) => {
 
         case type.FETCH_MESSAGES_SUCCESS:
         return {...state,
-            items:merge({},state.items,action.payload.entities.messages),
+            items:merge({},state.items,action.response.entities.messages),
             isFetching:action.isFetching,
             error:action.error
         };
@@ -40,7 +40,7 @@ export const messages = (state = initialState, action) => {
         case type.CREATE_MESSAGE_SUCCESS:
         return {...state,
             isCreating:action.isCreating,
-            items:{...state.items, [action.message.id]:action.message}
+            // items:merge({},state.items, action.response.entities.messages)
         };
         case type.CREATE_MESSAGE_FAILURE:
         return {...state,
@@ -49,8 +49,9 @@ export const messages = (state = initialState, action) => {
         };
 
         case type.RECEIVE_MESSAGE:
+        console.log('RECEIVE_MESSAGE', action);
         return {...state,
-            items:{...state.items, [action.message.id]:action.message}
+            items:merge({},state.items, action.response.entities.messages)
         };
 
         default: return state;

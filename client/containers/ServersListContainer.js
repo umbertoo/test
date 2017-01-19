@@ -5,24 +5,24 @@ import SortableServersList from '../components/ServersList';
 import { socket } from '../actions/common/socketEvents';
 
 import AddServerButtonContainer from '../containers/AddServerButtonContainer';
-import {getGeneralChannelId} from '../selectors/selectors.js';
-import RedirectServer from '../containers/RedirectServer';
+import {getServers, getFirstChannelsIds, getOpenedChannelsIdsByServer} from '../selectors/selectors.js';
 
-
+import shallowEqual from 'shallowequal';
 import history from 'history';
+
 class ServersListContainer extends Component {
   static contextTypes = { router: PT.object.isRequired }
 
   componentWillMount(){
     const {serverId}=this.props;
     // this.props.selectServer(serverId);
-    this.props.fetchChannels(serverId);
+    // this.props.fetchChannels(serverId);
     socket.emit('connectServer', serverId);
+    this.props.fetchMessagesAck(serverId);
+    
   }
-  componentDidUpdate(prevProps, prevState){
-    const {serverId, channelId} = this.props;
-    const {generalChannelId} = this.props;
-    // if(!channelId && generalChannelId) this.context.router.transitionTo('/channels/'+serverId+'/'+generalChannelId);
+  shouldComponentUpdate(nextProps, nextState){
+      return !shallowEqual(nextProps, this.props);
   }
   // componentWillReceiveProps(nextProps){
   //   const {serverId:prevServerId} = this.props;
@@ -33,18 +33,25 @@ class ServersListContainer extends Component {
   // }
   selectServer=(serverId)=>{
     // this.props.selectServer(serverId);
-    this.props.fetchChannels(serverId).then(()=>{
-      const {generalChannelId} = this.props;
-      this.context.router.transitionTo('/channels/'+serverId+'/'+generalChannelId);
-      socket.emit('connectServer', serverId);
-    });
+    // this.props.fetchChannels(serverId).then(()=>{
+    //
+    // });
+    const {firstChannelsIds, openedChannelsIds} = this.props;
+    console.log(openedChannelsIds);
+
+    const channelId = openedChannelsIds[serverId] || firstChannelsIds[serverId];
+    this.context.router.transitionTo('/channels/'+serverId+'/'+channelId);
+    socket.emit('connectServer', serverId);
+
+    this.props.fetchMessagesAck(serverId);
   }
   onSortEnd=({oldIndex, newIndex})=> {
     this.props.editServersOrder(oldIndex, newIndex);
   }
 
   render(){
-    const {servers, order, serverId, channelId} = this.props;
+    const {servers, serverId} = this.props;
+    console.warn('ServersListContainer');
     return (
       <SortableServersList
         distance={4}
@@ -52,9 +59,7 @@ class ServersListContainer extends Component {
         lockAxis="y"
         onSelectServer={this.selectServer}
         selectedItem={serverId}
-        order={order}
         servers={servers}>
-        {/* {!channelId && <RedirectServer />} */}
 
         <AddServerButtonContainer />
       </SortableServersList>
@@ -62,16 +67,10 @@ class ServersListContainer extends Component {
   }
 }
 const mapStateToProps = (state) =>{
-  const { params: {serverId, channelId} } = state.ui;
-  const { channels:channelsIds=[] } = state.entities.servers.items[serverId]||{};
-  const channels = channelsIds.map(id=>state.entities.channels.items[id]);
-  // const generalChannelId =getGeneralChannelId(channels);
   return {
-    order: state.entities.servers.ids,
-    serverId,
-    channelId,
-    // generalChannelId,
-    servers: state.entities.servers.items
+    servers: getServers(state),
+    firstChannelsIds:getFirstChannelsIds(state),
+    openedChannelsIds:getOpenedChannelsIdsByServer(state)
   };
 };
 

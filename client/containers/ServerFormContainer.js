@@ -24,7 +24,7 @@ class ServerFormContainer extends Component {
     }
   }
 
-  const mapStateToProps = (state) =>({
-    server:state.entities.servers.items[state.ui.params.serverId]
-  });
-  export default connect(mapStateToProps, Actions)(ServerFormContainer);
+  // const mapStateToProps = (state, props) =>({
+  //   server:state.entities.servers.items[props.serverId]
+  // });
+  export default connect(null, Actions)(ServerFormContainer);

@@ -3,155 +3,198 @@ import API from "./common/API/API";
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "./common/schemas";
 import { socket } from './common/socketEvents';
+import {getChannelData} from '../selectors/selectors';
 
 import union from 'lodash/union';
-const LIMIT_PAGINATION = 45;
+
+export const LIMIT_PAGINATION = 45;
+export const BOTTOM_POSITION = -1;
+export const TOP_INDENT = 60;
+
+import {
+  unsetChannelHasNewMessages,
+  setScrollIsBottom,
+  setScrollPosition
+} from './channels_actions';
+
+import {addConfirmation} from './ui_actions';
+
+export const updateMessageAckRequest = () =>({
+    type:type.UPDATE_MESSAGE_ACK_REQUEST,
+    isFetching:true,
+    error:null
+});
+export const updateMessageAckSuccess = (response) =>({
+    type:type.UPDATE_MESSAGE_ACK_SUCCESS,
+    isFetching:false,
+    error:null,
+    response
+});
+export const updateMessageAckFailure = (error) =>({
+    type:type.UPDATE_MESSAGE_ACK_FAILURE,
+    isFetching:false,
+    error
+});
+
+export const updateMessageAck = (messageId) => async dispatch =>{
+    try {
+      dispatch(updateMessageAckRequest());
+      const response = await API.Message.updateAck(messageId);
+      console.log(response,'updateMessageAck');
+      dispatch(updateMessageAckSuccess(response));
+
+    } catch (e) {
+      console.error(e);
+      dispatch(updateMessageAckFailure(e));
+
+    }
+};
+//_________________________________
+export const fetchMessagesAckRequest = () =>({
+    type:type.FETCH_MESSAGES_ACK_REQUEST,
+    isFetching:true,
+    error:null
+});
+export const fetchMessagesAckSuccess = (response,serverId) =>({
+    type:type.FETCH_MESSAGES_ACK_SUCCESS,
+    isFetching:false,
+    error:null,
+    serverId,
+    response
+});
+export const fetchMessagesAckFailure = (error) =>({
+    type:type.FETCH_MESSAGES_ACK_FAILURE,
+    isFetching:false,
+    error
+});
 
 
+
+export const fetchMessagesAck = (serverId) => async dispatch =>{
+    try {
+      dispatch(fetchMessagesAckRequest());
+      const response = await API.Message.fetchAckByServer(serverId);
+      console.log(response,'getLastVisible');
+      dispatch(fetchMessagesAckSuccess(response, serverId));
+
+    } catch (e) {
+      console.error(e);
+      dispatch(fetchMessagesAckFailure(e));
+
+    }
+};
 //_____________________________________________________________________________
 
 
 export const createMessageRequest = () =>({
-    type:type.CREATE_MESSAGE_REQUEST,
-    isCreating:true
+  type:type.CREATE_MESSAGE_REQUEST,
+  isCreating:true
 });
-export const createMessageSuccess = (message) =>({
-    type:type.CREATE_MESSAGE_SUCCESS,
-    isCreating:false,
-    message,
-    channelId:message.channelId
+
+export const createMessageSuccess = (response, channelId) =>({
+  type:type.CREATE_MESSAGE_SUCCESS,
+  isCreating:false,
+  response,
+  channelId
 });
+
 export const createMessageFailure = (error) =>({
-    type:type.CREATE_MESSAGE_FAILURE,
-    isCreating:false,
-    error
+  type:type.CREATE_MESSAGE_FAILURE,
+  isCreating:false,
+  error
 });
 
 //------------------------------
-export const updateSlice = (ids, channelId) =>({
-    type:type.UPDATE_SLICE,
-    ids,
-    channelId
-});
+
 
 export const createMessage = (message) => async (dispatch, getState) =>{
-    try {
-        dispatch(createMessageRequest());
-        const res = await API.Message.create(message);
-        dispatch(createMessageSuccess(res));
+  try {
+    dispatch(createMessageRequest());
+    const msg = await API.Message.create(message);
+    const response = normalize(msg, schemas.message);
 
-        const {
-            ids=[]
-        } = getState().pagination.idsByChannel[message.channelId]||{};
-        const lastIndex = ids.length;
-        //get slice from end, in order to show last messages
+    const { channelId } = msg;
 
-        const slice = ids.slice(lastIndex-LIMIT_PAGINATION,lastIndex);
-        dispatch(updateSlice(slice, message.channelId));
-    } catch (e) {
-        dispatch(createMessageFailure(e));
-    }
+    // dispatch(createMessageSuccess(response, channelId));
+
+  } catch (e) {
+    dispatch(createMessageFailure(e));
+  }
 };
 //_____________________________________________________________________________
+
 export const fetchMessagesRequest = () =>({
-    type:type.FETCH_MESSAGES_REQUEST,
-    isFetching:true,
-    error:null
+  type:type.FETCH_MESSAGES_REQUEST,
+  isFetching:true,
+  error:null
 });
-export const fetchMessagesSuccess = (payload,channelId) =>({
-    type:type.FETCH_MESSAGES_SUCCESS,
-    isFetching:false,
-    channelId,
-    payload,
-    error:null
+
+export const fetchMessagesSuccess = (response, channelId, moreBefore) =>({
+  type:type.FETCH_MESSAGES_SUCCESS,
+  isFetching:false,
+  moreBefore,
+  channelId,
+  response,
+  error:null
 });
+
 export const fetchMessagesFailure = (error) =>({
-    type:type.FETCH_MESSAGES_FAILURE,
-    isFetching:false,
-    error
+  type:type.FETCH_MESSAGES_FAILURE,
+  isFetching:false,
+  error
 });
 
 
+export const fetchMessages = (channelId) => async (dispatch,getState) =>{
+  try {
+    if(!channelId) return;
+    const { ids=[] } = getChannelData(getState(),{channelId})||{};
 
-export const fetchMessages = (channelId, nextPage) => async (dispatch,getState) =>{
-    try {
-        if(!channelId) return;
-        const {
-            ids=[], slice=[]
-        } = getState().pagination.idsByChannel[channelId]||{};
+    const offset = ids.length;
+    console.warn('грузим с сервера');
+    dispatch(fetchMessagesRequest());
 
-        const channelIsEmpty =  !ids.length;
-        const offset = channelIsEmpty ? 0 : ids.length;
+    const { messages, moreBefore } = await API.Message.getByChannel(channelId, LIMIT_PAGINATION, offset);
+    const response = normalize(messages, arrayOf(schemas.message));
 
-        if( channelIsEmpty || nextPage ){
-            console.warn('грузим с сервера');
-            dispatch(fetchMessagesRequest());
-
-            const res = await API.Message.getByChannel(channelId, LIMIT_PAGINATION, offset);
-            const payload = normalize(res, arrayOf(schemas.message));
-
-            dispatch(fetchMessagesSuccess(payload,channelId));
-            dispatch(updateSlice(union(payload.result, slice), channelId));
-        }
-    } catch (e) {
-        dispatch(fetchMessagesFailure(e));
-        console.error('error',e);
-    }
+    dispatch(fetchMessagesSuccess(response, channelId, moreBefore));
+  } catch (e) {
+    dispatch(fetchMessagesFailure(e));
+    console.error('error',e);
+  }
 };
 
-export const setMinimumSliceForChannel=(channelId)=>(dispatch,getState)=>{
-  const {
-      ids=[], firstVisibleId
-  } = getState().pagination.idsByChannel[channelId] || {};
-  const index = ids.indexOf(firstVisibleId);
+export const receiveMessage = ({response, channelId, openedChannelId, isOwnMessage}) =>({
+  type:type.RECEIVE_MESSAGE,
+  channelId,
+  response,
+  openedChannelId,
+  isOwnMessage
+});
 
-  dispatch(updateSlice(ids.slice(index, index+LIMIT_PAGINATION), channelId));
+export const loadCacheBefore = (channelId ) =>({
+  type:type.LOAD_CACHE_BEFORE,
+  channelId
+});
+
+export const loadCacheAfter = (channelId,position) =>({
+  type:type.LOAD_CACHE_AFTER,
+  channelId,
+  position
+});
+
+export const loadMoreAfter = (channelId,position) => dispatch =>{
+  dispatch(loadCacheAfter(channelId,position));
 };
 
-export const addMessageToSlice = (message) => (dispatch, getState) =>{
-    const {
-        ids=[], pageCount=0, slice=[]
-    } = getState().pagination.idsByChannel[message.channelId]||{};
-    dispatch(updateSlice([...slice, message.id], message.channelId));
-};
+export const loadMoreBefore = (channelId) => (dispatch, getState) =>{
+  const { moreCacheBefore } = getChannelData(getState(),{channelId})||{};
 
-const checkMoreAfter = (slice, ids) =>{
-    const lastId = slice.slice(-1)[0];
-    const start = ids.indexOf(lastId);
-    if(start<0) return 0;
-    return ids.slice(start+1, ids.length-1).length;
-};
-
-export const loadMoreAfter = (channelId) => async (dispatch, getState) =>{
-    const {
-        ids=[], pageCount=0, slice=[]
-    } = getState().pagination.idsByChannel[channelId]||{};
-
-    if(checkMoreAfter(slice,ids)){
-        const index = 1 + ids.indexOf(slice.slice(-1)[0]);
-        return dispatch(updateSlice([...slice, ...ids.slice(index, index+LIMIT_PAGINATION)], channelId));
-    }
-};
-
-const checkMoreBefore = (slice, ids) =>{
-    const end = ids.indexOf(slice[0])-1;
-    if (end <= 0) return 0;
-    return ids.slice(0, end).length;
-};
-
-export const loadMoreBefore = (channelId) => async (dispatch, getState) =>{
-    const {
-        ids=[], pageCount=0, slice=[]
-    } = getState().pagination.idsByChannel[channelId]||{};
-
-    if(checkMoreBefore(slice,ids)){
-        const index = ids.indexOf(slice[0]);
-        const start = index - LIMIT_PAGINATION < 0 ? 0 : index - LIMIT_PAGINATION;
-
-        return dispatch(updateSlice([...ids.slice(start, index-1),...slice], channelId));
-    }else{
-        return await dispatch(fetchMessages(channelId,true));
-    }
+  if(moreCacheBefore){
+    dispatch(loadCacheBefore(channelId));
+  }else{
+    dispatch(fetchMessages(channelId));
+  }
 };
 
 
@@ -160,68 +203,85 @@ export const loadMoreBefore = (channelId) => async (dispatch, getState) =>{
 
 //_____________________________________________________________________________
 export const editMessageRequest = () =>({
-    type:type.EDIT_MESSAGE_REQUEST,
-    isFetching:true
+  type:type.EDIT_MESSAGE_REQUEST,
+  isFetching:true
 });
 export const editMessageSuccess = (message) =>({
-    type:type.EDIT_MESSAGE_SUCCESS,
-    isFetching:false,
-    message
+  type:type.EDIT_MESSAGE_SUCCESS,
+  isFetching:false,
+  message
 });
 export const editMessageFailure = (error) =>({
-    type:type.EDIT_MESSAGE_FAILURE,
-    isFetching:false,
-    error
+  type:type.EDIT_MESSAGE_FAILURE,
+  isFetching:false,
+  error
 });
 
 export const editMessage = (id, text) => async dispatch =>{
-    try {
-      dispatch(editMessageRequest());
-      const message = await API.Message.edit(id, text);
-      dispatch(editMessageSuccess(message));
-      return message;
-    } catch (e) {
-      dispatch(editMessageFailure(e));
-    }
+  try {
+    dispatch(editMessageRequest());
+    const message = await API.Message.edit(id, text);
+    dispatch(editMessageSuccess(message));
+    return message;
+  } catch (e) {
+    dispatch(editMessageFailure(e));
+  }
 };
+export const editMessageWithConfirm = addConfirmation(editMessage, "ARE YOU SHURE?");
+
 
 export const updateMessage = (message) =>({
-    type:type.UPDATE_MESSAGE,
-    message
+  type:type.UPDATE_MESSAGE,
+  message
 });
 //_____________________________________________________________________________
 export const setEditableMessage = (id) =>({
-    type:type.SET_EDITABLE_MESSAGE,
-    id
+  type:type.SET_EDITABLE_MESSAGE,
+  id
 });
 
 export const unsetEditableMessage = () =>({
-    type:type.UNSET_EDITABLE_MESSAGE,
-    id:null
+  type:type.UNSET_EDITABLE_MESSAGE,
+  id:null
 });
 
 //_____________________________________________________________________________
+
+
+
+
+
 export const deleteMessageRequest = () =>({
-    type:type.DELETE_MESSAGE_REQUEST,
-    isFetching:true
+  type:type.DELETE_MESSAGE_REQUEST,
+  isFetching:true,
+
 });
+
 export const deleteMessageSuccess = (message) =>({
-    type:type.DELETE_MESSAGE_SUCCESS,
-    isFetching:false,
-    message,
-    channelId:message.channelId
+  type:type.DELETE_MESSAGE_SUCCESS,
+  isFetching:false,
+  message,
+  channelId:message.channelId
 });
+
 export const deleteMessageFailure = (error) =>({
-    type:type.DELETE_MESSAGE_FAILURE,
-    isFetching:false,
-    error
+  type:type.DELETE_MESSAGE_FAILURE,
+  isFetching:false,
+  error
 });
+// export const shouldConfirm = () => async dispatch =>{
+//     ty
+// };
+
 export const deleteMessage = (id) => async dispatch =>{
-    try {
-      dispatch(deleteMessageRequest());
-      const message = await API.Message.delete(id);
-      dispatch(deleteMessageSuccess(message));
-    } catch (e) {
-      dispatch(deleteMessageFailure(e));
-    }
+
+  try {
+    dispatch(deleteMessageRequest());
+    const message = await API.Message.delete(id);
+    dispatch(deleteMessageSuccess(message));
+  } catch (e) {
+    dispatch(deleteMessageFailure(e));
+  }
 };
+
+export const deleteMessageWithConfirm = addConfirmation(deleteMessage, "ARE YOU SHURE?");

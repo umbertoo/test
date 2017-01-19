@@ -1,3 +1,4 @@
+
 // import db from './db';
 // import assosiations from './associations';
 // import * as Models from './index';
@@ -5,6 +6,7 @@ console.log('index'.yellow);
 import assosiations from './associations';
 
 export * from './channel';
+export * from './viewed_messages';
 export * from './server';
 export * from './user';
 export * from './message';

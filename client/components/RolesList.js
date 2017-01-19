@@ -20,7 +20,7 @@ const RolesList = ({
             onClick={onClickRole}
             key={role.id}
             role={role}
-        />
+          />
         )}
       </Scrollbars>
     </div>

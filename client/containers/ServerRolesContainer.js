@@ -24,10 +24,8 @@ class ServerRolesContainer extends Component {
   }
   onClickDeleteRole = (roleId) =>{
     const {serverId} = this.props;
-    this.props.deleteRole(roleId,serverId)
-    .then(()=>{
-      this.props.selectRole(null);
-    });
+    this.props.deleteRoleWithConfirm(roleId,serverId);
+
   }
   onRoleFormChange=(role)=>{
     console.log('onRoleFormChange',role);
@@ -48,7 +46,6 @@ class ServerRolesContainer extends Component {
         <SortableRolesList
           shouldCancelStart={()=>disableSorting?true:undefined}
           distance={4}
-          // pressDelay={50}
           onSortEnd={this.onSortEnd}
           lockAxis="y"
           roles={roles}
@@ -77,10 +74,10 @@ class ServerRolesContainer extends Component {
     }
   }
 
-  const mapStateToProps = (state) =>{
+  const mapStateToProps = (state, props) =>{
     const {
       roles:order=[]
-    } = state.entities.servers.items[state.ui.params.serverId] || {};
+    } = state.entities.servers.items[props.serverId] || {};
     const { items } = state.entities.roles;
     const roles = order.map(id => items[id]);
 
@@ -93,7 +90,6 @@ class ServerRolesContainer extends Component {
 
     const selectedRoleId = selectedRole || order[0];
     return {
-      serverId:state.ui.params.serverId,
       roles,
       permissions,
       selectedRole: items[selectedRoleId]

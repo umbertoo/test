@@ -18,8 +18,8 @@ class ChannelForm extends Component {
     this.setState({ [name]:value });
   }
   render(){
-    const { name, description, id, isGeneral } = this.state;
-    const { onDeleteChannel } = this.props;
+    const { name, description, id } = this.state;
+    const { onDeleteChannel, showDeleteButton } = this.props;
     return (
       <div className="channel-form">
         <h1>{name}</h1>
@@ -35,7 +35,7 @@ class ChannelForm extends Component {
           label={'описание канала'}
           name="description"
           value={description} />
-        {!isGeneral && <input onClick={onDeleteChannel} type="button" value="Удалить"/>}
+        {!showDeleteButton && <input onClick={onDeleteChannel} type="button" value="Удалить"/>}
         <input  type="submit" value="Готово"/>
       </div>
       );

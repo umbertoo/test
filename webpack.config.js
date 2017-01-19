@@ -56,20 +56,20 @@ export default {
     plugins: [
 
         new webpack.optimize.OccurenceOrderPlugin(),
-        // new webpack.DefinePlugin({
-        //     'process.env':{
-        //         'NODE_ENV': JSON.stringify('production')
-        //     }
-        // }),
-        // //
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false,
-        //         screw_ie8: true
-        //     },
-        //     comments: false,
-        //     sourceMap: false
-        // }),
+        new webpack.DefinePlugin({
+            'process.env':{
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
+        //
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+                screw_ie8: true
+            },
+            comments: false,
+            sourceMap: false
+        }),
         //       new CompressionPlugin({
         //     asset: "[path].gz[query]",
         //     algorithm: "gzip",
@@ -77,7 +77,7 @@ export default {
         //     threshold: 10240,
         //     minRatio: 0.8
         // }),
-        devFlagPlugin,
+        // devFlagPlugin,
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
     ]

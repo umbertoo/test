@@ -1,144 +1,111 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import map from 'lodash/map';
-import forEach from 'lodash/forEach';
+import memoize from 'lodash/memoize';
 import Message from './Message';
-import TimeDivider from './TimeDivider';
-import { Scrollbars } from 'react-custom-scrollbars';
+import MessagesDivider from './MessagesDivider';
 import '../static/scss/message-list.scss';
-
-import { socket } from '../actions/common/socketEvents';
+import forEach from 'lodash/forEach';
 import shallowEqual from 'shallowequal';
-import EmojiPicker from './EmojiPicker';
+
+import ChatScrollContainer from '../containers/ChatScrollContainer';
+import { DIVIDER_TIME } from '../selectors/selectors';
+
+const RED_COLOR = 'rgba(240,71,71,.8)';
 
 
 class MessageList extends Component {
-  state={
-    scrollHeight:null
-  }
-  scrollHeight=null
-  isScrollOnBottom=()=>{
-    const view = this.scrollView;
-    return view.getScrollTop()+view.getClientHeight()==view.getScrollHeight();
-  }
-  onScrollStop=()=>{
-    console.log('onScrollStop<<<<<');
-    this.props.onScrollStop();
-    const view = this.scrollView;
-
-    if(view.getScrollTop()==0){
-      this.props.onScrollTop(view.getScrollHeight());
-      console.log('грузим еще');
-    }
-    //if scrollOnBottom
-    const isScrollOnBottom = this.isScrollOnBottom();
-      if(isScrollOnBottom){
-        console.log('вниз пришли');
-        this.props.onScrollBottom();
-      }else{
-        this.props.onScrollNotBottom();
-      }
-
-  }
   shouldComponentUpdate(nextProps, nextState) {
-    return !shallowEqual(this.props,nextProps);
-  }
-  onScrollFrame=(values)=>{
-// console.log('onScrollFrame', values);
-  }
-  onUpdate=({scrollHeight})=>{
-if (scrollHeight!=this.scrollHeight){
-  console.warn('onUpdate',scrollHeight);
-
-  // this.props.onChangeScrollHeight();
-  this.onScrollStop();
-  this.scrollHeight=scrollHeight;
-  //  this.setState({ scrollHeight });
- }
-  }
-  onScroll=(v)=>{
-    // console.log('onScroll',v);
+    return !shallowEqual(this.props, nextProps);
   }
   renderMessages=()=>{
-    let prevDate;
-    let userId;
-    const yesterday = moment().add(-1,'days');
-    let prevDay;
-    let day;
-    let prevDayisYesterday;
+    const { messages, newMessagesAfterId } = this.props;
+    // console.log(messages,'messages');
+
     const list=[];
-    const { messages, messagesIds }= this.props;
-    // console.log('this.props.messages',this.props.messages.length);
-    // this.props.messagesIds.
-    messagesIds.forEach(id=>{
-      const msg = messages[id];
-      day = msg.createdAt;
-
-      const curDate = moment(msg.createdAt);
-      const timeDiff = curDate.diff(prevDate, 'm');
-
-      let dateDiff;
-      if(prevDate){
-        dateDiff = curDate.date()!==prevDate.date();
-      }
-      if(prevDate && dateDiff && (+moment().date()-prevDate.date())!==1 ){
-        list.push(<TimeDivider key={msg.createdAt+"1"} content={prevDate.format("D MMMM YYYY")}/>);
-      }
-      const minimaized = userId ===  msg.userId && timeDiff < 2;
-      prevDate = curDate;
-      userId = msg.userId;
-      prevDayisYesterday = moment(prevDay).isSame(yesterday,'days');
-
-      if(prevDayisYesterday && !moment(msg.createdAt).isSame(yesterday,'days')){
-        list.push(<TimeDivider key={msg.createdAt} content ={"вчера"}/>);
-      }
-      list.push (
-        <Message
-          isEdited={msg.createdAt!==msg.updatedAt}
-          isEditable={this.props.editableMessageId==msg.id}
-          canBeEditable={this.props.currentUserId==msg.userId}
-
-          minimaized={minimaized}
-
+    forEach(messages, (item,i)=>{
+      if (!item.type){
+        if  (newMessagesAfterId && item.id > newMessagesAfterId && i==0){
+          list.push( <MessagesDivider key={"new_messages"} refz={c=>this.NEW_MESSAGES=c}
+            content={'Новые сообщения'} textColor={RED_COLOR} lineColor={RED_COLOR}/>
+          );
+        }
+        list.push( <Message
+          isEdited={item.createdAt!==item.updatedAt}
+          isEditable={this.props.editableMessageId==item.id}
+          canBeEditable={this.props.currentUserId==item.userId}
+          minimaized={item.minimaized}
           onEdit={this.props.onMessageEdit}
           onSaveEdit={this.props.onSaveMessageEdit}
           onCancelEdit={this.props.onCancelMessageEdit}
-
           onDelete={this.props.onMessageDelete}
+          id={item.id}
+          userId={item.userId}
+          user={this.props.users[item.userId]}
+          text={item.text}
+          key={item.id}
+          createdAt={item.createdAt}/>
+        );
 
-          onMount={this.props.onMountMessage}
-          onUnmount={this.props.onUnmountMessage}
-          id={msg.id}
-          user={this.props.users[msg.userId]}
-          text={msg.text}
-          key={msg.id}
-          createdAt={msg.createdAt}/>
+      }
+      if(item.type==DIVIDER_TIME)
+      list.push( <MessagesDivider key={item.key} content={item.content}/>        );
+
+      if(!item.type && item.id == newMessagesAfterId && i != messages.length-1  )
+      list.push( <MessagesDivider key={"new_messages"} refz={c=>this.NEW_MESSAGES=c}
+        content={'Новые сообщения'} textColor={RED_COLOR} lineColor={RED_COLOR}/>
       );
-      prevDay = day;
+
+    }  );
+
+    return list;
+  }
+
+
+  render(){
+    const {
+      currentUserId, channelId,
+      scrollPosition,
+      isLoadingMoreBefore, isLoadingMoreAfter,
+      moreBefore, moreAfter,
+      newMessages, newMessagesAfterId, showIndicatorAboutNewMessages,
+      lastOwnMessageId, lastNotOwnMessageId
+    } = this.props;
+    // console.log(this.props, 'messageList');
+    return (
+      <div className="message-list">
+        {(newMessages && newMessages.length && showIndicatorAboutNewMessages) ?
+          <div className="message-list__notification">{newMessages.length} новых сообщения</div>
+          :null
+        }
+        <ChatScrollContainer
+          lastNotOwnMessageId={lastNotOwnMessageId}
+          lastOwnMessageId={lastOwnMessageId}
+
+          currentUserId={currentUserId}
+          loadMoreBefore={this.props.loadMoreBefore}
+          loadMoreAfter={this.props.loadMoreAfter}
+          moreBefore={moreBefore}
+          moreAfter={moreAfter}
+          isLoadingMoreBefore={isLoadingMoreBefore}
+          isLoadingMoreAfter={isLoadingMoreAfter}
+          channelId={channelId}
+          newMessagesAfterId={newMessagesAfterId}
+          // newMessagesRef={this.NEW_MESSAGES}
+          scrollPosition={scrollPosition}
+          onChangeScroll={this.props.onChangeScroll}
+          className="message-list__scroll"
+          // renderThumbVertical={this.renderScrollTumb}
+          ref={c=>this.scrollView=c}
+          // header={this.props.children}
+          // footer={this.footer}
+          >
+          {this.props.users && this.renderMessages()}
+
+        </ChatScrollContainer>
+      </div>
+
+      );
     }
-  );
+  }
 
-
-  return list;
-}
-render(){
-  const { messagesIsFetching }= this.props;
-  return(
-    <Scrollbars
-      onScroll={this.onScroll}
-      onUpdate={this.onUpdate}
-      className="message-list"
-      onScrollStop={this.onScrollStop}
-      onScrollFrame={this.onScrollFrame}
-      renderThumbVertical={props => <div {...props} className="message-list__thumb-vertical"/>}
-      ref={c=>this.scrollView=c}>
-      {this.props.children}
-      {this.props.users && this.renderMessages()}
-      <div className="message-list__footer"/>
-    </Scrollbars>
-
-  );
-}
-}
-
- export default MessageList;
+  export default MessageList;

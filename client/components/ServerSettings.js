@@ -28,18 +28,16 @@ class ServerSettings extends Component {
         tabStyle={tabStyle}
         tabPaneStyle={tabPaneStyle}>
         <Tab label="Обзор">
-          <ServerFormContainer/>
+          <ServerFormContainer server={server}/>
         </Tab>
         <Tab label="Роли">
-          <ServerRolesContainer/>
+          <ServerRolesContainer serverId={server.id}r/>
         </Tab>
       </Tabs>
     );
   }
 }
 
-// const mapStateToProps = (state,props) =>({
-//     channel:state.entities.channels.items[props.channelId]
-// });
 
-export default connect(null, Actions)(ServerSettings);
+
+export default ServerSettings;

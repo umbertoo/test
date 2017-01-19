@@ -10,6 +10,9 @@ export const users = (state = initialState, action) => {
     case type.UPDATE_USERS:
     // case type.UPDATE_USERS_ONLINE:
     case type.FETCH_MESSAGES_SUCCESS:
+    return {...state,
+      items:merge({},state.items, action.response.entities.users)
+    };
     case type.FETCH_CURRENT_USER_SUCCESS:
     case type.EDIT_USER_SUCCESS:
     return {...state,

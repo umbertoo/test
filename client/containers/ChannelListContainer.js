@@ -5,19 +5,21 @@ import SortableChannelList from '../components/ChannelList';
 import ModalDialog from '../components/ModalDialog';
 import CreateChannelForm from '../components/CreateChannelForm';
 import ChannelSettings from '../components/ChannelSettings';
-import { Scrollbars } from 'react-custom-scrollbars';
+import shallowEqual from 'shallowequal';
+import isEqual from 'lodash/isEqual';
 import Redirect from 'react-router/Redirect';
-import {getGeneralChannelId} from '../selectors/selectors.js';
- 
+import {getChannels, getChannelsWithNewMessages} from '../selectors/selectors.js';
+
 class ChannelListContainer extends Component {
   static contextTypes = { router: PT.object.isRequired }
   state = {
     openCreateChannelModal:false,
     openChannelSettings:false,
   }
-  selectChannel=(channel)=>{
-    this.context.router.transitionTo(`/channels/${this.props.serverId}/${channel.id}`);
+  shouldComponentUpdate(nextProps, nextState){
+      return !shallowEqual(nextProps, this.props) || !shallowEqual(nextState,this.state);
   }
+
   toggleCreateChannelModal=()=>{
     this.setState({
       openCreateChannelModal:!this.state.openCreateChannelModal
@@ -38,7 +40,7 @@ class ChannelListContainer extends Component {
   onClickItemSettings=(channel)=>{
     this.setState({
       openChannelSettings:true,
-      ChannelSettingId:channel.id
+      channel
     });
   }
   closeChannelSettings=()=>{
@@ -50,20 +52,26 @@ class ChannelListContainer extends Component {
     this.setState({
       openChannelSettings:false
     },()=>{
-      this.props.deleteChannel(this.state.ChannelSettingId);
+      this.props.deleteChannelWithConfirm(this.state.channel.id);
     });
+  }
+  selectChannel=(channel)=>{
+    this.context.router.transitionTo(`/channels/${this.props.serverId}/${channel.id}`);
   }
   render(){
     const {
-      channels, selectedChannelId,
-      order, serverId, generalChannelId, channelsWithNewMessages
+      channels,
+      serverId, channelId:selectedChannelId,
+      channelsWithNewMessages
     } = this.props;
-    const { openCreateChannelModal, openChannelSettings, ChannelSettingId} = this.state;
+    const { openCreateChannelModal, openChannelSettings, channel} = this.state;
     const disableSorting = false;
+    const isLastChannel = channels.length == 1;
+    // console.warn('ChannelListContainer');
     return (
       <div style={{width:'100%', height:'100%'}}>
         <SortableChannelList
-          shouldCancelStart={()=>disableSorting?true:undefined}
+          // shouldCancelStart={()=>disableSorting?true:undefined}
           distance={4}
           onSortEnd={this.onSortEnd}
           lockAxis="y"
@@ -72,11 +80,10 @@ class ChannelListContainer extends Component {
           channelsWithNewMessages={channelsWithNewMessages}
           selected={selectedChannelId}
           onSelectChannel={this.selectChannel}
-          order={order}
           channels={channels}/>
 
-        {(channels[selectedChannelId] && channels[selectedChannelId].deleted)
-          && <Redirect to={`/channels/${serverId}/${generalChannelId}`}/>}
+        {/* {(channels[selectedChannelId] && channels[selectedChannelId].deleted)
+        && <Redirect to={`/channels/${serverId}/${generalChannelId}`}/>} */}
 
         {openCreateChannelModal &&
           <ModalDialog
@@ -100,7 +107,8 @@ class ChannelListContainer extends Component {
             style={{content:{background:'#2e3136'}}} >
             <ChannelSettings
               onDeleteChannel={this.handleDeleteChannel}
-              channel={channels[ChannelSettingId]}/>
+              showDeleteButton={isLastChannel}
+              channel={channel}/>
           </ModalDialog>
         }
       </div>
@@ -108,22 +116,11 @@ class ChannelListContainer extends Component {
         }
       }
 
-      const mapStateToProps = (state) =>{
-        const {
-          channels:order=[]
-        } = state.entities.servers.items[state.ui.params.serverId]||{};
-        const channels = state.entities.channels.items;
-        // const generalChannelId = getGeneralChannelId(channels);
-        // const selectedChannelId = state.ui.params.channelId || generalChannelId ;
-        const selectedChannelId = state.ui.params.channelId ;
+      const mapStateToProps = (state, props) =>{
         return {
           channelSettingsModal:state.ui.modals.channelSettings,
-          serverId:state.ui.params.serverId,
-          // generalChannelId,
-          selectedChannelId,
-          channelsWithNewMessages:state.entities.channels.channelsWithNewMessages,
-          channels,
-          order
+          channelsWithNewMessages:getChannelsWithNewMessages(state),
+          channels:getChannels(state,props),
         };
       };
 

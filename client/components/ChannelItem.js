@@ -10,8 +10,7 @@ const ChannelItem = ({
   };
   return (
     <div className={"channel-list__item " + (isSelected?"-active":'')}
-      onClick={onSelectChannel.bind(this,channel)}
-      key={channel.id}>
+      onClick={onSelectChannel.bind(this,channel)}>
       {channel.name}
       <br/>
       {hasNewMessages && "есть сообщения"}

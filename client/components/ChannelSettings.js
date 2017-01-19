@@ -13,7 +13,7 @@ class ChannelSettings extends Component {
 
   }
   render(){
-    const { channel, onDeleteChannel }= this.props;
+    const { channel, onDeleteChannel, showDeleteButton }= this.props;
     console.log('ChannelSettings',channel);
 
     const tabPaneStyle={
@@ -24,6 +24,7 @@ class ChannelSettings extends Component {
       <Tabs onChange={this.onChange} tabPaneStyle={tabPaneStyle} >
         <Tab label="Обзор">
           <ChannelFormContainer
+            showDeleteButton={showDeleteButton}
             onDeleteChannel={onDeleteChannel}
             channel={channel}/>
         </Tab>

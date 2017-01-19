@@ -5,28 +5,58 @@ import * as schemas from "./common/schemas";
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { getChangedItemsFromOrder } from "../utils/getChangedItemsFromOrder";
+import {getChannelData} from '../selectors/selectors';
 
-export const setScrollIsBottom = (scrollIsBottom, channelId)=>(dispatch,getState)=>{
-  const {
-    scrollIsBottom:sib
-  } = getState().pagination.idsByChannel[channelId]||{};
-  // if (sib==scrollIsBottom) return;
-  dispatch({
-    type: type.SET_SCROLL_IS_BOTTOM,
-    scrollIsBottom,
-    channelId
-  });
+import {addConfirmation} from './ui_actions';
+import {fetchMessages, updateMessageAck} from './messages_actions';
+
+export const leaveChannel = (channelId, firstVisibleId) =>({
+  type:type.LEAVE_CHANNEL,
+  channelId,
+  firstVisibleId,
+
+});
+export const openChannel = (channelId, serverId) =>({
+  type:type.OPEN_CHANNEL,
+  channelId,
+  serverId
+});
+
+
+export const switchChannel = ({prevId, nextId, firstVisibleId, serverId}) => async (dispatch, getState) => {
+  dispatch(openChannel(nextId, serverId));
+
+  const { slice=[] } = getChannelData(getState(),{ channelId: nextId })||{};
+  if (!slice.length){
+    await dispatch(fetchMessages(nextId));
+
+  }
+
+    // const {slice, ids, scrollPosition} = getChannelData(getState(),{channelId:next});
+    //
+    // dispatch(updateMessageAck());
+    setTimeout(()=>{
+      prevId && dispatch(leaveChannel(prevId,firstVisibleId));
+
+    },600);
+
 };
-export const setScrollPosition=(position,channelId)=>(dispatch,getState)=>{
 
-  const {
-    scrollPosition
-  } = getState().pagination.idsByChannel[channelId]||{};
+
+export const setScrollPosition=(position, channelId, bottomPosition)=>(dispatch,getState)=>{
+  const { scrollPosition, ids, slice } = getChannelData(getState(),{channelId})||{};
+  // if (position==-1 && ids.slice(-1)[0]==slice.slice(-1)[0]){
+  //   dispatch(updateMessageAck(ids.slice(-1)[0]));
+  // }
+
   if (position==scrollPosition) return;
+
+
   dispatch({
     type: type.SET_SCROLL_POSITION,
     position,
-    channelId
+    channelId,
+    bottomPosition
   });
 };
 
@@ -59,7 +89,10 @@ export const fetchChannels = serverId => async dispatch =>{
     dispatch(fetchChannelsRequest());
 
     const res = await API.Channel.getByServer(serverId);
+    console.log(res, 'fetchChannels');
+
     const payload = normalize(res,arrayOf(schemas.channel));
+    console.log(payload, 'fetchChannels');
 
     dispatch(fetchChannelsSuccess(payload, serverId));
   } catch (e) {
@@ -124,8 +157,6 @@ export const deleteChannel = (channelId) => async dispatch =>{
   try {
     dispatch(deleteChannelRequest());
     const channel = await API.Channel.delete(channelId);
-    console.log(channel.serverId,'deleteChannel serverId');
-    console.log('deleteChannel',channelId);
     dispatch(deleteChannelSuccess(channelId, channel.serverId));
 
   } catch (e) {
@@ -133,6 +164,8 @@ export const deleteChannel = (channelId) => async dispatch =>{
     dispatch(deleteChannelFailure('delete channel error'));
   }
 };
+
+export const deleteChannelWithConfirm = addConfirmation(deleteChannel, 'ARE YOU SHURE?');
 //------------------------------------------------------------------------
 
 export const editChannelRequest = () =>({
@@ -204,52 +237,6 @@ async (dispatch, getState) =>{
 };
 
 //------------------------------------------------------------------------
-export const saveLastVisibleMessage = (channelId) => async (dispatch,getState) =>{
-
-  try{
-    const messages = getState().entities.messages.items;
-    const ids = getState().pagination.idsByChannel[channelId].ids;
-    const last_id = ids[ids.length-1];
-    const message = messages[last_id];
-
-    const {count} = await API.Message.getCount(channelId,last_id);
-    console.log('count',count);
-    const last_messages_by_channel = JSON.parse(localStorage.getItem('last_messages_by_channel'))||{};
-    last_messages_by_channel[channelId] = last_id;
-    localStorage.setItem('last_messages_by_channel',JSON.stringify(last_messages_by_channel));
-
-    dispatch({
-      type:type.SAVE_LAST_VISIBLE_MESSAGE,
-      lastVisibleMessage:{date:message.createdAt, id:message.id},
-      channelId
-    });
-  }catch(e){
-    console.error(e);
-  }
-};
-export const saveChannelInfo = ({channelId, scrollPosition, firstVisibleId}) =>({
-  type:type.SAVE_CHANNEL_INFO,
-  scrollPosition,
-  firstVisibleId,
-  channelId
-});
-
-export const setChannelHasNewMessages = (channelId) =>({
-  type:type.SET_CHANNEL_HAS_NEW_MESSAGES,
-  channelId
-});
-
-export const unsetChannelHasNewMessages = (channelId) =>(dispatch, getState)=>{
-  const { channelsWithNewMessages } = getState().entities.channels;
-
-  if (channelsWithNewMessages.indexOf(channelId) > -1){
-    dispatch({
-      type:type.UNSET_CHANNEL_HAS_NEW_MESSAGES,
-      channelId
-    });
-  }
-};
-//------------------------------------------------------------------------
 //Typing
 export const sendTypingRequest = () =>({
   type:type.SEND_TYPING_REQUEST,
@@ -277,7 +264,9 @@ export const sendTyping = (channelId) => async dispatch =>{
 };
 
 export const stopTyping = (userId, channelId) =>({
-  type:type.STOP_TYPING, userId, channelId
+  type:type.STOP_TYPING,
+  userId,
+  channelId
 });
 
 export const startTyping = (userId, channelId) => dispatch =>{

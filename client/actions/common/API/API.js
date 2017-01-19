@@ -50,6 +50,18 @@ fetch('/api/messages',{
     body: JSON.stringify(message)
 }).then(checkStatus).then(res=> res.json());
 
+Message.updateAck = (messageId) =>
+fetch('/api/messages/'+messageId+'/ack',{
+    method: 'POST',
+    headers
+}).then(checkStatus).then(res=> res.json());
+
+Message.fetchAckByServer = (serverId) =>
+fetch('/api/servers/'+serverId+'/messages/ack',{
+    method: 'GET',
+    headers
+}).then(checkStatus).then(res=> res.json());
+
 Message.edit = (id, text) =>
 fetch(`/api/messages/${id}`,{
     method: 'PUT',

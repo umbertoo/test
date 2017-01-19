@@ -6,12 +6,11 @@ import ChannelItem from './ChannelItem';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { BrowserRouter, Match, Miss, Link } from 'react-router';
-
 const SortableChannelItem = SortableElement(ChannelItem);
 
 const ChannelList = ({
   onCreateChannel, onSelectChannel, onClickItemSettings,
-  selected, channelsWithNewMessages, order, channels, children
+  selected, channelsWithNewMessages, channels, children
 }) => {
   return (
     <Scrollbars className="channel-list" >
@@ -26,25 +25,23 @@ const ChannelList = ({
             onClick={onCreateChannel}>+</button>
 
         </div>
-        {order.map((id,i)=>{
-          const channel = channels[id];
-          const hasNewMessages = channelsWithNewMessages.some(id=>id==channel.id);
-            return <SortableChannelItem
-              key={channel.id}
-              onClickItemSettings={onClickItemSettings}
-              index={i}
-              isSelected={selected==channel.id}
-              onSelectChannel={onSelectChannel}
-              channel={channel}
-              hasNewMessages={hasNewMessages}/>;
-        })}
+        {map(channels,(channel,i)=>
+          <SortableChannelItem
+            key={channel.id}
+            onClickItemSettings={onClickItemSettings}
+            index={i}
+            isSelected={selected==channel.id}
+            onSelectChannel={onSelectChannel}
+            channel={channel}
+            hasNewMessages={channelsWithNewMessages[channel.id]}/>
+        )}
       </div>
     </Scrollbars>
-    );
-  };
-ChannelList.propTypes={
-  onCreateChannel:PropTypes.func,
-  onClickItemSettings:PropTypes.func,
-  onSelectChannel:PropTypes.func,
-};
-  export default SortableContainer(ChannelList);
+      );
+    };
+    ChannelList.propTypes={
+      onCreateChannel:PropTypes.func,
+      onClickItemSettings:PropTypes.func,
+      onSelectChannel:PropTypes.func,
+    };
+    export default SortableContainer(ChannelList);

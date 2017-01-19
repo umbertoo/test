@@ -12,10 +12,15 @@ export const attribute = new Schema('attributes');
 export const role = new Schema('roles');
 
 
-role.define({
-    permissions:arrayOf(permission),
-    inherits:arrayOf(role)
+channel.define({
+  messages:arrayOf(message)
 });
+
+role.define({
+  permissions:arrayOf(permission),
+  inherits:arrayOf(role)
+});
+
 permission.define({
   resource,
   action,
@@ -23,10 +28,11 @@ permission.define({
 });
 
 message.define({
-    user,
-    channel
+  user,
+  channel
 });
+
 server.define({
-    channels:arrayOf(channel),
-    roles:arrayOf(role)
+  channels:arrayOf(channel),
+  roles:arrayOf(role)
 });

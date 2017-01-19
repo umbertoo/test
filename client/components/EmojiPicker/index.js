@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import data  from './emoji.json';
+
 import './css/emoji-picker.css';
 import './fontello-cc7c6182/css/fontello.css';
 import List from './components/List';
@@ -41,7 +42,7 @@ const tabsIcons= {
 };
 let categories ={};
 
-categoriesOrder.forEach(c=> categories[c] = res.filter(e=>e.category==c));
+forEach(categoriesOrder, c=> categories[c] = res.filter(e=>e.category==c));
 
 class EmojiPicker extends Component {
   constructor(props){
@@ -86,7 +87,8 @@ class EmojiPicker extends Component {
             onChange={this.handleInputChange}
             value={serch_text}/>
         </div>
-        <List onScrollCategory={this.onScrollCategory}
+        <List
+          onScrollCategory={this.onScrollCategory}
           ref={c=>this.list=c}
           categories={cats}
           categoriesOrder={categoriesOrder}

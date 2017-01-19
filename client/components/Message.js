@@ -10,8 +10,8 @@ import MessageTextArea from './MessageTextArea';
 import Avatar from './Avatar';
 
 class Message extends Component {
-  componentDidMount(){
-    this.props.onMount({id:this.props.id, elem:this.refs.message});
+  shouldComponentUpdate(nextProps, nextState){
+      return !shallowEqual(this.props, nextProps);
   }
   componentWillMount(){
     this.md = new Remarkable('full', {
@@ -20,9 +20,6 @@ class Message extends Component {
     this.emoji = new EmojiConvertor();
     this.emoji.use_sheet = true;
     this.emoji.img_sets.apple.sheet = sheet;
-  }
-  componentWillUnmount(){
-    this.props.onUnmount({id:this.props.id, elem:this.refs.message});
   }
   shouldComponentUpdate(nextProps, nextState){
     return this.props.text!==nextProps.text ||
@@ -67,7 +64,7 @@ class Message extends Component {
             </span>
           </div>   }
         <span className="message-block__content"
-          dangerouslySetInnerHTML={this.rawMarkup()}/>
+          dangerouslySetInnerHTML={this.rawMarkup()}/>| {this.props.id}
         {isEdited && <span className="message-block__edited-label">отредактировано</span>}
         {canBeEditable &&
           <div className="message-block__menu">

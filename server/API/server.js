@@ -72,7 +72,7 @@ router.post('/servers', async(req, res, next)=>{
       const ts = {transaction:t};
       const server = await Server.create({name, description}, ts);
       const channel = await Channel.create({
-        name:'general', serverId:server.id, isGeneral:true
+        name:'general', serverId:server.id
       },ts);
       // add role to server, and set it to user.
       const user = await User.findById(userId,ts);

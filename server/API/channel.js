@@ -1,6 +1,6 @@
 import { rbac } from './index';
 import { Router } from 'express';
-import { Server, Channel, ServerMembers } from '../models/';
+import { Server, Channel, ServerMembers, Message } from '../models/';
 import db from '../models/db';
 import isEmpty from 'lodash/isEmpty';
 
@@ -14,9 +14,11 @@ router.get('/servers/:id/channels', async(req, res, next)=>{
     const server = await Server.findById(id);
     if(!server) return next(404);
 
-    res.json(await server.getChannels({
-      order: [['order']]
-    }));
+    const channels = await server.getChannels({
+      order: [['order']], include:[{model:Message, limit:1, order:[['createdAt','DESC']]}]
+    });
+
+    res.json(channels);
   } catch (e) {
     next(e);
   }
@@ -70,11 +72,10 @@ router.delete('/channels/:channelId', async(req, res, next)=>{
       params: {channelId},
       user: {roles, socket}
     } = req;
-
     const channel = await Channel.findById(channelId);
     if(!channel) return next(404);
-
-    if(channel.isGeneral) return next(403);
+    const count = Channel.count({ where: {serverId:channel.serverId} });
+    if(count==1) return next(403);
 
     if(await rbac.can(roles[channel.serverId], 'channel:delete')) {
       await channel.destroy();

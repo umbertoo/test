@@ -3,23 +3,23 @@ import '../static/scss/servers-list.scss';
 import ServerItem from './ServerItem';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { Scrollbars } from 'react-custom-scrollbars';
-
+import map from 'lodash/map';
 const SortableServerItem = SortableElement(ServerItem);
 
 const ServersList =({
-  order, servers, onSelectServer, selectedItem, children
+  servers, onSelectServer, selectedItem, children
 })=>{
   return (
     <Scrollbars
       className="servers-list">
-      {order.map((id, i)=>
+      {map(servers,(server, i)=>
         <SortableServerItem
           index={i}
-          isSelected={selectedItem==id}
+          isSelected={selectedItem==server.id}
           onClick={onSelectServer}
-          key={id}
-          hideName={!!servers[id].icon}
-          server={servers[id]}/>
+          key={server.id}
+          hideName={!!server.icon}
+          server={server}/>
       )}
       {children}
     </Scrollbars>

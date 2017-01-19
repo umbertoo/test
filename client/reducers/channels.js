@@ -7,7 +7,6 @@ const initialState = {
   items: {},
   ids:[],
   isFetching: true,
-  channelsWithNewMessages:[],
 };
 
 export const channels = (state = initialState, action) => {
@@ -55,7 +54,6 @@ export const channels = (state = initialState, action) => {
       isFetching:false
     };
     //------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------
     case type.EDIT_CHANNELS_ORDER_REQUEST:
     case type.EDIT_CHANNELS_ORDER_FAILURE:
     return {...state,
@@ -64,9 +62,9 @@ export const channels = (state = initialState, action) => {
     };
     case type.EDIT_CHANNELS_ORDER_SUCCESS:
     return {...state,
-      // ids: action.payload,
       isFetching:false
     };
+    
     //------------------------------------------------------------------------------
     case type.FETCH_CHANNELS_REQUEST:
     case type.FETCH_CHANNELS_FAILURE:
@@ -84,14 +82,7 @@ export const channels = (state = initialState, action) => {
     };
 
     //------------------------------------------------------------------------------
-    case type.SET_CHANNEL_HAS_NEW_MESSAGES:
-    return {...state,
-      channelsWithNewMessages:union(state.channelsWithNewMessages,[action.channelId])
-    };
-    case type.UNSET_CHANNEL_HAS_NEW_MESSAGES:
-    return {...state,
-      channelsWithNewMessages:without(state.channelsWithNewMessages, action.channelId)
-    };
+
 
     default: return state;
   }

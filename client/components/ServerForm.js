@@ -26,7 +26,7 @@ class ServerForm extends Component {
     return (
       <div className="server-form">
         <h1>{name}</h1>
-
+        
         <Input
           onBlur={this.onChange}
           onChange={this.onInputChange}

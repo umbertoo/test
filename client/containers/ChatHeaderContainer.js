@@ -3,17 +3,20 @@ import { connect } from 'react-redux';
 import * as Actions from '../actions/index';
 import '../static/scss/chat-header.scss';
 import autoBind from 'react-autobind';
-
+import shallowEqual from 'shallowequal';
 class ChatHeaderContainer extends Component {
   onClickSidePanel=()=>{
     console.log('onClickSidePanel');
   }
+  shouldComponentUpdate(nextProps, nextState){
+    return !shallowEqual(this.props, nextProps);
+  }
   render(){
-    const {channels, channelId} = this.props;
+    const {channelName} = this.props;
     return (
       <div className="chat-header">
-        {channels[channelId] &&
-          <h1 className="chat-header__title">{channels[channelId].name}</h1>
+        {channelName &&
+          <h1 className="chat-header__title">#{channelName}</h1>
         }
         <div className="chat-header__sidepanel-btn"
           onClick={this.props.onClickSidePanel}>
@@ -24,9 +27,12 @@ class ChatHeaderContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) =>({
-  channelId:state.ui.params.channelId,
-  channels:state.entities.channels.items,
-});
+const mapStateToProps = (state,props) =>{
+  const { channelId } = props;
+  const { name } = state.entities.channels.items[channelId] || {};
+  return {
+    channelName:name
+  };
+};
 
 export default connect(mapStateToProps, Actions)(ChatHeaderContainer);

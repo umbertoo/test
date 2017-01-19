@@ -8,9 +8,10 @@ class ChannelFormContainer extends Component {
     this.props.editChannel(channel);
   }
   render(){
-    const {channel} = this.props;
+    const {channel, showDeleteButton} = this.props;
     return (
       <ChannelForm
+        showDeleteButton={showDeleteButton}
         onDeleteChannel={this.props.onDeleteChannel}
         channel={channel}
         onChange={this.onChangeChannelForm}/>

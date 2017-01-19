@@ -10,58 +10,68 @@ import {
   editUserSuccess,
   deleteChannelSuccess,
   fetchChannels,
-  setScrollIsBottom
+  setScrollPosition,
+  receiveMessage,
+  updateMessageAck,
+
+  BOTTOM_POSITION
 } from '../index';
 import io from 'socket.io-client';
 import { normalize, arrayOf } from "normalizr";
 import * as schemas from "../common/schemas";
+import {getChannelData} from '../../selectors/selectors';
 
+import debounce from 'lodash/debounce';
 export const socket = io.connect('http://localhost:8090/',{
-  'query': 'token=' + localStorage.getItem('token')
+  'query': 'token=' + localStorage.getItem('token'),  'force new connection':false
 });
 
+const socketEvents =  ({dispatch, getState}, getProps) => {
 
-const socketEvents =  ({dispatch, getState}) => {
+
+  const updateMessageAckWithDebounce = debounce(
+    (messageId)=>dispatch(updateMessageAck(messageId)),
+    700,
+    {leading:false}
+  );
+
   socket.on('message', message=>{
-    //message from other users
-    dispatch(createMessageSuccess(message));
-    const {
-      ids=[], pageCount=0, slice=[], scrollIsBottom
-    } = getState().pagination.idsByChannel[message.channelId]||{};
+    const response = normalize(message, schemas.message);
+    const openedChannelId = getProps().params.channelId;
+    const {user} = getState().auth;
 
-    //if message belongs to current slice of ids.
-    if(ids.slice(-2)[0] == slice.slice(-1)[0]){
+    const isOwnMessage = message.userId == user;
+ 
+    console.log('--message--');
+    dispatch(receiveMessage({
+      response, channelId:message.channelId, openedChannelId, isOwnMessage
+    }));
 
-      dispatch(addMessageToSlice(message));
-      if(scrollIsBottom)  dispatch(setScrollIsBottom(true, message.channelId));
-
-    }
-    //clear typing user
-    const {userId, channelId} = message;
-    dispatch(stopTyping(userId, channelId));
-
-    if(getState().ui.params.channelId != message.channelId){
-      dispatch(setChannelHasNewMessages(message.channelId));
+    if(message.channelId == openedChannelId && !isOwnMessage){
+      updateMessageAckWithDebounce(message.id);
     }
   });
 
   socket.on('startTyping',({user,channelId})=>{
-    dispatch(startTyping(user.id,channelId));
+    const {user:currentUserId} = getState().auth;
+    if(currentUserId !== user.id){
+      const { typingUsers } = getChannelData(getState(), {channelId});
+      if(!typingUsers.some(id=>id==user.id)){
+        dispatch(startTyping(user.id,channelId));
+      }
+    }
+
   });
 
   socket.on('editMessage',(message)=>{
-    const {
-      items
-    } = getState().entities.messages;
+    const { items } = getState().entities.messages;
     if(items[message.id]){
       dispatch(updateMessage(message));
     }
   });
 
   socket.on('deleteMessage',(message)=>{
-    const {
-      items
-    } = getState().entities.messages;
+    const { items } = getState().entities.messages;
     if(items[message.id]){
       dispatch(deleteMessageSuccess(message));
     }
@@ -84,8 +94,6 @@ const socketEvents =  ({dispatch, getState}) => {
     console.log('socket editChannelsOrder',payload);
     dispatch(fetchChannels(serverId));
 
-    // const payload = normalize(channel, schemas.channel);
-    // dispatch(deleteChannelSuccess(payload));
   });
 
   //User

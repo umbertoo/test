@@ -25,15 +25,15 @@ class ServerMenuContainer extends Component {
     }
   }
   render(){
-    const {server} = this.props;
-    const {openServerSettings }=this.state;
+    const { server } = this.props;
+    const { openServerSettings } = this.state;
     return (
       <div>
         {server
           ? <ServerMenu onSelect={this.onSelect} server={server}/>
           : null
         }
-        <Link to={'/channels/8'}> SERVER 8</Link>
+        {/* <Link to={'/channels/8'}> SERVER 8</Link> */}
         {openServerSettings &&
           <ModalDialog
             showHeader={false}
@@ -48,8 +48,8 @@ class ServerMenuContainer extends Component {
   }
 }
 
-const mapStateToProps = (state,props) =>({
-  server:state.entities.servers.items[state.ui.params.serverId]
+const mapStateToProps = (state, props) =>({
+  server:state.entities.servers.items[props.serverId]
 });
 
 export default connect(mapStateToProps, Actions)(ServerMenuContainer);

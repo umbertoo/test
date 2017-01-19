@@ -12,13 +12,14 @@ import {
   UserServerRoles,
   ServerMembers,
   ServerRole,
-  Attribute
+  Attribute,
+  ViewedMessages
 } from './index';
 
 
 
 ///Message
-Channel.hasMany(Message, {as: 'Messages',foreignKey: {name:'channelId', allowNull:false}});
+Channel.hasMany(Message, {foreignKey: {name:'channelId', allowNull:false}});
 Message.belongsTo(Channel,{foreignKey: {name:'channelId', allowNull:false}});
 
 Server.hasMany(Message, {as: 'Messages',foreignKey: {name:'serverId', allowNull:false}});
@@ -27,6 +28,10 @@ Message.belongsTo(Server, {foreignKey: {name:'serverId', allowNull:false}});
 User.hasMany(Message, {as: 'Messages',foreignKey: {name:'userId', allowNull:false}});
 Message.belongsTo(User, {foreignKey: {name:'userId', allowNull:false}});
 
+User.belongsToMany(Message, {as:'ViewedMessages', through: ViewedMessages});
+Message.hasMany(ViewedMessages, {foreignKey: {name:'messageId', allowNull:false}});
+ViewedMessages.belongsTo(Message, {foreignKey: {name:'messageId', allowNull:false}});
+// Message.belongsToMany(User, {as:'ViewedMessages', through: ViewedMessages});
 
 
 //Channel

@@ -32,6 +32,7 @@ const app = express();
 
 app.disable('x-powered-by');
 app.use(require("webpack-dev-middleware")(compiler, {
+  index: "./dist/index.html",
   publicPath: webpackConfig.output.publicPath,
   hot: true,
   inline: true,

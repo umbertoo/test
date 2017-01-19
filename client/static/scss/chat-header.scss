@@ -7,12 +7,15 @@ $header-height: 56px;
     top:0;
     background-color: #36393E;
     width: 100%;
+    &__sidepanel-btn{
+      display: inline-block;
+    }
     &__title{
         display: inline-block;
         height: $header-height;
         padding: 18px 10px 10px 20px;
         box-sizing: border-box;
-        
+
         color:#fff;
         margin: 0;
         font-size: 18px;

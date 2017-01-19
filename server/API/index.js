@@ -17,6 +17,7 @@ import {
 
 import { io } from '../app';
 import find from 'lodash/find';
+import filter from 'lodash/filter';
 import RBAC from '../RBAC/RBAC';
 import serverApi from './server';
 import messageApi from './message';
@@ -40,8 +41,11 @@ router.get('/test1', (req,res)=>{
 });
 
 router.use((req,res,next)=>{
-  const socket = find(io.sockets.sockets,s => s.user.id==req.user.id);
-  req.user.socket = socket ? socket.broadcast : io;
+  // const socket = find(io.sockets.sockets,s => s.user.id==req.user.id);
+  // req.user.socket = socket ? socket.broadcast : io;
+  // const socket = filter(io.sockets.sockets,s => s.user.id==req.user.id);
+  // req.user.socket = socket ? socket.broadcast : io;
+  req.user.socket = io;
   next();
 });
 

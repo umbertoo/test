@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import MessageList from '../components/MessageList';
 import ChannelListContainer from '../containers/ChannelListContainer';
 import MessageForm from '../components/MessageForm';
 import TypingIndicator from '../components/TypingIndicator';
@@ -13,9 +12,11 @@ import ServersListContainer from '../containers/ServersListContainer';
 import ServerMenuContainer from '../containers/ServerMenuContainer';
 import UserBlockContainer from '../containers/UserBlockContainer';
 import '../static/scss/chat.scss';
-import { socket } from '../actions/common/socketEvents';
+
 import throttle from 'lodash/throttle';
-import syncParamsWithStore from '../utils/syncParamsWithStore';
+import ifvisible from 'ifvisible.js';
+import ConfirmDialogContainer from '../containers/ConfirmDialogContainer';
+import SocketContainer from '../containers/SocketContainer';
 
 class Chat extends Component {
   state={
@@ -29,8 +30,14 @@ class Chat extends Component {
   componentWillMount(){
     this.props.fetchServers();
     this.props.fetchCurrentUser();
+    window.onbeforeunload=()=>{
+      console.log('onbeforeunload');
+      localStorage.setItem('aaaa',2);
+    };
   }
-
+  componentDidMount(){
+    ifvisible.on("blur",()=>this.props.windowBlur(this.props.params.channelId));
+  }
   handleChangeHeightMessageForm=(height)=>{
     const view =this.messageList.scrollView;
     let callback = ()=>{};
@@ -42,7 +49,6 @@ class Chat extends Component {
       message_input_height:this.refs.messageForm.offsetHeight
     }, callback);
   }
-
   onClickSidePanel=()=>{
     this.setState({
       sidePanelIsOpen:!this.state.sidePanelIsOpen
@@ -53,44 +59,44 @@ class Chat extends Component {
   sendMessage=(text)=>{
     if(text){
       const {channelId, serverId} = this.props.params;
-      this.props.createMessage({text,channelId,serverId })
-      .then(msg => {
-        this.messageList.scrollView.scrollToBottom();
-        this.onTypingMessage.cancel();
-      });
+      this.props.createMessage({text,channelId,serverId });
+      this.onTypingMessage.cancel();
     }
   }
+  onMountMessageListContainer=(c)=>this.messageList=c
   render(){
-    const { message_input_height, sidePanelIsOpen } = this.state,
-    paddingRight = sidePanelIsOpen ? 200+'px' : 0;
+    const { message_input_height, sidePanelIsOpen } = this.state;
+    const { params:{serverId, channelId} } = this.props;
+
+    const paddingRight = sidePanelIsOpen ? 200+'px' : 0;
     return (
       <div className="chat">
+        <ConfirmDialogContainer/>
+
         <div className="chat__col-left">
           <div className="chat__servers-list-place">
-            <ServersListContainer />
+            <ServersListContainer serverId={serverId} />
           </div>
           <div className="chat__channels-list-place">
-            <button className="ac" onClick={()=>this.props.setScrollPosition(99999999,this.props.params.channelId)}>AAAAAAAAAAAAA</button>
-
-            <ServerMenuContainer />
-            <ChannelListContainer />
+            <ServerMenuContainer serverId={serverId}/>
+            <ChannelListContainer serverId={serverId} channelId={channelId}/>
             <UserBlockContainer />
           </div>
         </div>
         <div className="chat__col-right">
-          <ChatHeaderContainer onClickSidePanel={this.onClickSidePanel}/>
+          <ChatHeaderContainer channelId={channelId} serverId={serverId} onClickSidePanel={this.onClickSidePanel}/>
           <div className="chat__body" style={{paddingRight}}>
             <div className="chat__body-top"
               style={{paddingBottom:message_input_height+'px'}}>
-              <MessageListContainer
-                onMount={c=>this.messageList=c} />
+              <MessageListContainer serverId={serverId} channelId={channelId}
+                onMount={this.onMountMessageListContainer} />
             </div>
             <div ref="messageForm" className="chat__body-bottom" style={{paddingRight}}>
               <MessageForm
                 onTypingMessage={this.onTypingMessage}
                 onChangeHeight={this.handleChangeHeightMessageForm}
                 onSubmit={this.sendMessage} />
-              <TypingIndicator />
+              <TypingIndicator channelId={channelId}/>
             </div>
             {sidePanelIsOpen &&
               <div className="chat__side-panel">
@@ -100,8 +106,8 @@ class Chat extends Component {
           </div>
         </div>
       </div>
-    );
-  }
-}
+        );
+      }
+    }
 
-export default syncParamsWithStore(connect(null,actions)(Chat));
+    export default SocketContainer(connect(null,actions)(Chat));

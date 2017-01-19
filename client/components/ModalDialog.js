@@ -56,6 +56,7 @@ class ModalDialog extends Component {
         onAfterOpen={onAfterOpen}
         onRequestClose={onClose}
         style={resultStyle}
+        contentLabel={'dialog'}
         >
         {showHeader &&
           <div className="modal-dialog__header">

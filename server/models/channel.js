@@ -1,8 +1,5 @@
 import Sequelize from 'sequelize';
 import db from './db';
-// import Message from './message';
-// import Server from './server';
-// import User  from './user';
 import maxBy from 'lodash/maxBy';
 
 export const Channel = db.define('channel', {
@@ -16,10 +13,10 @@ export const Channel = db.define('channel', {
   order:{
     type:Sequelize.INTEGER,
     // allowNull:false
-  },
-  isGeneral:{
-    type:Sequelize.BOOLEAN,
   }
+  // isGeneral:{
+  //   type:Sequelize.BOOLEAN,
+  // }
 
 });
 
