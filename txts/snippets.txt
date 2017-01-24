@@ -1,0 +1,70 @@
+import * as types from '../actions/action-types';
+
+const chart = (state = {}, action) => {
+    switch (action.type) {
+        case types.ADD_CHART:
+            let series = [
+                {
+                    id: 0,
+                    visible: true,
+                    title: action.series[0]
+                }
+            ];
+
+            for (let i = 1; i < action.series.length; i++) {
+                series.push({
+                    id: i,
+                    visible: false,
+                    title: action.series[i]
+                });
+            }
+
+            return {
+                id: action.id,
+                series
+            }
+
+        case types.UPDATE_CHART:
+            if (state.id !== action.id) {
+                return state;
+            }
+            let result = {
+                id: action.id,
+                series: action.series
+            };
+
+            return {
+                id: action.id,
+                series: action.series
+            };
+
+        default:
+            return state;
+    }
+}
+
+const charts = (state = [], action) => {
+    console.log('charts reducer:');
+    console.log('old state:'); // it outputs the updated state
+    console.log(state);
+    switch (action.type) {
+        case types.ADD_CHART:
+            return [
+                ...state,
+                chart(undefined, action)
+            ];
+
+        case types.UPDATE_CHART:
+            let newState = state.map(c => chart(c, action));
+            console.log('new state:');
+            console.log(newState);
+            return state.map(c => chart(c, action));
+
+        default:
+            return state;
+    }
+}
+
+export default charts;
+
+///////////////////////////////////////////////////////////////

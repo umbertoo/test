@@ -1,0 +1,42 @@
+
+--Creational----------------------------------------------------
+
+Singleton - singel instace with global accsessong point, Checks if allreade exist, then take existed instance
+
+Prototype -
+
+abstract class?
+
+
+--Sturtural----------------------------------------------------
+Facade - like jQuery, providing more elegant interface on top of ugly
+
+Adapter - 
+
+Composite - 
+
+Module - module-pattern
+
+
+
+
+--Behavioral----------------------------------------------------
+
+Observer - communicate between components, through messages . for sake of consistancy
+Pub/Sub
+Event Agregator
+
+Mediator - object wich includes logic of interacting between modules/objects
+
+State - reaction on internal state
+
+Memento - Persist some state of class, for sake of  loading it later
+
+Visitor - 
+
+Command - 
+
+
+
+
+ 

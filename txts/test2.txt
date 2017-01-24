@@ -1,0 +1,149 @@
+нам нужны params в сторе - иначе сокет листенеры не будут иметь доступ к сервер-айди и чаннел-айди.
+
+как синхронизируем тогда урл парамс со стором?
+
+
+
+мы полюбому хранить должны выбранные каналы в контексте серверов
+
+на дискорде: 	1 канал записывается в ссылку сервера, по умолчанию general канал стоит;
+		2 плюс ид канала совпадет с ид сервера. Это позволяет легко сделать редирект 
+		   если канал не обозначен. У нас токой возможности не видно
+
+-------------
+[Как сделать редирект или подгрузить general канал если не выбран канал?]
+ 
+как прировнять generalId канал к undefined
+
+--------------------------------------------------------------------------------------
+
+при возврате на канал грузится слайс сохраненный, в силу этого скрол не находится в низу если должен был.
+
+можем мы сохранять слайс и позишн скрола? слайс не проблема - он всегда доступен. а вот позицию надо узнать именно в контексте слайса... 
+казалось бы , смотрим что слайс был последним(это вроде тоже самое что скоролл был внизу)
+хотя скролл канешно более точно подходит (scrollIsBottom)
+
+если скролл был в самом низу то грузим его опять в низу...
+но чото както не выходит...
+
+ну сохраню я высоту скрола - тоесть конечную позицию... типа для прокрутки до конца
+подойдёт ли эта высота в реальности?
+поидее нет - потомучто это высота будет использоваться в момент когда будет подгружен только слайс и следовательно высота уже будет не той.
+
+
+
+
+
+
+нужно запоминать последнее загруженное в локал сторедж
+в дискорде сохранят
+
+0. создали свое сообщение -	1. скорлим вниз - не важно где находимся - показываем последний слайс, поидее если было сообщение о новых сообщениях то оно должно пропасть и обнулиться так как промотали вниз.
+в данный момент рабоет сколл вниз но сообщение о новых сообшениях не реализовано
+
+
+1. пришло новое сообщение - 	1.если скролл внизу то, добавляем и проматываем
+	    			  в конец
+				2.если скролл НЕ внизу то просто добвляем не проматывая
+				  и пишем лейбл что есть новые сообщения (число)
+				  если промотать вниз то сообщение исчезнет
+
+
+2. если при первой загрузке (isEmptyChannel) проверем наличие сохраненного айди в подгруженном списке сообщений - если нет - то ставим ярлык 45+ новых сообщений
+
+3. 
+
+
+some question about actions:
+
+what if I do connect some component to a store,
+then I put derrived data to internal state.
+
+ in order to react on changes of particular data. But if change component state
+
+
+
+
+
+
+
+new _________________________________________________________________________________
+
+new MESSAGES indicator
+for first loading
+even if we persist last id we need last ids of channel's messages to compare them.
+1. we can fetch it through api call in the begining.
+2. we maybe can rececive through soket, while connecting
+we need just check wich one is the best.
+
+
+when to update ACK messages
+
+1. when scroll is bottom and slice is last
+
+2. 	1. when receive new message and
+	2. opened channel id == message channel id and 
+	3. when scroll is bottom and slice is last
+
+
+
+probably:
+when scroll position is not on bottom then last message id is not updated.
+Thus it is intersection of line "new messages" and top message "new message :count"
+
+needed data
+
+1. last ack message for channel
+2. scroll position == -1 and slice is last
+3. opened channel id
+4. recieved message channel id
+5. 
+
+
+______________________________________________________________________________________
+how should I make data composition?
+
+variants :
+1) pros:-	here i can get relatated data within reducer
+	-	It looks very nice actually
+	-	
+   cons:-	I should make preInitialization for each channel, otherwise I have
+		a proplem and initial state doesnt work at all.
+	-	Average action cant get this reducers, without speccial parametr
+	
+	
+channels:{
+'1':{ ...channelDataItem },
+'2':{ ...}	
+}
+
+
+2) pros:	I dont need special parametr, action can get everywhere.
+   cons:	I cant get related data because different reducer. I related date,should pass from
+ 		parent, or utilize getState in actionCreator
+
+lastMessagesOfChannels:{'1':22,'5':51}
+
+
+
+
+new problems with sokets : when was opened several tabs, soket.io thinks that is defferent connections, therefore when message is created...
+
+
+ok, socket should be accesseble through connection id, because when is opened several tabs then one of them is creator and others is receivers. Its logical actually.
+now when user create message, server looking for soket with id of user, but there may be 
+several sockets with the same id, and script will get only first of them. therefore 
+it may get socket that not relate to particular user.
+
+I think it will be much easier if we would recieve self created message through socket rather then we would search particular sokect 
+
+if i would use socket events to recieve self created messages then...-> 
+it whould work, but there is separation of 
+
+с react/redux работаю больше года. В потверждение могу предоставить мой аккаунт stackoverflow: http://stackoverflow.com/users/5438212/utro
+Чтобы понять, могу ли я вам помочь мне нужно описание проблемы, и ссылка на репозиторий.
+Если вам нужно переписать пол проекта - я вам помочь не смогу за не имением на это времени.
+
+
+
+

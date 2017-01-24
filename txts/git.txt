@@ -1,0 +1,23 @@
+git checkout ветка (переключиться на ветку)
+git checkout -b ветка (создать ветку из текущей и переключиться)
+git reset --hard (отменить все незакоммиченное)
+git reset --hard HEAD~n (отменить все незакоммиченное и откатиться на n коммитов
+
+
+
+Если вышло что-то хорошее, мерджим ветку в master (о разрешении конфликтов рассказано в следующем параграфе):
+git commit -a # делаем коммит всех изменений в new_feature
+git checkout master # переключаемся на master
+git merge new_feature # мерджим ветку new_feature
+
+
+Создать новый репозиторий:
+git init project-name
+
+История с именами файлов и псевдографическим изображением бранчей:
+git log --stat --graph
+
+Откатиться к конкретному коммиту (хэш смотрим в «git log»):
+git reset --hard d8578edf8458ce06fbc5bb76a58c5ca4a58c5ca4
+
+https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html

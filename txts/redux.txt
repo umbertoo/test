@@ -1,0 +1,136 @@
+в mapState to props:
+
+collection are equal after update, if not edited in reducer
+
+
+
+
+--------------------------------------------------------------------------------------
+bisness logic in reducers and action creators
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+https://habrahabr.ru/post/310854/#comment_9828814
+
+
+https://twitter.com/dan_abramov/status/802564042648944642
+
+
+There's no single clear answer to exactly what pieces of logic should go in a reducer or an action creator. Some developers prefer to have УfatФ action creators, with УthinФ reducers that simply take the data in an action and blindly merge it into the corresponding state. Others try to emphasize keeping actions as small as possible, and minimize the usage of getState() in an action creator. (For purposes of this question, other async approaches such as sagas and observables fall in the "action creator" category.)
+
+someone opinion
+containers just for connection to model. 
+
+make selectors to decouple state and code
+if state was changed then you only need to update selectors for the changed state.
+
+
+place logic in actions/reducers better than in containers becouse of decoupling . You can reuse the logic.
+
+
+There's no such thing as reducer / action creator pairing in Redux. That's purely a Ducks thing. Some people like it but it obscures the fundamental strengths of Redux/Flux model: state mutations are decoupled from each other and from the code causing them.
+
+
+why we still have to create reducer files and functions manually?
+Because reducers are pure functions, if there is an error in state-updating logic, you can hot-reload the reducer. The dev tool can then rewind the app to its initial state, and then replay all the actions, using the new reducer. This means you can fix state-updating bugs without having to manually roll-back and re-perform the action. This is the benefit of keeping the majority of state-updating logic in the reducer
+
+: I don't think anyone ever said that triggering of other actions should go in a reducer. And in fact, it shouldn't. A reducer's job is simply (currentState + action) -> newState.
+
+For example, separating reducers from action creators lets us separate reads and writes which is important for logging and reproducing bugs. Actions being plain objects make record and replay possible because they are serializable. Similarly, state being plain object rather than an instance o  MyAppState makes it very easy to serialize it on the server and deserialize it on the client for server rendering, or persist parts of it in localStorage. Expressing reducers as functions allows us to implement time travel and hot reloading, and expressing selectors as functions makes memoization easy to add. All of these benefits have nothing to do with us being a Уfunctional crowdФ and everything to do with solving specific tasks this library was created to solve.
+We only discourage you from using class instances for state and action objects because class instances make serialization very tricky. For reducers, we also donТt recommend using classes because it will be harder to use reducer composition, that is, reducers that call other reducers. For everything else, you can use any means of code organization, including classes.
+
+
+"Business logic" is really a pretty broad term. It can cover stuff like "Has a thing happened?", "What do we do now that this happened?", "Is this valid?", and so on. Based on Redux's design, those questions can be answered in various places depending on what the situation is, although I would see "has it happened" as more of an action creator responsibility, and "what now" is almost definitely a reducer responsibility.
+
+
+
+try to keep the data separate from the UI state.
+
+Reducers are in charge of determining how the state updates based on the previous state and the incoming action. Other parts of the codebase should be looking at the updated state and determine what to do based on the new values, whether it be re-rendering with the latest data, or triggering some additional behavior based on the state change.
+
+Also, note that it's entirely possible to have React components that don't actually render anything at all, but simply use the lifecycle methods to wrap up additional behavior (looking at changes in props to see if something should happen, etc).
+
+There's no such thing as reducer / action creator pairing in Redux. That's purely a Ducks thing. Some people like it but it obscures the fundamental strengths of Redux/Flux model: state mutations are decoupled from each other and from the code causing them.
+-----------------------------------------------------------------------------------
+
+Basically, actions are facts/data that describes Уwhat happened,Ф not what should happen. 
+
+ACTIONS REDUCERS MANY TO MANY
+*****https://github.com/reduxible/reduxible/issues/8******
+*****http://stackoverflow.com/questions/35406707/do-events-and-actions-have-a-11-relationship-in-redux/35410524#35410524****
+
+Actions describe the fact that something happened, but don't specify how the application's state changes in response. This is the job of reducers.
+http://redux.js.org/docs/basics/Reducers.html
+
+maybe reducers reacts on action 
+Once that fact enters the store, you can translate that fact into commands, inside your pure reducers, 
+
+Actions are global in the app,
+
+! There is no semantic notion of Action Creators in Redux at all. There is a semantic notion of Actions (which describe what happened and are roughly equivalent to events but not quiteЧe.g. see discussion in #351). Action creators are just a pattern for organizing the code. ItТs convenient to have factories for actions because you want to make sure that actions of the same type have consistent structure, have the same side effect before they are dispatched, etc. But from Redux point of view, action creators donТt existЧRedux only sees actions.
+
+You may think of your views as inputs of data of certain type (like string or number, but structured object with fields). This data object does not necessarily mirror the store structure. You put this data object into an action. This is not coupling with store structure. Both store and view have to be coupled with action payload structure.
+-----------------------------------------------------------------------------------
+
+
+
+----------------------------------------------------------------------
+sagas in context of logic
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---1 allows to use expcit (not implicit) way to to lead from one actio to 
+expamples
+1."TIMELINE_SCROLLED_NEAR-BOTTOM" could lead to "NEXT_PAGE_LOADED"
+
+2. anotherfunction* onboarding() {
+  while ( true ) {
+    take(ONBOARDING_STARTED)
+    take(TODO_CREATED)
+    put(SHOW_TODO_CREATION_CONGRATULATION)
+    take(ONBOARDING_ENDED)
+  }
+}
+---2 If you want to achieve a modular app layout with ducks, it can permit to avoid coupling ducks together. The saga becomes the coupling point. 
+
+
+
+
+________________________________________________________________________________
+
+FLUX
+https://facebook.github.io/flux/docs/overview.html#content
+http://jaysoo.ca/2015/02/06/what-the-flux/
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+point of Flux is to make data changes easy to reason about.
+
+
+
+Flux isolates all data mutations to a particular layer in the application and establishes a completely predictable way to get data in and out of there.
+This is nothing new, itТs called (CQRS) Command Query Responsibility Segregation:
+
+Caching, invalidation, optimistic updates, aggregation, pagination and a lot of other things get much easier when models are plain objects and donТt try to manage complex updates of each other.
+
+If you are serious about working with data, there has to be a single source of truth for all of it. Neither the UI nor other models should be able to mutate the data.
+
+In Flux, Store is the only place in your whole app that has privilege to mutate the data. It has no setters and only responds to actions emitted by the components. API responses are also actions, as they serve as inputs to Store. Only Store gets to decide how to update the data.
+When the data is wrong, you can trace exactly where the corruption occurred, because you know 100% it happened in the Store.
+
+it makes it easy to reason about complex data changes, and opens up a lot of possibilities impossible with classic MVC, such as recording and replaying UI state just by re-dispatching serialized actions.
+
+One of the key insights of Flux is that an applicationТs state is difficult to reason about when a state mutation can happen anywhere. For example, if we were using jQuery to open our menu by manipulating its CSS class, we could call $('.menu').addClass('open') from anywhere in our code and our menu would open (assuming the required CSS was in place). This is convenient if you are quickly prototyping a new feature, but if you forget where that call happens in a large application you might need to dig through multiple files to find it. Even worse, if a team member is not aware of the existing call and adds another one somewhere else for a different scenario, tracking down the state of the menu at any point in time becomes much more difficult.
+
+
+
+________________________________________________________________________________
+
+MobX
+Knockout.js + ES6 + React(как view) = MobX
+
+«абавно получаетс€, React + Flux(как концепци€) был предложен именно как альтернатива MVC/MVVM, чтобы покончить наконец с адом кроссзависимостей данных, которое всегда происходит при использовании паттерна observable.
+≈сли здесь еще есть front-end разработчики с опытом больше хот€ бы трех лет, они вспомн€т какого это Ч когда observable стоит на observable и observable'ом погон€ет, и над ними начинают по€вл€тьс€ computed c некоторым throttle, чтобы хоть немного разв€зать во времени клубок вызывающих рендер обновлений данных.
+
+Flux-подход был решением, путем введени€ unidirectional data flow которым можно полностью управл€ть и вызывать render через setState когда нужно. Ќекоторые flux-библиотеки испортили этот подход, скрыва€ от программиста некоторые возможности управлени€ рендером, а react-router еще и подлил масла в огонь, конкуриру€ за управлени€ стэйтом с flux. 
+
+¬ итоге программист, жела€ быстро что-то написать, все равно потер€л контроль над управлением рендером и оп€ть по€вилс€ observable, чтобы Ђупроститьї его жизнь. Ќа врем€, потому что с ростом сложности проекта, оп€ть наступить ад кроссзависимостей, оп€ть обновлени€ начнут разлетатьс€ во все стороны и прилетать с разных сторон.
+
+MobX хорош дл€ старта и небольших проектов. Ќе переоценивайте его.
+
+
