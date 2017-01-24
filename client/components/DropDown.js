@@ -4,15 +4,10 @@ import '../static/scss/drop-down.scss';
 import autoBind from 'react-autobind';
 
 class DropDown extends Component {
-  constructor(props){
-    super(props);
-    autoBind(this);
-    const { position } = props;
-    this.state = {
-      isOpen: false,
-      attachment:'top '+position,
-      targetAttachment:'bottom '+position,
-    };
+  state = {
+    isOpen: false,
+    attachment:'top '+this.props.position,
+    targetAttachment:'bottom '+this.props.position
   }
   componentDidMount() {
     document.addEventListener("click", this.handleClickDocument);
@@ -21,21 +16,21 @@ class DropDown extends Component {
     document.removeEventListener("click", this.handleClickDocument);
   }
   componentWillReceiveProps(nextProps) {
-    if(nextProps.isOpen!=this.state.isOpen)
+    if(nextProps.isOpen != this.state.isOpen)
     this.setState({
       isOpen: nextProps.isOpen
     });
   }
-  handleClickDocument(e){
-    let target = e.target;
-    while (target) {
-      if(target == this.control || (!this.props.closeOnClickMenu && target == this.menu))
-      return false;
-      target = target.parentNode;
+  handleClickDocument=(e)=>{
+    if(this.control.contains(e.target)) {
+      return
     }
-    this.setState({ isOpen: false, text:'' }, this.props.onClose);
+    if(!this.props.closeOnClickMenu && this.menu && this.menu.contains(e.target)) {
+      return
+    }
+    this.setState({ isOpen: false }, this.props.onClose);
   }
-  handleOpen(e){
+  handleOpen=(e)=>{
     this.setState({
       isOpen: true
     },()=>{
@@ -52,10 +47,12 @@ class DropDown extends Component {
     });
   }
   render() {
-    const {attachment,targetAttachment}= this.state;
-    const {children, menuOffset, className}= this.props;
+    const {attachment, targetAttachment} = this.state;
+    const {children, menuOffset, className} = this.props;
+
     const openClass = this.state.isOpen ? '-open' : '';
     const dropClass = className ? className : 'drop-down';
+
     return (
       <div className={dropClass+" "+openClass}>
         <Tether
@@ -66,7 +63,7 @@ class DropDown extends Component {
           {cloneElement(children[0],{
             className:"drop-down__button "+children[0].props.className,
             ref:c=>this.control=c,
-            onMouseDown:this.handleOpen
+            onClick:this.handleOpen
           })}
 
           {this.state.isOpen &&

@@ -19,9 +19,9 @@ import ConfirmDialogContainer from '../containers/ConfirmDialogContainer';
 import SocketContainer from '../containers/SocketContainer';
 
 class Chat extends Component {
-  state={
-    message_input_height:66,
-    sidePanelIsOpen:JSON.parse(localStorage.getItem('sidePanelIsOpen'))
+  state = {
+    message_input_height: 66,
+    sidePanelIsOpen: JSON.parse(localStorage.getItem('sidePanelIsOpen'))
   }
   onTypingMessage=()=>{
     this.props.sendTyping(this.props.params.channelId);
@@ -67,7 +67,6 @@ class Chat extends Component {
   render(){
     const { message_input_height, sidePanelIsOpen } = this.state;
     const { params:{serverId, channelId} } = this.props;
-
     const paddingRight = sidePanelIsOpen ? 200+'px' : 0;
     return (
       <div className="chat">
